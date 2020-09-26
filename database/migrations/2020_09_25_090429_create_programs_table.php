@@ -16,6 +16,7 @@ class CreateProgramsTable extends Migration
         Schema::create('programs', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->unsignedInteger('batch_id');
             $table->tinyInteger('active')->default(1);
             $table->timestamps();
         });

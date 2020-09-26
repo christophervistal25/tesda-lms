@@ -6,15 +6,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class Course extends Model
 {
-    protected $fillable = ['name', 'description', 'batch_id', 'program_id', 'active'];
+    protected $fillable = ['name', 'description', 'active'];
 
-    public function batch()
-    {
-        return $this->belongsTo('App\Batch');
-    }
 
     public function program()
     {
         return $this->belongsTo('App\Program');
+    }
+
+    public function instructors()
+    {
+    	return $this->belongsToMany('App\Instructor')->withTimestamps();
     }
 }

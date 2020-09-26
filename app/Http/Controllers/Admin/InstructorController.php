@@ -5,16 +5,15 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Freshbitsweb\Laratables\Laratables;
-use App\Program;
-use App\Batch;
+use App\Instructor;
+use App\Course;
 
-class ProgramsController extends Controller
+class InstructorController extends Controller
 {
+
     public function list()
     {
-        return Laratables::recordsOf(Program::class, function($query) {
-            return $query->where('active', 1);
-        });
+        return Laratables::recordsOf(Instructor::class);
     }
     /**
      * Display a listing of the resource.
@@ -23,8 +22,8 @@ class ProgramsController extends Controller
      */
     public function index()
     {
-        $batchs = Batch::orderBy('batch_no', 'ASC')->where('active', 1)->get();
-        return view('admin.programs.index', compact('batchs'));
+        $instructors = Instructor::get();
+        return view('admin.instructor.index', compact('instructors'));
     }
 
     /**
@@ -34,6 +33,8 @@ class ProgramsController extends Controller
      */
     public function create()
     {
+        $courses = Course::get();
+        return view('admin.instructor.create', compact('courses'));
     }
 
     /**
@@ -44,22 +45,27 @@ class ProgramsController extends Controller
      */
     public function store(Request $request)
     {
-        if ($request->ajax()) {
-            $this->validate($request, [
-                'program_name' => 'required',
-            ]);
-
-            $batch   = Batch::find($request->batch_no);
-            $program = new Program();
-
-            $program->name = $request->program_name;
-            $program->batch()->associate($batch);
-
-            $program->save();
-
-
-            return response()->json(['success' => true]);
+        
+        if ($request->hasFile('image')) {
+            $image_name = $request->file('image')->getRealPath();
+            \Cloudder::upload($image_name, null);
+            $image = \Cloudder::show(\Cloudder::getPublicId());
         }
+
+        $instructor = Instructor::create([
+            'firstname'  => $request->firstname,
+            'middlename' => $request->middlename,
+            'lastname'   => $request->lastname,
+            'contact_no' => $request->contact_no,
+            'image'      => $image ?? '',
+        ]);
+
+        if ($request->course != null) {
+            $course = Course::find($request->course);
+            $course->instructors()->attach($instructor);
+        }
+
+        return back()->with('success', 'Successfully add new instructor.');
     }
 
     /**
@@ -91,28 +97,9 @@ class ProgramsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Program $program)
+    public function update(Request $request, $id)
     {
-        if ($request->ajax()) {
-            $batch   = Batch::find($request->batch_no);
-
-            $program->name = $request->name;
-            $program->batch()->associate($batch);
-            
-            $program->save();
-
-            return response()->json(['success' => true]);
-        }
-    }
-
-    public function hide(int $id)
-    {
-        if (request()->ajax()) {
-            $program = Program::find($id);
-            $program->active = 0;
-            $program->save();
-            return response()->json(['success' => true]);
-        }
+        //
     }
 
     /**

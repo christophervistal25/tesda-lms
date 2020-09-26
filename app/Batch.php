@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Scopes\ActiveScope;
 use Illuminate\Database\Eloquent\Model;
 
 class Batch extends Model
@@ -11,6 +12,17 @@ class Batch extends Model
     public function courses()
     {
         return $this->hasMany('App\Course');
+    }
+
+    public function programs()
+    {
+        return $this->hasMany('App\Program');
+    }
+
+
+    protected static function booted()
+    {
+        static::addGlobalScope(new ActiveScope);
     }
 
     public static function laratablesCustomAction($batch)

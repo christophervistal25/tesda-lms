@@ -46,6 +46,9 @@ Route::prefix('admin')->group(function(){
             Route::get('programs/list', 'ProgramsController@list');
             Route::put('programs/{id}/hide', 'ProgramsController@hide');
             Route::resource('programs', 'ProgramsController');
+            Route::get('instructor/list', 'InstructorController@list');
+            Route::resource('instructor', 'InstructorController');
+            Route::resource('modules', 'ModulesController');
 	    });
     });
 

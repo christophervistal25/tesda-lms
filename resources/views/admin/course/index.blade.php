@@ -19,8 +19,9 @@
 				<tr>
 					<th>Name</th>
 					<th>Description</th>
-					<th>Batch</th>
 					<th>Program</th>
+					<th>Batch</th>
+					<th>Instructor</th>
 					<th>Created At</th>
 					<th>Actions</th>
 				</tr>
@@ -30,8 +31,13 @@
 				<tr>
 					<td class="text-primary">{{ $course->name }}</td>
 					<td>{{ $course->description }}</td>
-					<td>{{ $course->batch->name }} / Batch - {{ $course->batch->batch_no }}</td>
 					<td>{{ $course->program->name }}</td>
+					<td>{{ $course->program->batch->name }} - Batch {{ $course->program->batch->batch_no }}</td>
+					<td class="font-weight-bold text-primary">
+						@foreach($course->instructors as $instructor)
+						{{ $instructor->lastname  . ', ' . $instructor->firstname . ' ' . $instructor->middlename }}
+						@endforeach
+					</td>
 					<td class="text-center">{{ $course->created_at->diffForHumans() }}</td>
 					<td class="text-center">
 						<a href="{{ route('course.edit', $course) }}" title="Edit this course" class="btn btn-primary btn-sm"> <i class="fas fa-edit"></i> </a>

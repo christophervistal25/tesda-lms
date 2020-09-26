@@ -8,7 +8,7 @@
 @if(Session::has('success'))
 	<div class="card bg-success text-white shadow mb-2">
 		<div class="card-body">
-			{{ Session::get('success') }} <a class="font-weight-bold text-white" href=" {{ route('course.index') }}"><u>View records</u></a>
+			{{ Session::get('success') }} <a class="font-weight-bold text-white" href=" {{ route('course.index') }}"> / <u>View records</u></a>
 		</div>
 	</div>
 @endif
@@ -46,16 +46,6 @@
                             </div>
 
                      
-							<div class="form-group">
-								<label for="description" class="col-md-auto  text-md-right">Batch</label>
-								<div class="col-md-12">
-								 <select class="form-control selectpicker" width="100%" data-live-search="true" name="batch_no">
-								  	@foreach($batchs as $batch)
-								  	  <option value="{{ $batch->id }}" data-tokens="{{ $batch->name }}">{{ $batch->name }} / Batch {{ $batch->batch_no }}</option>
-								  	@endforeach
-								</select>
-								</div>
-							</div>
 
                              <div class="form-group">
                                 <label for="" class="col-md-auto  text-md-right">Program</label>

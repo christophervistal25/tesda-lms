@@ -17,7 +17,7 @@ class CourseController extends Controller
      */
     public function index()
     {
-        $courses = Course::with('batch')
+        $courses = Course::with(['program', 'program.batch', 'instructors'])
                         ->where('active', 1)
                         ->orderBy('created_at', 'DESC')
                         ->get();
@@ -52,18 +52,17 @@ class CourseController extends Controller
         $this->validate($request, [
             'name'        => 'required',
             'description' => 'required',
-            'batch_no'    => 'required|in:' . implode(',', $batch_ids),
             'program'     => 'required'
         ]);
 
-        Course::create([
-            'name'        => $request->name,
-            'description' => $request->description,
-            'batch_id'    => $request->batch_no,
-            'program_id'  => $request->program
-        ]);
+        $program = Program::find($request->program);
+        $course = new Course;
+        $course->name = $request->name;
+        $course->description = $request->description;
+        $course->program()->associate($program);
+        $course->save();
 
-        return back()->with('success', 'Successfully create new course with name ' . $request->name . ' Batch - ' .  $request->batch_no );
+        return back()->with('success', 'Successfully create new course with name ' . $request->name );
 
     }
 
@@ -107,14 +106,13 @@ class CourseController extends Controller
         $this->validate($request, [
             'name'        => 'required',
             'description' => 'required',
-            'batch_no'    => 'required|in:' . implode(',', $batch_ids),
             'program'     => 'required',
         ]);
 
+        $program             = Program::find($request->program);
         $course->name        = $request->name;
         $course->description = $request->description;
-        $course->batch_id    = $request->batch_no;
-        $course->program_id  = $request->program;
+        $course->program()->associate($program);
         $course->save();
 
         return back()->with('success', 'Successfully update record');
