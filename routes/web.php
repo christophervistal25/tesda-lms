@@ -39,6 +39,7 @@ Route::prefix('admin')->group(function(){
 
 	    Route::namespace('Admin')->group(function () {
             Route::put('course/{id}/hide', 'CourseController@hide');
+            Route::get('course/design/{course}', 'CourseController@design')->name('course.design');
             Route::resource('course', 'CourseController');
             Route::get('batch/list', 'BatchController@list');
             Route::put('batch/{id}/hide', 'BatchController@hide');
@@ -47,7 +48,10 @@ Route::prefix('admin')->group(function(){
             Route::put('programs/{id}/hide', 'ProgramsController@hide');
             Route::resource('programs', 'ProgramsController');
             Route::get('instructor/list', 'InstructorController@list');
+            Route::post('instructor/assign/course/{instructor}', 'InstructorController@assignCourse');
             Route::resource('instructor', 'InstructorController');
+            Route::get('/course/create/module/{course}', 'CourseController@addModule')->name('course.add.module');
+            Route::post('/course/create/module/{course}', 'CourseController@submitModule')->name('course.submit.module');
             Route::resource('modules', 'ModulesController');
 	    });
     });

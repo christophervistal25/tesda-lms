@@ -10,6 +10,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <meta name="author" content="">
+  @stack('meta-data')
 
   <title>TESDA TANDAG LMS |  @yield('title') </title>
 
@@ -96,23 +97,12 @@
         Addons
       </div>
 
-      <!-- Nav Item - Pages Collapse Menu -->
       <li class="nav-item">
-        <a class="nav-link" href="#" data-toggle="collapse" data-target="#modulesCollapse" aria-expanded="true" aria-controls="modulesCollapse">
-          <i class="fas fa-fw fa-folder"></i>
-          <span>Modules</span>
-        </a>
-        <div id="modulesCollapse" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-          <div class="bg-white py-2 collapse-inner rounded">
-            {{-- <h6 class="collapse-header">Login Screens:<1/h6> --}}
-            <a class="collapse-item" href="{{ route('modules.index') }}">Module for course</a>
-{{--             <div class="collapse-divider"></div>
-            <h6 class="collapse-header">Other Pages:</h6>
-            <a class="collapse-item" href="404.html">404 Page</a> --}}
-            {{-- <a class="collapse-item active" href="blank.html">Blank Page</a> --}}
-          </div>
-        </div>
+        <a class="nav-link" href=" {{ route('modules.index') }}">
+            <i class="fas fa-fw fa-folder"></i>
+          <span>Modules</span></a>
       </li>
+
 
       <!-- Nav Item - Charts -->
       <li class="nav-item">

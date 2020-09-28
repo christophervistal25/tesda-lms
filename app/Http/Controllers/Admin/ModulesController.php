@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Course;
 
 class ModulesController extends Controller
 {
@@ -82,4 +83,6 @@ class ModulesController extends Controller
     {
         //
     }
+
+    
 }

@@ -19,6 +19,7 @@
 				<tr>
 					<th>Name</th>
 					<th>Description</th>
+					<th>Design</th>
 					<th>Program</th>
 					<th>Batch</th>
 					<th>Instructor</th>
@@ -31,15 +32,17 @@
 				<tr>
 					<td class="text-primary">{{ $course->name }}</td>
 					<td>{{ $course->description }}</td>
+					<td><a href="{{ route('course.design', $course) }}">Course Design</a></td>
 					<td>{{ $course->program->name }}</td>
 					<td>{{ $course->program->batch->name }} - Batch {{ $course->program->batch->batch_no }}</td>
-					<td class="font-weight-bold text-primary">
+					<td class="text-primary text-center text-capitalize">
 						@foreach($course->instructors as $instructor)
 						{{ $instructor->lastname  . ', ' . $instructor->firstname . ' ' . $instructor->middlename }}
 						@endforeach
 					</td>
 					<td class="text-center">{{ $course->created_at->diffForHumans() }}</td>
 					<td class="text-center">
+						<a href="{{ route('course.add.module', $course) }}" title="Add module this" class="btn btn-success btn-sm"> <i class="fas fa-plus"></i> </a>
 						<a href="{{ route('course.edit', $course) }}" title="Edit this course" class="btn btn-primary btn-sm"> <i class="fas fa-edit"></i> </a>
 						<a data-src="{{ $course->id }}" title="Delete this course" class="text-white btn btn-danger btn-sm btn-delete-course"> <i class="fas fa-trash"></i> </a>
 					</td>

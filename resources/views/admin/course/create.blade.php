@@ -37,11 +37,36 @@
                                 </div>
                             </div>
 
+                            <div class="form-group">
+                              <label>Course Design</label>
+                              <textarea name="design" id="course_design" class="form-control @error('design') is-invalid @enderror">{{ old('design') }}</textarea>
+                              @error('design')
+                              <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                              </span>
+                              @enderror
+                            </div>
+
                             <div class="form-group row">
                             	<label for="description" class="col-md-auto  text-md-right">Course Description</label>
                             	<div class="col-md-12">
                             		<textarea name="description" class="form-control @error('description') is-invalid @enderror" id="description" cols="30" rows="10">{{ old('description') }}</textarea>
                             	</div>
+                            </div>
+
+
+                            <div class="form-group row">
+                                <label for="email" class="col-md-auto  text-md-right">{{ __('Course Duration') }}</label>
+
+                                <div class="col-md-12">
+                                    <input id="duration" type="number" class="form-control @error('duration') is-invalid @enderror" name="duration" value="{{ old('duration') }}" required autocomplete="duration" autofocus>
+
+                                    @error('duration')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                    @enderror
+                                </div>
                             </div>
 
                             <div class="form-group">
@@ -50,6 +75,39 @@
                                  <select class="form-control selectpicker" data-live-search="true" name="program">
                                     @foreach($programs as $program)
                                       <option value="{{ $program->id }}" data-tokens="{{ $program->name }}">{{ $program->name }}</option>
+                                    @endforeach
+                                </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="" class="col-md-auto  text-md-right">Pre-requisites</label>
+                                <div class="col-md-12">
+                                 <select class="form-control selectpicker" data-live-search="true" name="pre_requisites[]" multiple>
+                                    @empty($courses)
+                                      <option value="">N/A</option>
+                                    @endempty
+                                    @foreach($courses as $course)
+                                      <option value="{{ $course->id }}" data-tokens="{{ $course->name }}">{{ $course->name }}</option>
+                                    @endforeach
+                                </select>
+                                </div>
+                            </div>
+
+                            <hr>
+                            <span class="text-primary">You can easily add a instructor for this course (Leave N/A if you don't want to assign a instructor)</span>
+
+
+                             <div class="form-group">
+                                <label for="" class="col-md-auto  text-md-right">Instructors</label>
+                                <div class="col-md-12">
+                                 <select class="form-control selectpicker" data-live-search="true" name="instructor">
+                                    @empty($instructors)
+                                      <option value="">N/A</option>
+                                    @endempty
+                                    @foreach($instructors as $instructor)
+                                      <option class="text-capitalize" value="{{ $instructor->id }}" data-tokens="{{ $instructor->lastname . ', ' . $instructor->firstname . ' ' . $instructor->middlename }}">{{ $instructor->lastname . ', ' . $instructor->firstname . ' ' . $instructor->middlename }}</option>
+
                                     @endforeach
                                 </select>
                                 </div>
@@ -71,5 +129,7 @@
 @push('page-scripts')
 <!-- Latest compiled and minified JavaScript -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
+  <script src="//cdn.ckeditor.com/4.14.1/standard/ckeditor.js"></script>
+  <script>CKEDITOR.replace( 'course_design' );</script>
 @endpush
 @endsection
