@@ -1,5 +1,5 @@
 @extends('layouts.admin.app')
-@section('title', 'Add module for ' . $course->name)
+@section('title', 'Edit module ' . $module->title)
 @section('content')
 @prepend('page-css')
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
@@ -123,13 +123,6 @@
 </div>
 @endif
 
-@if(is_null($course->overview))
-<div class="card bg-danger text-white shadow mb-2">
-  <div class="card-body">
-    <a class="text-white" href=" {{ route('create.course.overview', $course) }}">Please create a course overview first.</a>
-  </div>
-</div>
-@endif
 
 <div class="card  mb-4">
   <!-- Card Header - Dropdown -->
@@ -149,14 +142,14 @@
   </div>
   <!-- Card Body -->
   <div class="card-body">
-    <form method="POST" action="{{ route('course.submit.module', $course) }}">
+    <form method="POST" action="{{ route('course.update.module', $module) }}">
       <div class="card-body">
         @csrf
-
+        @method("PUT")
         <div class="form-group row">
           <label for="email" class="col-md-auto  text-md-right">{{ __('Module Title') }}</label>
           <div class="col-md-12">
-            <input id="title" type="text" class="form-control @error('title') is-invalid @enderror" name="title" value="{{ old('title') }}" required autocomplete="title" autofocus>
+            <input id="title" type="text" class="form-control @error('title') is-invalid @enderror" name="title" value="{{ old('title') ?? $module->title }}" required autocomplete="title" autofocus>
             @error('title')
             <span class="invalid-feedback" role="alert">
               <strong>{{ $message }}</strong>
@@ -167,7 +160,7 @@
 
         <div class="form-group">
           <label>Module body</label>
-          <textarea name="body" id="module_body" class="form-control @error('body') is-invalid @enderror">{{ old('body') }}</textarea>
+          <textarea name="body" id="module_body" class="form-control @error('body') is-invalid @enderror">{{ old('body') ?? $module->body }}</textarea>
           @error('body')
           <span class="invalid-feedback" role="alert">
             <strong>{{ $message }}</strong>
@@ -175,13 +168,100 @@
           @enderror
         </div>
 
-        <div id="dynamic-activity-container"></div>
+        <div id="dynamic-activity-container">
+              @foreach($module->activities as $activity)
+                @if($activity->downloadable == 0)
+                {{-- NORMAL ACTIVITY --}}
+                    <div class="card shadow mb-2" id="activity-${activityIndex}">
+                      <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                        <h6 class="m-0 font-weight-bold text-primary">Activity {{ $activity->activity_no }}</h6>
+                        <div class="dropdown no-arrow">
+                          <a class="text-danger pointer-cursor"  role="button" onclick="deleteActivity({{Str::after($activity->activity_no, '.')}})">
+                            <i class="fas fa-trash"></i>
+                          </a>
+                        </div>
+                      </div>
+                      <div class="card-body">
+                        <div class="form-group row">
+                          <label class="col-md-auto  text-md-right">Activity No.</label>
+                          <div class="col-md-12">
+                            <input type="text" class="form-control activity-index" readonly name="activity_no[]" value="{{ $activity->activity_no }}" required>
+                          </div>
+                        </div>
+                        <div class="form-group row">
+                          <label class="col-md-auto  text-md-right">Activity Name</label>
+                          <div class="col-md-12">
+                            <input type="text" class="form-control" name="activity_name[]" value="{{ $activity->title }}" required  >
+                          </div>
+                        </div>
+                        <div class="form-group row">
+                          <label class="col-md-auto  text-md-right">Activity Instruction</label>
+                          <div class="col-md-12">
+                            <input type="text" class="form-control" name="activity_instructions[]" value="{{ $activity->instructions }}" required  >
+                          </div>
+                        </div>
+                        <div class="form-group row">
+                          <label class="col-md-auto  text-md-right">Activity Content</label>
+                          <div class="col-md-12">
+                            <textarea name="activity_content[]" class="current-activity-content" id="activity_content-{{Str::after($activity->activity_no, '.')}}" cols="30" rows="10">{{ $activity->body }}</textarea>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  @else
+                  {{-- DOWNLOADABLE ACTIVITY --}}
+                      <div class="card shadow mb-2" id="activity-${activityIndex}">
+                        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                          <h6 class="m-0 font-weight-bold text-primary">Downloadable Activity {{$activity->activity_no }}</h6>
+                          <div class="dropdown no-arrow">
+                            <a class="text-danger pointer-cursor" role="button" onclick="deleteActivity({{Str::after($activity->activity_no, '.')}})">
+                              <i class="fas fa-trash"></i>
+                            </a>
+                          </div>
+                        </div>
+
+                        <div class="card-body">
+
+                            <div class="form-group row">
+                            <label class="col-md-auto  text-md-right">Activity No.</label>
+                            <div class="col-md-12">
+                              <input type="text" class="form-control activity-index" readonly name="downloadable_activity_no[]" value="{{ $activity->activity_no }}" required>
+                            </div>
+                          </div>
+
+
+                          <div class="form-group row">
+                            <label class="col-md-auto  text-md-right">Activity Name</label>
+                            <div class="col-md-12">
+                              <input type="text" class="form-control" name="downloadable_activity_name[]" value="{{ $activity->title }}" required  >
+                            </div>
+                          </div>
+
+                          <div class="form-group row">
+                            <label class="col-md-auto  text-md-right">Activity Instruction</label>
+                            <div class="col-md-12">
+                              <input type="text" class="form-control" name="downloadable_activity_instructions[]" value="{{ $activity->instructions }}" required  >
+                            </div>
+                          </div>
+
+                           <div class="form-group row">
+                            <label class="col-md-auto  text-md-right">Activity Content</label>
+                            <div class="col-md-12">
+                              <textarea name="downloadable_activity_content[]" class="current-activity-content" id="activity_content-{{Str::after($activity->activity_no, '.')}}" cols="30" rows="10">{!! $activity->body !!}</textarea>
+                            </div>
+                          </div>
+
+                        </div>
+                      </div>
+                @endif
+              @endforeach
+        </div>
 
 
         <div class="clearfix"></div>
         <div class="form-group mb-0 text-right">
           <div class="col-md-auto">
-            <button type="submit" class="btn btn-primary">{{ __('Create') }}</button>
+            <button type="submit" class="btn btn-success">{{ __('Update') }}</button>
           </div>
         </div>
       </div>
@@ -254,6 +334,14 @@
 
 
 </script>
+
+{{-- FOR EDIT ACTIVITY FORM --}}
+<script>
+    
+</script>
+
+
+{{-- FOR ADDING NEW ACTIVITY FORM --}}
 <script>
   let moduleBodyEditor = CKEDITOR.replace( 'module_body' );
     moduleBodyEditor.addCommand("addFile", {
@@ -283,6 +371,41 @@
        command: 'courseDesign',
        toolbar: 'insert',
        icon: 'http://lms.mnpvi-tesda.com/theme/image.php/moove/theme/1598161402/favicon'
+    });
+
+    $(".current-activity-content").each(function (index, element) {
+      let elementId = $(element).attr('id')
+
+      let moduleBodyEditor = CKEDITOR.replace( elementId );
+      moduleBodyEditor.addCommand("addFile", {
+          exec: function(edt) {
+            selectedActivityContent = edt;
+            $('#addFileInActivityModal').modal('toggle');
+          }
+      });
+
+
+      moduleBodyEditor.ui.addButton('AddFileButton', {
+          label: "Add Downloable file",
+          command: 'addFile',
+          toolbar: 'insert',
+          icon: 'https://avatars1.githubusercontent.com/u/5500999?v=2&s=16'
+      });
+
+
+      moduleBodyEditor.addCommand("courseDesign", {
+         exec: function(edt) {
+             edt.insertHtml(`<a href="/admin/course/design/${courseId}">Course Design</a>`);
+         }
+      });
+
+      moduleBodyEditor.ui.addButton('CourseDesignButton', {
+         label: "Add Course Design",
+         command: 'courseDesign',
+         toolbar: 'insert',
+         icon: 'http://lms.mnpvi-tesda.com/theme/image.php/moove/theme/1598161402/favicon'
+      });
+
     });
 
 
@@ -350,9 +473,9 @@
 {{-- CUSTOM CS FOR DYNAMIC ADD ACTIVITY --}}
 <script>
   let activityModuleNo = "{{ $moduleNo }}";
-  let activityIndex = 0;
+  let activityIndex = {{ $subCount }};
   let selectedActivityContent = "";
-  let courseId = "{{ $course->id }}";
+  let courseId = 0;
 
 
 
@@ -423,7 +546,7 @@
              <div class="form-group row">
               <label class="col-md-auto  text-md-right">Activity Content</label>
               <div class="col-md-12">
-                <textarea name="activity_content[]" id="activity_content-${activityIndex}" cols="30" rows="10"></textarea>
+                <textarea name="activity_content[]" class="" id="activity_content-${activityIndex}" cols="30" rows="10"></textarea>
               </div>
             </div>
 
@@ -487,26 +610,6 @@
   });
 
 
-  // function applyCKEditorForCourseOverview()  {
-  //     courseOverviewEditor = CKEDITOR.replace( `activity_content-overview` );
-  //     courseOverviewEditor.setData(`
-  //           <p>Please review the course design.</p>
-  //           <a href="/admin/course/design/${courseId}">Course Design</a>
-  //     `);
-  //         courseOverviewEditor.addCommand("addFile", {
-  //             exec: function(edt) {
-  //               selectedActivityContent = edt;
-  //               $('#addFileInActivityModal').modal('toggle');
-  //             }
-  //         });
-
-  //         courseOverviewEditor.ui.addButton('SuperButton', {
-  //             label: "Add downloable",
-  //             command: 'addFile',
-  //             toolbar: 'insert',
-  //             icon: 'https://avatars1.githubusercontent.com/u/5500999?v=2&s=16'
-  //         });
-  // }
 
   function applyCKEditorDynamically() {
     editor = CKEDITOR.replace( `activity_content-${activityIndex}` );

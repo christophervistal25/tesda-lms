@@ -107,7 +107,7 @@
                              <div class="form-group">
                                 <label for="" class="col-md-auto  text-md-right">Instructors</label>
                                 <div class="col-md-12">
-                                 <select class="form-control selectpicker instructor-selectpicker text-capitalize" multiple data-live-search="true" name="instructor">
+                                 <select class="form-control selectpicker instructor-selectpicker text-capitalize" multiple data-live-search="true" name="instructor[]">
                                     @empty($instructors)
                                       <option value="">N/A</option>
                                     @endempty

@@ -20,6 +20,7 @@ class CreateActivitiesTable extends Migration
             $table->string('title');
             $table->text('body');
             $table->string('instructions');
+            $table->tinyInteger('downloadable');
             $table->timestamps();
         });
     }

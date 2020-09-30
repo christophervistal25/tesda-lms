@@ -50,7 +50,7 @@
                             <div class="form-group row">
                             	<label for="description" class="col-md-auto  text-md-right">Course Description</label>
                             	<div class="col-md-12">
-                            		<textarea name="description" class="form-control @error('description') is-invalid @enderror" id="description" cols="30" rows="10">{{ old('description') }}</textarea>
+                            		<textarea name="description" class="form-control @error('description') is-invalid @enderror" id="description" cols="30" rows="3">{{ old('description') }}</textarea>
                             	</div>
                             </div>
 

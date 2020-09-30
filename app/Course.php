@@ -28,4 +28,9 @@ class Course extends Model
     {
     	return $this->belongsToMany('App\Instructor')->withTimestamps();
     }
+
+    public function overview()
+    {
+        return $this->hasOne('App\Overview');
+    }
 }

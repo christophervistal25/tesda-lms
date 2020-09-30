@@ -42,7 +42,8 @@
 					</td>
 					<td class="text-center">{{ $course->created_at->diffForHumans() }}</td>
 					<td class="text-center">
-						<a href="{{ route('course.add.module', $course) }}" title="Add module this" class="btn btn-success btn-sm"> <i class="fas fa-plus"></i> </a>
+						<a href="{{ route('course.add.module', $course) }}" title="Add module" class="btn btn-success btn-sm"> <i class="fas fa-plus"></i> </a>
+						<a href="{{ route('course.view.module', $course) }}" title="Edit module" class="btn btn-info btn-sm"> <i class="fas fa-eye"></i> </a>
 						<a href="{{ route('course.edit', $course) }}" title="Edit this course" class="btn btn-primary btn-sm"> <i class="fas fa-edit"></i> </a>
 						<a data-src="{{ $course->id }}" title="Delete this course" class="text-white btn btn-danger btn-sm btn-delete-course"> <i class="fas fa-trash"></i> </a>
 					</td>
