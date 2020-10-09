@@ -8,6 +8,8 @@ use App\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class RegisterController extends Controller
 {
@@ -41,6 +43,9 @@ class RegisterController extends Controller
         $this->middleware('guest');
     }
 
+
+
+
     /**
      * Get a validator for an incoming registration request.
      *
@@ -50,11 +55,26 @@ class RegisterController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+                'first_name' => ['required', 'string', 'max:255'],
+                'surname'    => ['required', 'string', 'max:255'],
+                'username'   => ['required', 'string', 'max:255', 'unique:users'],
+                'email'      => ['required', 'string', 'email', 'max:255', 'unique:users', 'same:confirm_email'],
+                'password'   => [
+                    'required',
+                    'string',
+                    'min:8',
+                    'max:16',
+                    'regex:/[a-z]/',      // must contain at least one lowercase letter
+                    'regex:/[A-Z]/',      // must contain at least one uppercase letter
+                    'regex:/[0-9]/',      // must contain at least one digit
+                    'regex:/[@$!%*#?&]/', // must contain a special character
+                ],
+                'city_town'  => ['required', 'string'],
+                'country'    => ['required', 'string', 'in:' . implode(',', array_keys(config('country.list')))],
         ]);
     }
+    
+ 
 
     /**
      * Create a new user instance after a valid registration.
@@ -65,9 +85,14 @@ class RegisterController extends Controller
     protected function create(array $data)
     {
         return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
+            'username' => $data['username'],
+            'name'      => $data['first_name'] . ' ' . $data['surname'],
+            'email'     => $data['email'],
+            'password'  => Hash::make($data['password']),
+            'firstname' => $data['first_name'],
+            'surname'   => $data['surname'],
+            'city_town' => $data['city_town'],
+            'country'   => $data['country'],
         ]);
     }
 }

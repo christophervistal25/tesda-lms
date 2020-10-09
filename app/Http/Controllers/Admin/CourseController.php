@@ -4,16 +4,13 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use App\Course;
 use App\Batch;
 use App\Program;
 use App\Instructor;
 use App\Prerequisite;
-use App\Module;
-use App\Activity;
-use App\Overview;
-use App\File as OverviewFile;
+
+
 
 
 class CourseController extends Controller
@@ -66,13 +63,20 @@ class CourseController extends Controller
             'program'     => 'required'
         ]);
 
+        if ($request->hasFile('image')) {
+            $image_name = $request->file('image')->getRealPath();
+            \Cloudder::upload($image_name, null);
+            $image = \Cloudder::show(\Cloudder::getPublicId());
+        }
 
         $program = Program::find($request->program);
         $course = new Course;
         $course->name = $request->name;
+        $course->acronym = $request->acronym;
         $course->design = $request->design;
         $course->description = $request->description;
         $course->duration = $request->duration;
+        $course->image =  $image ?? '';
         $course->program()->associate($program);
         $course->save();
 
@@ -137,13 +141,21 @@ class CourseController extends Controller
             'name'        => 'required',
             'description' => 'required',
             'program'     => 'required',
-                    ]);
+        ]);
+
+        if ($request->hasFile('image')) {
+            $image_name = $request->file('image')->getRealPath();
+            \Cloudder::upload($image_name, null);
+            $image = \Cloudder::show(\Cloudder::getPublicId());
+        }
 
         $program             = Program::find($request->program);
         $course->name        = $request->name;
+        $course->acronym     = $request->acronym;
         $course->description = $request->description;
         $course->design      = $request->design;
         $course->duration    = $request->duration;
+        $course->image       = $image ?? $course->image;
         $course->program()->associate($program);
         $course->save();
 
@@ -190,110 +202,12 @@ class CourseController extends Controller
         
     }
 
-    public function addModule(Request $request, $course)
-    {
-        $course = Course::with('modules')->find($course);
-        $moduleNo = $course->modules->count() + 1;
-        return view('admin.course.modules.create', compact('course', 'moduleNo'));
-    }
-
-    public function viewModule(Course $course)
-    {
-        return view('admin.course.modules.view', compact('course'));
-    }
-
-    public function editModule($moduleId)
-    {
-        $module = Module::find($moduleId);
-        list($moduleNo, $subCount) = explode('.', $module->activities->last()->activity_no);
-        return view('admin.course.modules.edit', compact('module', 'moduleNo', 'subCount'));
-    }
-
-    public function updateModule(Request $request, Module $module)
-    {
-        $module->title = $request->title;
-        $module->body = $request->body;
-        $activities = [];
-
-        if (isset($request->activity_no)) {
-            $module->activities()->where('downloadable', 0)->delete();
-            foreach ($request->activity_no as $key => $no) {
-                $acitivities[] = Activity::create([
-                    'module_id'    => $module->id,
-                    'activity_no'  => $no,
-                    'title'        => $request->activity_name[$key],
-                    'instructions' => $request->activity_instructions[$key],
-                    'body'         => $request->activity_content[$key],
-                    'downloadable' => 0,
-                ]);
-            }
-            
-            $module->activities()->saveMany($activities);
-        }
-
-        if (isset($request->downloadable_activity_no)) {
-            $module->activities()->where('downloadable', 1)->delete();
-            foreach ($request->downloadable_activity_no as $key => $no) {
-                $acitivities[] = Activity::create([
-                    'module_id'    => $module->id,
-                    'activity_no'  => $no,
-                    'title'        => $request->downloadable_activity_name[$key],
-                    'instructions' => $request->downloadable_activity_instructions[$key],
-                    'body'         => $request->downloadable_activity_content[$key],
-                    'downloadable' => 1,
-                ]);
-            }
-            $module->activities()->saveMany($activities);
-        }
-
-        return back()->with('success', 'Successfully update ' . $module->title . ' module.');
-    }
-
-    public function submitModule(Request $request, Course $course)
-    {
-        $module = Module::create([
-            'title'     => $request->title,
-            'body'      => $request->body,
-            'course_id' => $course->id,
-        ]);
-
-        $activities = [];
-        if (isset($request->activity_no)) {
-            foreach ($request->activity_no as $key => $no) {
-                $acitivities[] = Activity::create([
-                    'module_id'    => $module->id,
-                    'activity_no'  => $no,
-                    'title'        => $request->activity_name[$key],
-                    'instructions' => $request->activity_instructions[$key],
-                    'body'         => $request->activity_content[$key],
-                    'downloadable' => 0,
-                ]);
-            }
-            
-            $module->activities()->saveMany($activities);
-        }
-
-        if (isset($request->downloadable_activity_no)) {
-            foreach ($request->downloadable_activity_no as $key => $no) {
-                $acitivities[] = Activity::create([
-                    'module_id'    => $module->id,
-                    'activity_no'  => $no,
-                    'title'        => $request->downloadable_activity_name[$key],
-                    'instructions' => $request->downloadable_activity_instructions[$key],
-                    'body'         => $request->downloadable_activity_content[$key],
-                    'downloadable' => 1,
-                ]);
-            }
-            $module->activities()->saveMany($activities);
-        }
-        
-
-        return back()->with('success', 'Successfully add new module for ' . $course->name . ' course ');
-    }
-
+   
     public function design(Course $course, bool $forceview = false)
     {
         $variables = ['course', 'forceview'];
+
+        $courseModuleFirstActivity = $course->modules->first()->activities->where('activity_no', '1.1')->first();
         
         if ($forceview) {
             $firstFile = $course->overview->files->first();
@@ -301,6 +215,6 @@ class CourseController extends Controller
         }
 
         
-        return view('admin.course.design', compact($variables));
+        return view('admin.course.design', compact($variables, 'courseModuleFirstActivity'));
     }
 }

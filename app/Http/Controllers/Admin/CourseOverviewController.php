@@ -5,75 +5,87 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Course;
-use App\Overview;
-use App\File as OverviewFile;
+use App\File as ModuleFile;
 use Illuminate\Support\Str;
+use App\Module;
+
 
 class CourseOverviewController extends Controller
 {
-        public function create(Course $course)
+
+   public function create(Course $course)
 	{
 		return view('admin.course.overview.create', compact('course'));
 	}
 
  	public function store(Request $request, Course $course)
  	{
+        $module = Module::create([
+            'title'       => $request->title,
+            'body'        => $request->body,
+            'course_id'   => $course->id,
+            'is_overview' => 1,
+        ]);
 
-        	$overview = Overview::create([
-        		'body' => $request->body,
-        		'course_id' => $course->id
-        	]);
+        $URL_INDEX   = 1;
+        $TITLE_INDEX = 2;
+        $BODY_INDEX  = 0;
+        $url = preg_match_all('/<a href="(.+)">(.+)<\/a>/', $request->body, $match);
 
+        $files = [];
 
-                $URL_INDEX = 1;
-                $url = preg_match_all('/<a href="(.+)">/', $request->body, $match);
-                foreach ($match[$URL_INDEX] as $url) {
-                    $urlChunks = explode('/', $url);
-                	if (Str::contains($url, 'cloudinary')) {
-                		OverviewFile::create([
-                            'title' => end($urlChunks),
-        	                'link' => $url,
-        	                'overview_id' => $overview->id,
-        	            ]);	
-                	}
-                    
-                }
-
-
- 		     return back()->with('success', 'Successfully add course overview for ' . $course->name);
- 	    }
-
-        public function edit(Course $course)
-        {
-                return view('admin.course.overview.edit', compact('course'));
+        foreach ($match[$URL_INDEX] as $key => $file) {
+           $type = Str::contains($file, ['https', 'http']) ? 'file' : 'page';
+           $files[] = new ModuleFile([
+                'title' => $match[$TITLE_INDEX][$key],
+                'body'  => $match[$BODY_INDEX][$key],
+                'link'  => $file,
+                'type' =>  $type,
+            ]);
         }
 
-        public function update(Request $request, Course $course)
-        {
-           
+        $module->files()->saveMany($files);
 
-            $overview = $course->overview;
-            $overview->body = $request->body;
-            $overview->save();
+ 		return back()->with('success', 'Successfully add course overview for ' . $course->name);
+ 	}
+
+    public function edit(Course $course)
+    {
+        $overview = $course->modules->where('is_overview', 1)->first();
+        return view('admin.course.overview.edit', compact('course', 'overview'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $module = Module::find($id);
+        $module->title = $request->title;
+        $module->body = $request->body;
+
+        $URL_INDEX   = 1;
+        $TITLE_INDEX = 2;
+        $BODY_INDEX  = 0;
+        $url = preg_match_all('/<a href="(.+)">(.+)<\/a>/', $request->body, $match);
+
+        $files = [];
+
+        $module->files()->delete();
         
-            // Remove all files of the overview
-            $course->overview->files()->delete();
-            $URL_INDEX = 1;
-            $url = preg_match_all('/<a href="(.+)">/', $request->body, $match);
-
-            foreach ($match[$URL_INDEX] as $url) {
-                $urlChunks = explode('/', $url);
-                    if (Str::contains($url, 'cloudinary')) {
-                        OverviewFile::create([
-                            'title' => end($urlChunks),
-                            'link' => $url,
-                            'overview_id' => $overview->id,
-                    ]); 
-                }
-            }
-           
-           return back()->with('success', 'Succesfully update course overview of ' . $course->name);
+        foreach ($match[$URL_INDEX] as $key => $file) {
+           $type = Str::contains($file, ['https', 'http']) ? 'file' : 'page';
+           $files[] = new ModuleFile([
+                'title' => $match[$TITLE_INDEX][$key],
+                'body'  => $match[$BODY_INDEX][$key],
+                'link'  => $file,
+                'type' =>  $type,
+            ]);
         }
+
+        $module->files()->saveMany($files);
+
+        $module->save();
+
+       return back()->with('success', 'Succesfully update course overview');
+    }
 
     public function show($course, $fileId = null)
     {

@@ -20,7 +20,6 @@
 			<p class="text-dark">Last modified: {{ $course->updated_at->format('l, j  F Y, h:i A') }}</p>
 			</div>
 		
-			
 
 			<div class="clearfix"></div>
 			<hr>
@@ -35,17 +34,30 @@
 					</div>
 
 					<div class="col-md-4 mt-2">
-						<select name="" id="" class="form-control rounded-0 text-dark">
-							<option>Jump to...</option>
+						<option selected disabled>Jump to...</option>
+						<select id="jumpToOptions" class="form-control rounded-0 text-dark">
+							<option value="">Announcement & Forums</option>
+							<option data-link="/admin/course/design/{{ $course->id}}/1">Course Design</option>
+							@foreach($course->overview->files as $file)
+								<option data-link="/admin/course/{{$course->id}}/overview/show/{{$file->id}}">{{ $file->title }}</option>
+							@endforeach
+							@foreach($course->modules as $module)
+								@foreach($module->activities as $activity)
+										<option value="{{ $activity->id }}" data-link="/admin/activity/view/{{$activity->id}}">{{ $activity->activity_no }} {{ $activity->title }}</option>
+								@endforeach
+							@endforeach
 						</select>
-						<div class="pagination">
-					</div>
 					</div>
 
 					<div class="col-md-4 text-right">
 						<span class="text-dark mr-3">NEXT ACTIVITY</span>
 						<br>
+						@if(!is_null($firstFile))
+						{{-- THERE IS FILE ATTACH TO COURSE OVERVIEW --}}
 						<a href="{{ route('course.overview.show.file', [$course->id, $firstFile->id]) }}" class="btn btn-link" title="{{ $firstFile->title }}"> {{ $firstFile->title }} ►</a>
+						@else
+						<a href="{{ route('activity.view', [$courseModuleFirstActivity->id]) }}" class="btn btn-link" title="{{ $courseModuleFirstActivity->title }}">{{ $courseModuleFirstActivity->activity_no }} {{ $courseModuleFirstActivity->title }} ►</a>
+						@endif
 					</div>
 
 				</div>
@@ -57,5 +69,11 @@
 
 
 @push('page-scripts')
+<script>
+	$('#jumpToOptions').change(function (e) {
+		let selectedItemLink = $(this).children("option:selected").attr('data-link');
+		location.href = selectedItemLink;
+	});
+</script>
 @endpush
 @endsection

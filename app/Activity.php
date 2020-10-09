@@ -8,13 +8,17 @@ class Activity extends Model
 {
 	protected $fillable = ['module_id', 'activity_no', 'title', 'body', 'instructions', 'downloadable'];
 
-    public function files()
+ 	
+ 	public function files()
     {
-    	return $this->hasMany('App\File');
-    }
+    	return $this->morphMany('App\File', 'filelable');
+    }  
 
     public function modules()
     {
     	return $this->hasMany('App\Module' , 'id', 'module_id');
     }
+
+ 
+
 }

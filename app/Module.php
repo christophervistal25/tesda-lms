@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Module extends Model
 {
-    protected $fillable = ['title', 'body', 'course_id'];
+    protected $fillable = ['title', 'body', 'course_id', 'is_overview'];
 
     public function activities()
     {
@@ -16,5 +16,10 @@ class Module extends Model
     public function course()
     {
     	return $this->belongsTo('App\Course');
+    }
+
+    public function files()
+    {
+    	return $this->morphMany('App\File', 'filelable');
     }
 }

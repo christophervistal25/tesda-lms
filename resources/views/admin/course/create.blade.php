@@ -20,7 +20,7 @@
 	
 	<div class="card-body">
 
-		<form method="POST" action="{{ route('course.store') }}">
+		<form method="POST" action="{{ route('course.store') }}"  enctype="multipart/form-data">
                             @csrf
 
                             <div class="form-group row">
@@ -36,6 +36,21 @@
                                     @enderror
                                 </div>
                             </div>
+
+                            <div class="form-group row">
+                                <label class="col-md-auto  text-md-right">{{ __('Course acronym') }}</label>
+
+                                <div class="col-md-12">
+                                    <input id="name" type="text" class="form-control @error('acronym') is-invalid @enderror" name="acronym" value="{{ old('acronym') }}" required autocomplete="acronym" autofocus>
+
+                                    @error('acronym')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                    @enderror
+                                </div>
+                            </div>
+
 
                             <div class="form-group">
                               <label>Course Design</label>
@@ -93,6 +108,14 @@
                                 </select>
                                 </div>
                             </div>
+
+                           <div class="form-group row pr-3 pl-3">
+                            <label>Course Image</label>
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" name="image">
+                                <label class="custom-file-label" for="validatedCustomFile">Choose file...</label>
+                              </div>    
+                          </div>
 
                             <hr>
                             <span class="text-primary">You can easily add a instructor for this course (Leave N/A if you don't want to assign a instructor)</span>

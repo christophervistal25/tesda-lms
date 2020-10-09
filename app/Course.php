@@ -6,8 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Course extends Model
 {
-    protected $fillable = ['name', 'description', 'design', 'active', 'duration'];
+    protected $fillable = ['name', 'acronym', 'description', 'design', 'image', 'active', 'duration'];
 
+
+    public function enroll()
+    {
+        return $this->hasOne('App\Models\Student\EnrollCourse');
+    }
 
     public function program()
     {
@@ -32,5 +37,10 @@ class Course extends Model
     public function overview()
     {
         return $this->hasOne('App\Overview');
+    }
+
+    public function discussions()
+    {
+        return $this->hasMany('App\Post');
     }
 }

@@ -20,7 +20,7 @@
 	
 	<div class="card-body">
 
-		<form method="POST" action="{{ route('course.update', $course) }}">
+		<form method="POST" action="{{ route('course.update', $course) }}" enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
 
@@ -31,6 +31,20 @@
                                     <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') ?? $course->name }}" required autocomplete="name" autofocus>
 
                                     @error('name')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-md-auto  text-md-right">{{ __('Course acronym') }}</label>
+
+                                <div class="col-md-12">
+                                    <input id="name" type="text" class="form-control @error('acronym') is-invalid @enderror" name="acronym" value="{{ old('acronym') ?? $course->acronym }}" required autocomplete="acronym" autofocus>
+
+                                    @error('acronym')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
@@ -99,6 +113,16 @@
                                 </select>
                                 </div>
                             </div>
+
+
+                           <div class="form-group row pr-3 pl-3">
+                            <label>Course Image <span class="text-primary">(Attach new image if you want to change the course thumbnail)</span></label>
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" name="image">
+                                <label class="custom-file-label" for="validatedCustomFile">Choose file...</label>
+                              </div>    
+                          </div>
+                           <img src="{{ $course->image }}" class="img-thumbnail" alt="Course image">
 
                             <hr>
                             <span class="text-primary">You can easily add a instructor for this course (Leave N/A if you don't want to assign a instructor)</span>

@@ -12,6 +12,13 @@
 </div>
 @endif
 
+@if(is_null($course))
+<div class="card bg-danger text-white shadow mb-2">
+  <div class="card-body">
+    Before adding a module you should create course overview first.
+  </div>
+</div>
+@endif
 
 <div class="card mb-4">
   <!-- Card Header - Dropdown -->
@@ -22,6 +29,16 @@
     <form method="POST" action="{{ route('create.store.overview', $course) }}">
       <div class="card-body">
         @csrf
+
+        <div class="form-group">
+          <label>Title</label>
+          <input type="text" name="title" class="form-control @error('title') is-invalid @enderror">{{ old('title') }}</textarea>
+          @error('title')
+          <span class="invalid-feedback" role="alert">
+            <strong>{{ $message }}</strong>
+          </span>
+          @enderror
+        </div>
 
         <div class="form-group">
           <label>Content</label>
@@ -74,40 +91,151 @@
 
 @push('page-scripts')
 <script src="https://cdn.ckeditor.com/4.14.1/standard/ckeditor.js"></script>
+<script src="/dropzone/dropzone.min.js"></script>
 <script>
-  let moduleBodyEditor = CKEDITOR.replace( 'module_body' );
-    moduleBodyEditor.addCommand("addFile", {
+  let moduleBodyEditor = CKEDITOR.replace( 'module_body', {   tabSpaces: 4 } );
+  
+// START OF THE COMMAND
+    moduleBodyEditor.addCommand("insertFile", {
         exec: function(edt) {
           selectedActivityContent = edt;
           $('#addFileInActivityModal').modal('toggle');
         }
     });
 
-
-    moduleBodyEditor.ui.addButton('AddFileButton', {
-        label: "Add Downloable file",
-        command: 'addFile',
-        toolbar: 'insert',
-        icon: 'https://avatars1.githubusercontent.com/u/5500999?v=2&s=16'
-    });
-
-
-    moduleBodyEditor.addCommand("courseDesign", {
+   moduleBodyEditor.addCommand("insertCourseDesign", {
        exec: function(edt) {
-           edt.insertHtml(`<a href="/admin/course/design/${courseId}">Course Design</a>`);
+           edt.insertHtml(`<a href="/student/course/design/${courseId}">Course Design</a>`);
        }
     });
 
-    moduleBodyEditor.ui.addButton('CourseDesignButton', {
-       label: "Add Course Design",
-       command: 'courseDesign',
-       toolbar: 'insert',
-       icon: 'http://lms.mnpvi-tesda.com/theme/image.php/moove/theme/1598161402/favicon'
+    moduleBodyEditor.addCommand("insertDocx", {
+       exec: function(edt) {
+           edt.insertHtml(`<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1602063746/icons/docx_drgokv.png" />`);
+       }
+    });
+
+   moduleBodyEditor.addCommand("insertPDFicon", {
+       exec: function(edt) {
+           edt.insertHtml(`<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601889372/icons/pdf_icon_nfqvrw.png" />`);
+       }
+    });
+
+   moduleBodyEditor.addCommand("insertActivityIcon", {
+       exec: function(edt) {
+           edt.insertHtml(`<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601889372/icons/course_design_icon_jfq35v.png" />`);
+       }
+    });
+
+   moduleBodyEditor.addCommand("insertPPTicon", {
+       exec: function(edt) {
+           edt.insertHtml(`<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601889372/icons/powerpoint-24_moxfoh.png" />`);
+       }
+    });
+
+   moduleBodyEditor.addCommand("insertFinalExamIcon", {
+       exec: function(edt) {
+           edt.insertHtml(`<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601889372/icons/final-exam_mdj9vl.png" />`);
+       }
+    });
+
+   moduleBodyEditor.addCommand("insertCertificateIcon", {
+       exec: function(edt) {
+           edt.insertHtml(`<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601889768/icons/cerificate_hvcpx5.png" />`);
+       }
+    });
+
+   moduleBodyEditor.addCommand("insertCheckableBox", {
+       exec: function(edt) {
+           edt.insertHtml(`<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1602065137/icons/activity-icon/checkable.webp" />`);
+       }
+    });
+
+   moduleBodyEditor.addCommand("insertReadableBox", {
+       exec: function(edt) {
+           edt.insertHtml(`<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1602065138/icons/activity-icon/not-check.webp" />`);
+       }
+    });
+
+   // END OF COMMAND
+
+
+ // UI BUTTONS
+    moduleBodyEditor.ui.addButton('addDocxIcon', {
+        label: "Add PDF Icon",
+        command: 'insertDocx',
+        toolbar: 'insert',
+        icon: 'https://res.cloudinary.com/dfm6cr1l9/image/upload/v1602063746/icons/docx_drgokv.png'
+    });
+
+    moduleBodyEditor.ui.addButton('AddPDFicon', {
+        label: "Add PDF Icon",
+        command: 'insertPDFicon',
+        toolbar: 'insert',
+        icon: 'https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601889372/icons/pdf_icon_nfqvrw.png'
+    });
+
+    moduleBodyEditor.ui.addButton('addActivityIcon', {
+        label: "Add Activity Icon",
+        command: 'insertActivityIcon',
+        toolbar: 'insert',
+        icon: 'https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601888589/icons/course_design_icon_ljqk9r.png'
     });
 
 
+    moduleBodyEditor.ui.addButton('addPPTicon', {
+        label: "Add Powerpoint icon",
+        command: 'insertPPTicon',
+        toolbar: 'insert',
+        icon: 'https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601889372/icons/powerpoint-24_moxfoh.png'
+    });
+
+    moduleBodyEditor.ui.addButton('addFinalExam', {
+        label: "Add Final Exam icon",
+        command: 'insertFinalExamIcon',
+        toolbar: 'insert',
+        icon: 'https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601889372/icons/final-exam_mdj9vl.png'
+    });
+
+    moduleBodyEditor.ui.addButton('addCertificateIcon', {
+        label: "Add Certificate icon",
+        command: 'insertCertificateIcon',
+        toolbar: 'insert',
+        icon: 'https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601889768/icons/cerificate_hvcpx5.png'
+    });
+ 
+    moduleBodyEditor.ui.addButton('CourseDesignButton', {
+       label: "Add Course Design",
+       command: 'insertCourseDesign',
+       toolbar: 'insert',
+       icon: 'https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601890160/icons/mortarboard_frosqa.png'
+    });
+
+    moduleBodyEditor.ui.addButton('AddFileButton', {
+        label: "Add Downloable file",
+        command: 'insertFile',
+        toolbar: 'insert',
+        icon: 'https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601890164/icons/folder_pk0fos.png'
+    });
+
+    moduleBodyEditor.ui.addButton('addCheckable', {
+        label: "Add checkable checkbox",
+        command: 'insertCheckableBox',
+        toolbar: 'insert',
+        icon: 'https://res.cloudinary.com/dfm6cr1l9/image/upload/v1602063768/icons/checkable_jxix4b.webp'
+    });
+
+    moduleBodyEditor.ui.addButton('addReadable', {
+        label: "Add checkable checkbox",
+        command: 'insertReadableBox',
+        toolbar: 'insert',
+        icon: 'https://res.cloudinary.com/dfm6cr1l9/image/upload/v1602064353/icons/not-check_b0v5jh.webp'
+    });
+
+
+    // END OF UI BUTTONS
+
 </script>
-<script src="/dropzone/dropzone.min.js"></script>
 <script>
   let filesData = [];
   let tempFilesData = [];

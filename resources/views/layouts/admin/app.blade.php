@@ -102,9 +102,15 @@
       </div>
 
       <li class="nav-item">
-        <a class="nav-link" href=" {{ route('modules.index') }}">
+        <a class="nav-link" href="">
             <i class="fas fa-fw fa-folder"></i>
           <span>Modules</span></a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link" href="{{ route('forums.index') }}">
+          <i class="fas fa-fw fa-align-justify"></i>
+          <span>Anncmnt & Forums</span></a>
       </li>
 
 

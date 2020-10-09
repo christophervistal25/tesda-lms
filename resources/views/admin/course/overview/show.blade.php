@@ -35,11 +35,19 @@
 				</div>
 
 				<div class="col-md-4 mt-2">
-					<select name="" id="" class="form-control rounded-0 text-dark">
-						<option>Jump to...</option>
+					<select id="jumpToOptions" class="form-control rounded-0 text-dark">
+						<option selected disabled>Jump to...</option>
+						<option value="">Announcement & Forums</option>
+						<option data-link="/admin/course/design/{{ $course->id}}/1">Course Design</option>
+						@foreach($course->overview->files as $file)
+							<option data-link="/admin/course/{{$course->id}}/overview/show/{{$file->id}}">{{ $file->title }}</option>
+						@endforeach
+						@foreach($course->modules as $module)
+							@foreach($module->activities as $activity)
+									<option value="{{ $activity->id }}" data-link="/admin/activity/view/{{$activity->id}}">{{ $activity->activity_no }} {{ $activity->title }}</option>
+							@endforeach
+						@endforeach
 					</select>
-					<div class="pagination">
-				</div>
 				</div>
 
 				<div class="col-md-4 text-right">
@@ -47,7 +55,7 @@
 					<br>
 					@if(!is_null($nextFile))
 						<a href="{{ route('course.overview.show.file', [$course->id, $nextFile->id]) }}" class="btn btn-link" title="{{$nextFile->title}}"> {{ $nextFile->title }} ►</a>
-						@else
+					@else
 						<a href="{{ route('activity.view', $firstActivity->id) }}" class="btn btn-link" title="{{ $firstActivity->title}}">{{$firstActivity->activity_no}} {{$firstActivity->title}} ►</a>
 					@endif
 					
@@ -61,5 +69,11 @@
 
 
 @push('page-scripts')
+<script>
+	$('#jumpToOptions').change(function (e) {
+		let selectedItemLink = $(this).children("option:selected").attr('data-link');
+		location.href = selectedItemLink;
+	});
+</script>
 @endpush
 @endsection

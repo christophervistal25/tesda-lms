@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
         	AdminSeeder::class,
         	BatchSeeder::class,
         	ProgramSeeder::class,
+            UserSeeder::class,
         ]);
     }
 }

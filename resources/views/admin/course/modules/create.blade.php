@@ -123,13 +123,7 @@
 </div>
 @endif
 
-@if(is_null($course->overview))
-<div class="card bg-danger text-white shadow mb-2">
-  <div class="card-body">
-    <a class="text-white" href=" {{ route('create.course.overview', $course) }}">Please create a course overview first.</a>
-  </div>
-</div>
-@endif
+
 
 <div class="card  mb-4">
   <!-- Card Header - Dropdown -->
@@ -255,7 +249,7 @@
 
 </script>
 <script>
-  let moduleBodyEditor = CKEDITOR.replace( 'module_body' );
+  let moduleBodyEditor = CKEDITOR.replace( 'module_body', { tabSpaces: 4 } );
     moduleBodyEditor.addCommand("addFile", {
         exec: function(edt) {
           selectedActivityContent = edt;
@@ -509,7 +503,7 @@
   // }
 
   function applyCKEditorDynamically() {
-    editor = CKEDITOR.replace( `activity_content-${activityIndex}` );
+    editor = CKEDITOR.replace( `activity_content-${activityIndex}`, { tabSpaces: 4 } );
     editor.addCommand("addFile", {
         exec: function(edt) {
           selectedActivityContent = edt;
@@ -522,6 +516,94 @@
         command: 'addFile',
         toolbar: 'insert',
         icon: 'https://avatars1.githubusercontent.com/u/5500999?v=2&s=16'
+    });
+
+
+   editor.addCommand("courseDesign", {
+       exec: function(edt) {
+           edt.insertHtml(`<a href="/admin/course/design/${courseId}">Course Design</a>`);
+       }
+    });
+
+   editor.addCommand("pdfIcon", {
+       exec: function(edt) {
+           edt.insertHtml(`<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601889372/icons/pdf_icon_nfqvrw.png" />`);
+       }
+    });
+
+   editor.addCommand("activityIcon", {
+       exec: function(edt) {
+           edt.insertHtml(`<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601889372/icons/course_design_icon_jfq35v.png" />`);
+       }
+    });
+
+   editor.addCommand("pptIcon", {
+       exec: function(edt) {
+           edt.insertHtml(`<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601889372/icons/powerpoint-24_moxfoh.png" />`);
+       }
+    });
+
+   editor.addCommand("finalExamIcon", {
+       exec: function(edt) {
+           edt.insertHtml(`<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601889372/icons/final-exam_mdj9vl.png" />`);
+       }
+    });
+
+   editor.addCommand("cerficateIcon", {
+       exec: function(edt) {
+           edt.insertHtml(`<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601889768/icons/cerificate_hvcpx5.png" />`);
+       }
+    });
+
+
+    editor.ui.addButton('AddPDFicon', {
+        label: "Add PDF Icon",
+        command: 'pdfIcon',
+        toolbar: 'insert',
+        icon: 'https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601889372/icons/pdf_icon_nfqvrw.png'
+    });
+
+    editor.ui.addButton('addActivityIcon', {
+        label: "Add Activity Icon",
+        command: 'activityIcon',
+        toolbar: 'insert',
+        icon: 'https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601888589/icons/course_design_icon_ljqk9r.png'
+    });
+
+
+    editor.ui.addButton('addPPTicon', {
+        label: "Add Powerpoint icon",
+        command: 'pptIcon',
+        toolbar: 'insert',
+        icon: 'https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601889372/icons/powerpoint-24_moxfoh.png'
+    });
+
+    editor.ui.addButton('addFinalExam', {
+        label: "Add Final Exam icon",
+        command: 'finalExamIcon',
+        toolbar: 'insert',
+        icon: 'https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601889372/icons/final-exam_mdj9vl.png'
+    });
+
+    editor.ui.addButton('addCertificateIcon', {
+        label: "Add Certificate icon",
+        command: 'cerficateIcon',
+        toolbar: 'insert',
+        icon: 'https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601889768/icons/cerificate_hvcpx5.png'
+    });
+ 
+    editor.ui.addButton('CourseDesignButton', {
+       label: "Add Course Design",
+       command: 'courseDesign',
+       toolbar: 'insert',
+       icon: 'https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601890160/icons/mortarboard_frosqa.png'
+    });
+
+    editor.ui.addButton('AddFileButton', {
+        label: "Add Downloable file",
+        command: 'addFile',
+        toolbar: 'insert',
+        icon: 'https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601890164/icons/folder_pk0fos.png'
     });
   }
 

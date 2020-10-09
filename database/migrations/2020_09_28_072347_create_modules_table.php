@@ -18,6 +18,7 @@ class CreateModulesTable extends Migration
             $table->string('title');
             $table->text('body');
             $table->unsignedInteger('course_id');
+            $table->tinyInteger('is_overview');
             $table->timestamps();
         });
     }

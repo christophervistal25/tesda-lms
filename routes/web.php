@@ -25,7 +25,7 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 
 // Admin routes
-Route::prefix('admin')->group(function(){
+Route::prefix('admin')->group(function() {
 	Route::get('/login', 'Auth\AdminLoginController@showLoginForm')->name('admin.login');
 	Route::post('/login', 'Auth\AdminLoginController@login')->name('admin.login.submit');
 
@@ -47,7 +47,9 @@ Route::prefix('admin')->group(function(){
             Route::get('/course/{course}/overview/create', 'CourseOverviewController@create')->name('create.course.overview');
             Route::post('/course/{course}/overview/create', 'CourseOverviewController@store')->name('create.store.overview');
             Route::get('/course/{course}/overview/edit', 'CourseOverviewController@edit')->name('edit.course.overview');
-            Route::put('/course/{course}/overview/update', 'CourseOverviewController@update')->name('update.course.overview');
+
+            Route::put('/course/{id}/overview/update', 'CourseOverviewController@update')->name('update.course.overview');
+
             Route::get('/course/{course}/overview/show/{file?}', 'CourseOverviewController@show')->name('course.overview.show.file');
 
             Route::get('batch/list', 'BatchController@list');
@@ -62,16 +64,54 @@ Route::prefix('admin')->group(function(){
             Route::post('instructor/assign/course/{instructor}', 'InstructorController@assignCourse');
             Route::resource('instructor', 'InstructorController');
 
-            Route::get('/course/create/module/{course}', 'CourseController@addModule')->name('course.add.module');
-            Route::post('/course/create/module/{course}', 'CourseController@submitModule')->name('course.submit.module');
-            Route::get('/course/view/module/{course}', 'CourseController@viewModule')->name('course.view.module');
-            Route::get('/course/view/module/{module}/edit', 'CourseController@editModule')->name('course.edit.module');
-            Route::put('/course/view/module/{module}/update', 'CourseController@updateModule')->name('course.update.module');
-            Route::resource('modules', 'ModulesController');
+            Route::get('/course/create/module/{course}', 'ModulesController@create')->name('course.add.module')->middleware('create.courseoverview.first');
+            Route::post('/course/create/module/{course}', 'ModulesController@store')->name('course.submit.module');
+            Route::get('/course/view/module/{course}', 'ModulesController@view')->name('course.view.module')->middleware('create.courseoverview.first');
+            Route::get('/course/view/module/{module}/edit', 'ModulesController@edit')->name('course.edit.module');
+            Route::put('/course/view/module/{module}/update', 'ModulesController@update')->name('course.update.module');
 
-            Route::post('activity/add/file', 'ActivityController@addFile')->name('activity.add.file');
-            Route::get('activity/view/{activity}/{files?}', 'ActivityController@view')->name('activity.view');
+            Route::get('/course/forum/{forum}', 'CourseForumController@show')->name('course.forum.show');
+
+
+            //Route::resource('modules', 'ModulesController');
+
+            Route::post('activity/add/file', 'FileController@store')->name('activity.add.file');
+
+            Route::get('activity/view/{activity}', 'ActivityController@view')->name('activity.view');
+
+            Route::get('/forums', 'ForumController@index')->name('forum.index');
+            Route::resource('/forums', 'ForumController');
 	    });
+    });
+
+});
+
+// Admin routes
+Route::prefix('student')->group(function() {
+    
+
+    Route::group(['middleware' => 'auth'], function () {
+        Route::get('/site/home', 'HomeController@siteHome')->name('site.home');
+        
+
+        Route::namespace('Student')->group(function () {
+            Route::get('/enroll/{program}', 'EnrollCourseController@show')->name('enroll.course');
+            Route::post('/enroll/{program}', 'EnrollCourseController@enroll')->name('enroll.submit.course');
+            Route::resource('program', 'ProgramController');
+
+
+            Route::get('/course/view/{course}', 'CourseController@show')->name('student.course.view');
+            Route::get('activity/view/{activity}', 'ActivityController@view')->name('student.activity.view');
+            Route::get('course/design/{course}', 'CourseController@design')->name('student.course.design');
+            Route::get('/course/{course}/overview/show/{file?}', 'CourseOverviewController@show')->name('student.course.overview.show.file');
+
+
+            Route::get('calendar', 'CalendarController@index')->name('calendar.index');
+
+            Route::resource('accomplish', 'AccomplishController');
+            
+        });
+        
     });
 
 });

@@ -13,10 +13,8 @@
 		<div class="pl-4 pr-4">
 			<h2 class="text-dark">{{ $activity->activity_no }} {{ $activity->title }}</h2>
 			<br>
-			<p class="text-dark ">{{ $activity->instructions }}</p>
-				@foreach(explode("\n", str_replace(['<p>', '</p>'], '', $activity->body)) as $content)
-					<li class="ml-1 text-capitalize text-dark">{!! $content !!}</li>
-				@endforeach
+			<p class="text-dark">{{ $activity->instructions }}</p>
+				{!! $activity->body !!}
 			<br>
 			<p class="text-dark">Last modified: {{ $activity->updated_at->format('l, j  F Y, h:i A') }}</p>
 		</div>
@@ -27,19 +25,32 @@
 					<span class="text-dark ml-3">PREVIOUS ACTIVITY</span>
 					<br>
 					@if(!is_null($previousActivity))
+					{{-- THE PREVIOUS IS ACTIVITY --}}
 						<a href="{{ route('activity.view', $previousActivity->id) }}" id="prev-activity-link" class="btn btn-link" title="{{ $previousActivity->title }}">◄ {{ $previousActivity->activity_no }} {{ $previousActivity->title }}</a>
-						@else
+					@elseif(!is_null($lastPageOfCourseOverview))
+					{{-- THERE IS A FILE ATTACH IN COURSE OVERVIEW --}}
 						<a href="{{ route('course.overview.show.file', [$course->id, $lastPageOfCourseOverview->id]) }}" id="prev-activity-link" class="btn btn-link" title="{{ $lastPageOfCourseOverview->title }}">◄ {{ $lastPageOfCourseOverview->title }}</a>
+					@else 
+					{{-- THERE IS NO FILE ATTACH IN COURSE OVERVIEW --}}
+						<a href="{{ route('course.design', [$course->id, 1]) }}" id="prev-activity-link" class="btn btn-link" title="Course Design">◄ Course Design</a>
 					@endif
 					
 				</div>
 
 				<div class="col-md-4 mt-2">
-					<select name="" id="" class="form-control rounded-0 text-dark">
-						<option>Jump to...</option>
+					<select id="jumpToOptions" class="form-control rounded-0 text-dark">
+						<option selected disabled>Jump to...</option>
+						<option data-link="{{ route('course.forum.show', $course->id) }}">Announcement & Forums</option>
+						<option data-link="/admin/course/design/{{ $course->id}}/1">Course Design</option>
+						@foreach($course->overview->files as $file)
+							<option data-link="/admin/course/{{$course->id}}/overview/show/{{$file->id}}">{{ $file->title }}</option>
+						@endforeach
+						@foreach($course->modules as $module)
+							@foreach($module->activities as $activity)
+									<option value="{{ $activity->id }}" data-link="/admin/activity/view/{{$activity->id}}">{{ $activity->activity_no }} {{ $activity->title }}</option>
+							@endforeach
+						@endforeach
 					</select>
-					<div class="pagination">
-				</div>
 				</div>
 
 				<div class="col-md-4 text-right">
@@ -59,5 +70,11 @@
 
 
 @push('page-scripts')
+<script>
+	$('#jumpToOptions').change(function (e) {
+		let selectedItemLink = $(this).children("option:selected").attr('data-link');
+		location.href = selectedItemLink;
+	});
+</script>
 @endpush
 @endsection
