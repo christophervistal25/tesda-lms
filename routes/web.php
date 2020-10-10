@@ -103,11 +103,13 @@ Route::prefix('student')->group(function() {
             Route::get('/course/view/{course}', 'CourseController@show')->name('student.course.view');
             Route::get('activity/view/{activity}', 'ActivityController@view')->name('student.activity.view');
             Route::get('course/design/{course}', 'CourseController@design')->name('student.course.design');
+            Route::get('course/{course}/design', 'CourseController@getCourseDesign')->name('get.course.design');
             Route::get('/course/{course}/overview/show/{file?}', 'CourseOverviewController@show')->name('student.course.overview.show.file');
 
 
             Route::get('calendar', 'CalendarController@index')->name('calendar.index');
 
+            Route::post('/activity/accomplish', 'AccomplishController@activity');
             Route::resource('accomplish', 'AccomplishController');
             
         });

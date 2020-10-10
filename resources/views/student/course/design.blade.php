@@ -61,9 +61,11 @@
 
 @push('page-scripts')
 <script>
-	$('#jumpToOptions').change(function (e) {
-		let selectedItemLink = $(this).children("option:selected").attr('data-link');
-		location.href = selectedItemLink;
+	$(document).ready(function () {
+		$('#jumpToOptions').change(function (e) {
+			let selectedItemLink = $(this).children("option:selected").attr('data-link');
+			location.href = selectedItemLink;
+		});
 	});
 </script>
 @endpush

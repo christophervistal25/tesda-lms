@@ -2,7 +2,9 @@
 @section('title', '')
 @section('content')
 @prepend('meta-data')
-  <meta name="accomplish" content="{{ @$accomplish->data }}" >
+  <meta name="overview-files" content="{{ $overviewFiles }}">
+  <meta name="student-files-accomplish" content="{{ $studentAccomplish }}">
+  <meta name="student-activities-accomplish" content="{{ $noOfAccomplishByModule }}">
 @endprepend
 @prepend('page-css')
 {{-- <style type="text/css">
@@ -103,7 +105,7 @@
 			      	</div>
 			      	<div class="col-lg-2 mt-2">
 						<div class="progress rounded-0" style="height : 20%;">
-							<div class="progress-bar" role="progressbar" style="width: 10%;"  aria-valuemin="0" aria-valuemax="100"></div>
+							<div class="progress-bar" role="progressbar" id="progress-{{ $module->id }}" style="width: 0%;"  aria-valuemin="0" aria-valuemax="100"></div>
 						</div>
 			      	</div>	
 			      </div>	
@@ -112,52 +114,51 @@
 			    <div id="module-{{$module->id}}" class="collapse" aria-labelledby="module-{{ $module->id }}" data-parent="#accordion">
 			      <div class="card-body pl-5 pr-5 text-dark">
 			        {!! $module->body !!}
-			        <ul>
 			        	@foreach($module->activities as $activity)
-			        	@php
-			        			preg_match( '@src="([^"]+)"@' , $activity->body, $match );
-			        			$src = array_pop($match);
-			        	@endphp
 			        	@if($activity->downloadable == 0)
-			        		<div class="container row">
-			        			<div class="col-lg-auto p-0">
-			        				<img src="{{ $src }}" width="24">
-			        			</div>
-			        			<div class="col-lg-auto p-1">
-			        				<a href="{{ route('student.activity.view', $activity->id) }}"><p>{{ $activity->activity_no }} {{ $activity->title }}</p></a>
-			        			</div>
-			        		</div>
+			        		<span> 
+			        		<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601889372/icons/course_design_icon_jfq35v.png" style="width:24px">
+			        		<a class="module-activity belongs-to-{{ $module->id }}" data-downloadable="{{ $activity->downloadable }}" data-id="{{ $activity->id }}" data-module="{{ $module->id }}" href="{{ route('student.activity.view', $activity->id) }}">{{ $activity->activity_no }} {{ $activity->title }}</a>
+			        		@if(in_array($activity->id, $studentActivitiesAccomplish))
+			        			<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1602065138/icons/activity-icon/readable_check.webp" class="mt-1 float-right" style="cursor:pointer;">
 			        		@else
-							 <div class="container row">
-							 	<div class="col-lg-auto p-0">
-									<img src="{{ $src }}" width="24">
-								</div>
-								<div class="col-lg-auto p-1">
-									<a href="{{ $activity->files[0]->link }}"><p>{{ $activity->activity_no }} {{ $activity->title }}</p></a>
-								</div>
+			        			<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1602065138/icons/activity-icon/not-check.webp" class="mt-1 float-right" style="cursor:pointer;"  id="checkbox-{{$activity->id}}">
+			        		@endif
+			        		</span>
+			        		@else
+								<span>
+									<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601889372/icons/course_design_icon_jfq35v.png" style="width:24px">
+									<a class="module-activity belongs-to-{{ $module->id }}" data-downloadable="{{ $activity->downloadable }}" data-module="{{ $module->id }}" data-link="{{ $activity->files[0]->link }}" data-id="{{ $activity->id }}"  href="{{ $activity->files[0]->link }}">{{ $activity->activity_no }} {{ $activity->title }}</a>
+								@if(in_array($activity->id, $studentActivitiesAccomplish))
+				        			<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1602065138/icons/activity-icon/readable_check.webp" class="mt-1 float-right" style="cursor:pointer;">
+				        		@else
+				        			<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1602065138/icons/activity-icon/not-check.webp" class="mt-1 float-right" style="cursor:pointer;" id="checkbox-{{$activity->id}}">
+			        			@endif
+								</span>
 							 </div>
-			        	@endif
+			        		@endif
+			        		<br><br>
 			        	@endforeach	
-			        </ul>
 			      </div>
 			    </div>
 			  </div>
 			  <div class="float-right py-2 mr-3 text-dark">
-			  	Label: 1
-			  	@if($module->activities->where('downloadable', 0)->count() >= 2)
-			  		Pages: {{ $module->activities->where('downloadable', 0)->count() }} &nbsp;
-			  		@else
-			  		Page: {{ $module->activities->where('downloadable', 0)->count() }} &nbsp;
-			  	@endif
+				  	Label: 1
+				  	@if($module->activities->where('downloadable', 0)->count() >= 2)
+				  		Pages: {{ $module->activities->where('downloadable', 0)->count() }} &nbsp;
+				  		@else
+				  		Page: {{ $module->activities->where('downloadable', 0)->count() }} &nbsp;
+				  	@endif
 
-			  	@if($module->activities->where('downloadable', 1)->count() >= 2)
-			  		Files: {{ $module->activities->where('downloadable', 1)->count() }} 
-			  		@else
-			  		File: {{ $module->activities->where('downloadable', 1)->count() }} 
-			  	@endif
-			  </div>
-			  <div class="clearfix"></div>
+				  	@if($module->activities->where('downloadable', 1)->count() >= 2)
+				  		Files: {{ $module->activities->where('downloadable', 1)->count() }} 
+				  		@else
+				  		File: {{ $module->activities->where('downloadable', 1)->count() }} 
+				  	@endif
+				  </div>
+				  <div class="clearfix"></div>
 		  @endforeach
+
 
 	</div>
 </div>
@@ -172,20 +173,44 @@
 	});
 </script>
 <script>
+	let noOfOverviewFiles         = {{ $noOfOverviewFiles }};
+	let overviewId                = {{ $overview->id }};
+	let overviewCount             = 0;
+	const overviewFiles           = JSON.parse($('meta[name="overview-files"]').attr('content'));
+	const accomplishOverviewFiles = JSON.parse($('meta[name="student-files-accomplish"]').attr('content'));
+
 	// get all activity checkbox icons
-	document.querySelectorAll('img').forEach((element) => {
+	document.querySelectorAll('img').forEach((element, index) => {
 		// Align the checkbox in right
 		if (element.getAttribute('src').includes('activity-icon')) {
-			 element.classList.add('float-right');
-			 element.setAttribute('style', 'cursor:pointer;');
-			 element.classList.add('activity-status');
+			// Only interesed in overview files not in other activities.
+			 if (noOfOverviewFiles > overviewCount) {
+			 	element.classList.add('float-right');
+			 	element.setAttribute('style', 'cursor:pointer;');
+			 	element.classList.add('overview-activity-status');
+			 	element.setAttribute('data-id', overviewFiles[overviewCount].id);
+				element.setAttribute('data-tyep', 'file');
+
+				 if (accomplishOverviewFiles.includes(overviewFiles[overviewCount].id)) {
+				 	element.setAttribute('src', 'https://res.cloudinary.com/dfm6cr1l9/image/upload/v1602065137/icons/activity-icon/check.webp');
+				 	element.setAttribute('data-status', 'check');
+				 	
+				 	let progressElement = document.querySelector(`#overview-${overviewId}-progress`);
+				 	progressElement.style.width = parseFloat(progressElement.style.width) + parseFloat(100 / noOfOverviewFiles) + '%';
+				 }
+
+			 	overviewCount++;
+			 }
+			 
+			 	
 		}
 	});
 
 	document.body.addEventListener('click', (e) => {
 		let targetElement = e.target;
+
 		// Check if the element is checkbox or activity status
-		if (targetElement.getAttribute('class').includes('activity-status')) {
+		if (targetElement.tagName == 'IMG' && targetElement.getAttribute('class') != null && targetElement.getAttribute('class').includes('overview-activity-status')) {
 			// Checking if the checbox is already check
 			if (targetElement.getAttribute('data-status') === 'check') {
 				targetElement.setAttribute('src', 'https://res.cloudinary.com/dfm6cr1l9/image/upload/v1602065137/icons/activity-icon/checkable.webp');
@@ -198,89 +223,146 @@
 					targetElement.setAttribute('data-status', 'check');
 					applyProgress(targetElement);
 				}
-			}
+			} 
+		} else if(targetElement.tagName == 'A' && (targetElement.innerHTML.toLowerCase().includes('course') || targetElement.innerHTML.includes('design')) ) { // Checking if the anchor element click is course design or not.
+			e.preventDefault();
+			// get the id of the course design 
+			const [courseDesigId] = targetElement.getAttribute('href').split('/').slice(-1)
+			// get the other information of course design.
+
+			$.ajax({
+				url : `/student/course/${courseDesigId}/design`,
+				method : 'GET',
+				success: (course_design) => {
+					sendAccomplish(course_design.id, function () {
+						location.href = course_design.link;
+					});
+					
+				},
+			});
 		}
 	});
 
-	let progressDeterminer = (clickedElement) => {
-		let secondParentElement = clickedElement.parentElement.parentElement;
-		let grandParentElement = secondParentElement.parentElement;
-
-		// get all the numbers of checkbox
-		noOfCheckbox = secondParentElement.querySelectorAll('img.activity-status').length;
-		percentageByCheckbox = 100 / noOfCheckbox;
-
-		progressElement = document.querySelector(`#${grandParentElement.getAttribute('id')}-progress`);
-		let progressCurrentValue = parseInt(progressElement.style.width);
-		return [progressElement, progressCurrentValue];
-	};
-
-	let elementsCleaner = (element) => {
-		let files = [];
-		let fileStatus = [];
-
-		element.parentElement.childNodes.forEach((e, i) => {
-			if (e.tagName != 'BR' && typeof e.innerHTML != 'undefined') {
-				if (e.tagName == 'A') {
-					files.push(e.innerHTML);
-				}
-
-				if (e.getAttribute('class') != null && e.getAttribute('class').includes('activity-status')) {
-					 fileStatus.push(e.getAttribute('data-status'));
-				}
-			}
-		});
-		return [files, fileStatus];
-	};
-
-	let accomplish = []
-	let merger = (files, status) => {
-		files.forEach((file, index) => {
-			data = { 'name' : file, 'status' : status[index] };
-			accomplish.push(data);
-		});
-		return accomplish;
-	};
-
-	let remover = (file) => {
-		accomplish = accomplish.filter((f) => f.name != file[0]);
-	};
 
 
 
-	let sender = (studentAccomplish) => {
+	let sendAccomplish = (fileId, callback) => {
 		$.ajax({
 			url : "{{ route('accomplish.store') }}",
 			method : 'POST',
-			data : { 'data' : studentAccomplish, 'course' : {{ $course->id }}, 'student' : {{ $student_id}} },
+			data : {file_id : fileId},
 			success: (response) => {
-				console.log(response);
-			}
+				if (callback) callback();
+			},
+		});
+	};
+
+	let removeAccomplish = (fileId) => {
+		 $.ajax({
+			url : `/student/accomplish/${fileId}`,
+			method : 'DELETE',
+			success: (response) => {
+
+			},
 		});
 	};
 
 	let applyProgress = (element) => {
-		let files      = [];
-		let fileStatus = [];
-		
+		let currentElement     = element.parentElement;
+		let documentName = ``;
 
-		[pElement, pCurrentValue] = progressDeterminer(element);
-		progressElement.style.width = pCurrentValue + 33 + '%';
+		currentElement.childNodes.forEach((el) => {
+			if (el.tagName === 'A') {
+				documentName = el.innerHTML;
+			}
+		});
+		let calculate = 100 / noOfOverviewFiles;
+		// console.log(documentName, noOfOverviewFiles, calculate);
+		let pElement = document.querySelector(`#overview-${overviewId}-progress`)
+		progressCurrentValue = parseFloat(pElement.style.width);
+		pElement.style.width = parseFloat(progressCurrentValue + calculate) + '%';
 
-		[files, fileStatus] = elementsCleaner(element);
-		//sender(merger(files, fileStatus));
+		// send
+		sendAccomplish(element.getAttribute('data-id'));
 	};
 
 	let removeProgress = (element) => {
-		let files      = [];
-		let fileStatus = [];
-		[pElement, pCurrentValue] = progressDeterminer(element); 
-		progressElement.style.width = pCurrentValue - 33 + '%';
+		let currentElement     = element.parentElement;
+		let documentName = ``;
 
-		[files, fileStatus] = elementsCleaner(element);
-		remover(files);
-		//sender(accomplish);
+		currentElement.childNodes.forEach((el) => {
+			if (el.tagName === 'A') {
+				documentName = el.innerHTML;
+			}
+		});
+		let calculate = 100 / noOfOverviewFiles;
+
+		let pElement = document.querySelector(`#overview-${overviewId}-progress`)
+		progressCurrentValue = parseFloat(pElement.style.width);
+
+		if (parseInt(progressCurrentValue - calculate) < 0) {
+			pElement.style.width = '0%';
+		} else {
+			pElement.style.width = parseFloat(progressCurrentValue - calculate) + '%';	
+		}
+
+		removeAccomplish(element.getAttribute('data-id'));
+		
 	};
 </script>
+
+{{-- PROCESS CHECK PROGRESS FOR ACTIVITIES --}}
+<script>
+	let noOfAccomplishByModule = JSON.parse($('meta[name="student-activities-accomplish"]').attr('content'));
+
+	Object.keys(noOfAccomplishByModule).map((id) => {
+		let noOfActivities = document.querySelectorAll(`.belongs-to-${id}`).length;
+		let progressPerActivity = parseFloat(100 / noOfActivities)
+
+		for(let i = 0; i<noOfAccomplishByModule[id].length; i++) {
+			progressElement = document.querySelector(`#progress-${id}`);
+			progressElement.style.width = parseFloat(progressElement.style.width) + progressPerActivity + '%';
+		}
+	});
+
+	$(document).on('click', 'a.module-activity', function (e) {
+		e.preventDefault();
+		let element      = e.target;
+		let activityId   = element.getAttribute('data-id');
+		let activityType = element.getAttribute('data-downloadable');
+		let activityLink = element.getAttribute('data-link');
+		let moduleId     = element.getAttribute('data-module');
+		let noOfActivities = document.querySelectorAll(`.belongs-to-${moduleId}`).length;
+
+		
+		if (activityType != 0) { // if the activity is downloadable
+			$.ajax({
+				url : "/student/activity/accomplish",
+				method : 'POST',
+				data : { activity_id : activityId },
+				success: (response) => {
+					location.href = activityLink;
+					$(`#checkbox-${activityId}`).prop('src', 'https://res.cloudinary.com/dfm6cr1l9/image/upload/v1602065138/icons/activity-icon/readable_check.webp');
+					let progressElement = document.querySelector(`#progress-${moduleId}`);
+					progressElement.style.width = parseFloat(progressElement.style.width) + parseFloat(100 / noOfActivities) + '%';
+				},
+			});
+		} else {
+			$.ajax({
+				url : "/student/activity/accomplish",
+				method : 'POST',
+				data : { activity_id : activityId },
+				success: (response) => {
+					let progressElement = document.querySelector(`#progress-${moduleId}`);
+					progressElement.style.width = parseFloat(progressElement.style.width) + parseFloat(100 / noOfActivities) + '%';
+					location.href = `/student/activity/view/${activityId}`;
+				},
+			});
+		}
+		
+	});
+
+</script>
+
 @endpush
 @endsection

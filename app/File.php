@@ -13,4 +13,10 @@ class File extends Model
 		return $this->morphTo();
 	}
 
+	
+    public function accomplish()
+    {
+        return $this->morphToMany('App\User', 'userable');
+    }
+
 }

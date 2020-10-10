@@ -42,8 +42,19 @@ class User extends Authenticatable
         return $this->hasMany('App\Models\Student\EnrollCourse');
     }
 
-    public function accomplish()
+     /**
+     * Get all of the posts that are assigned this tag.
+     */
+    public function accomplish_files()
     {
-        return $this->hasOne('App\StudentAccomplish');
+        return $this->morphedByMany('App\File', 'userable')->withTimestamps();
+    }
+
+    /**
+     * Get all of the videos that are assigned this tag.
+     */
+    public function accomplish_activities()
+    {
+        return $this->morphedByMany('App\Activity', 'userable')->withTimestamps();
     }
 }

@@ -18,6 +18,16 @@ class CourseController extends Controller
         
         return view('student.course.design', compact('course', 'firstFile', 'courseModuleFirstActivity'));
     }
+
+    public function getCourseDesign($id)
+    {
+        return Course::find($id)->modules
+                        ->where('is_overview', 1)
+                        ->first()
+                        ->files
+                        ->where('title', 'Course Design')
+                        ->first();
+    }
     /**
      * Display a listing of the resource.
      *
@@ -63,10 +73,23 @@ class CourseController extends Controller
         $course = Course::with(['modules'])->find($id);
         $overview = $course->modules->where('is_overview', 1)->first();
         $student_id = Auth::user()->id;
-        $accomplish = Auth::user()->accomplish;
 
+        $noOfOverviewFiles = $overview->files->count();
+        
+        $overviewFiles     = $overview->files->toJson();
+        
+        $studentAccomplish = Auth::user()->accomplish_files
+                                    ->pluck('id')
+                                    ->toJson();
 
-        return view('student.course-enroll.module.show', compact('course', 'student_id', 'accomplish', 'overview'));
+        $studentActivitiesAccomplish = Auth::user()->accomplish_activities
+                                            ->pluck('id')
+                                            ->toArray();
+        $noOfAccomplishByModule = Auth::user()->accomplish_activities->groupBy(function ($data) {
+            return  $data->module_id;
+        })->toJson();
+
+        return view('student.course-enroll.module.show', compact('course', 'student_id', 'overview', 'noOfOverviewFiles', 'overviewFiles', 'studentAccomplish', 'studentActivitiesAccomplish', 'noOfAccomplishByModule'));
     }
 
     /**
@@ -102,4 +125,5 @@ class CourseController extends Controller
     {
         //
     }
+
 }

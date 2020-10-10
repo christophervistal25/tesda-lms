@@ -19,6 +19,8 @@ class Activity extends Model
     	return $this->hasMany('App\Module' , 'id', 'module_id');
     }
 
- 
-
+    public function accomplish()
+    {
+        return $this->morphToMany('App\User', 'userable');
+    }
 }

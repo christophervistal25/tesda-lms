@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Student;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\StudentAccomplish;
+use Auth;
+use App\File;
+use App\Activity;
 
 class AccomplishController extends Controller
 {
@@ -36,17 +39,19 @@ class AccomplishController extends Controller
      */
     public function store(Request $request)
     {
-        $module_accomplishments = StudentAccomplish::updateOrCreate([
-            'user_id' => $request->student,
-            'course_id' => $request->course
-        ],[
-            'user_id' => $request->student,
-            'data'       => json_encode($request->data),
-            'course_id'  => $request->course  
-        ]);
-
+        $student = Auth::user();
+        $file = File::find($request->file_id);
+        $student->accomplish_files()->attach($file);
         return response()->json(['success' => true]);
+    }
 
+
+    public function activity(Request $request)
+    {
+        $student = Auth::user();
+        $file = Activity::find($request->activity_id);
+        $student->accomplish_activities()->attach($file);
+        return response()->json(['success' => true]);
     }
 
     /**
@@ -91,6 +96,8 @@ class AccomplishController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $student = Auth::user();
+        $student->accomplish_files()->detach($id);
+        return response()->json(['success' => true]);
     }
 }

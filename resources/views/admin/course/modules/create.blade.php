@@ -290,6 +290,7 @@
 
   Dropzone.options.dropzoneForm = {
     dictDefaultMessage: 'Drop file or Click to upload',
+    timeout: 60000, /*milliseconds*/
     addRemoveLinks: true, 
     init: function () {
       this.on('success', function(file, response) { 
