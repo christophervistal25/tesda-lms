@@ -8,6 +8,10 @@ class Course extends Model
 {
     protected $fillable = ['name', 'acronym', 'description', 'design', 'image', 'active', 'duration'];
 
+    public function status()
+    {
+        return $this->hasMany('App\CourseStatus');
+    }
 
     public function enroll()
     {

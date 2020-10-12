@@ -4,12 +4,10 @@ namespace App\Http\Controllers\Student;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\StudentAccomplish;
-use Auth;
-use App\File;
-use App\Activity;
+use App\Course;
+use App\CourseStatus;
 
-class AccomplishController extends Controller
+class CourseStatusController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -39,28 +37,19 @@ class AccomplishController extends Controller
      */
     public function store(Request $request)
     {
-        try {
-            $student = Auth::user();
-            $file = File::find($request->file_id);
-            $student->accomplish_files()->attach($file);
-            return response()->json(['success' => true]);
-        } catch (\Exception $e) {
-            
-        }
-    }
+        if ($request->ajax()) {
+            $course = Course::find($request->course_id);
+            $status = CourseStatus::updateOrCreate([
+                'course_id' => $request->course_id,
+                'status'    => $request->status,
+            ], [
+                'star'      => $request->star,
+                'status'    => $request->status
+            ]);
 
-
-    public function activity(Request $request)
-    {
-        try {
-            $student = Auth::user();
-            $file = Activity::find($request->activity_id);
-            $student->accomplish_activities()->attach($file);    
+            $course->status()->save($status);
             return response()->json(['success' => true]);
-        } catch (\Exception $e) {
-            
         }
-        
     }
 
     /**
@@ -105,8 +94,6 @@ class AccomplishController extends Controller
      */
     public function destroy($id)
     {
-        $student = Auth::user();
-        $student->accomplish_files()->detach($id);
-        return response()->json(['success' => true]);
+        //
     }
 }

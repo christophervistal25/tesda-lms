@@ -115,34 +115,33 @@
 			      <div class="card-body pl-5 pr-5 text-dark">
 			        {!! $module->body !!}
 			        	@foreach($module->activities as $activity)
-			        	@if($activity->downloadable == 0)
-			        		<span> 
-			        		<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601889372/icons/course_design_icon_jfq35v.png" style="width:24px">
-			        		<a class="module-activity belongs-to-{{ $module->id }}" data-downloadable="{{ $activity->downloadable }}" data-id="{{ $activity->id }}" data-module="{{ $module->id }}" href="{{ route('student.activity.view', $activity->id) }}">{{ $activity->activity_no }} {{ $activity->title }}</a>
-			        		@if(in_array($activity->id, $studentActivitiesAccomplish))
-			        			<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1602065138/icons/activity-icon/readable_check.webp" class="mt-1 float-right" style="cursor:pointer;">
-			        		@else
-			        			<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1602065138/icons/activity-icon/not-check.webp" class="mt-1 float-right" style="cursor:pointer;"  id="checkbox-{{$activity->id}}">
-			        		@endif
-			        		</span>
-			        		@else
+			        		@if($activity->downloadable == 0)
+								<span>
+									<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601889372/icons/course_design_icon_jfq35v.png" style="width:24px">
+									<a class="module-activity belongs-to-{{ $module->id }}" data-downloadable="{{ $activity->downloadable }}" data-id="{{ $activity->id }}" data-module="{{ $module->id }}" href="{{ route('student.activity.view', $activity->id) }}">{{ $activity->activity_no }} {{ $activity->title }}</a>
+									@if(in_array($activity->id, $studentActivitiesAccomplish))
+									<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1602065138/icons/activity-icon/readable_check.webp" class="mt-1 float-right" style="cursor:pointer;">
+									@else
+									<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1602065138/icons/activity-icon/not-check.webp" class="mt-1 float-right" style="cursor:pointer;"  id="checkbox-{{$activity->id}}">
+									@endif
+								</span>
+								@else
 								<span>
 									<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601889372/icons/course_design_icon_jfq35v.png" style="width:24px">
 									<a class="module-activity belongs-to-{{ $module->id }}" data-downloadable="{{ $activity->downloadable }}" data-module="{{ $module->id }}" data-link="{{ $activity->files[0]->link }}" data-id="{{ $activity->id }}"  href="{{ $activity->files[0]->link }}">{{ $activity->activity_no }} {{ $activity->title }}</a>
-								@if(in_array($activity->id, $studentActivitiesAccomplish))
-				        			<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1602065138/icons/activity-icon/readable_check.webp" class="mt-1 float-right" style="cursor:pointer;">
-				        		@else
-				        			<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1602065138/icons/activity-icon/not-check.webp" class="mt-1 float-right" style="cursor:pointer;" id="checkbox-{{$activity->id}}">
-			        			@endif
+									@if(in_array($activity->id, $studentActivitiesAccomplish))
+									<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1602065138/icons/activity-icon/readable_check.webp" class="mt-1 float-right" style="cursor:pointer;">
+									@else
+									<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1602065138/icons/activity-icon/not-check.webp" class="mt-1 float-right" style="cursor:pointer;" id="checkbox-{{$activity->id}}">
+									@endif
 								</span>
-							 </div>
-			        		@endif
-			        		<br><br>
+							@endif
+			        	<br><br>
 			        	@endforeach	
+					</div>
 			      </div>
 			    </div>
-			  </div>
-			  <div class="float-right py-2 mr-3 text-dark">
+			    <div class="float-right py-2 mr-3 text-dark">
 				  	Label: 1
 				  	@if($module->activities->where('downloadable', 0)->count() >= 2)
 				  		Pages: {{ $module->activities->where('downloadable', 0)->count() }} &nbsp;
@@ -156,7 +155,9 @@
 				  		File: {{ $module->activities->where('downloadable', 1)->count() }} 
 				  	@endif
 				  </div>
-				  <div class="clearfix"></div>
+			  </div>
+			  
+				<div class="clearfix"></div>
 		  @endforeach
 
 
@@ -237,7 +238,6 @@
 					sendAccomplish(course_design.id, function () {
 						location.href = course_design.link;
 					});
-					
 				},
 			});
 		}

@@ -77,21 +77,20 @@ class CourseOverviewController extends Controller
         preg_match_all('/<img src=(.*)|<a href="(.+)">(.+)<\/a>/', $request->body, $images);
 
         $files = [];
-
-        $module->files()->delete();
         
         foreach ($match[$URL_INDEX] as $key => $file) {
            $type = Str::contains($file, ['https', 'http']) ? 'file' : 'page';
            preg_match( '@src="([^"]+)"@' , $images[0][$key], $iconSrc);
            $icon = isset($iconSrc[$ICON_INDEX])  ? $iconSrc[$ICON_INDEX] : null;
 
-           $files[] = new ModuleFile([
+           $files[] = ModuleFile::firstOrNew(['title' => $match[$TITLE_INDEX][$key]], [
                 'title' => $match[$TITLE_INDEX][$key],
                 'body'  => $match[$BODY_INDEX][$key],
                 'link'  => $file,
                 'type'  => $type,
                 'icon'  => $icon,
-            ]);
+           ]);
+         
         }
 
         $module->files()->saveMany($files);

@@ -135,12 +135,12 @@ class ModulesController extends Controller
     {
         $module->title = $request->title;
         $module->body = $request->body;
-        $activities = [];
+    
 
         if (isset($request->activity_no)) {
-            $module->activities()->where('downloadable', 0)->delete();
+           
             foreach ($request->activity_no as $key => $no) {
-                $activities[] = Activity::create([
+                $activity = Activity::updateOrCreate(['activity_no' => $no], [
                     'module_id'    => $module->id,
                     'activity_no'  => $no,
                     'title'        => $request->activity_name[$key],
@@ -148,34 +148,37 @@ class ModulesController extends Controller
                     'body'         => $request->activity_content[$key],
                     'downloadable' => 0,
                 ]);
-
-                foreach ($activities as $k => $activity) {
-                    $URL_INDEX   = 1;
-                    $TITLE_INDEX = 2;
-                    $BODY_INDEX  = 0;
-                    $url = preg_match_all('/<a href="(.+)">(.+)<\/a>/', $request->activity_content[$key], $match);
-                 
-                    $files = [];
-                    foreach ($match[$URL_INDEX] as $key => $file) {
-                       $files[] = new ActivityFile([
-                            'title' => $match[$TITLE_INDEX][$key],
-                            'body'  => $match[$BODY_INDEX][$key],
-                            'link'  => $file,
-                            'type'  => 'page',
-                        ]);
-                    }
-
-                    $activity->files()->saveMany($files);
+                $files = [];
+                $URL_INDEX   = 1;
+                $TITLE_INDEX = 2;
+                $BODY_INDEX  = 0;
+                $url = preg_match_all('/<a href="(.+)">(.+)<\/a>/', $request->activity_content[$key], $match);
+                foreach ($match[$URL_INDEX] as $key => $file) {
+                   $files[] = ActivityFile::firstOrNew(
+                    [
+                        'title'          => $match[$TITLE_INDEX][$key],
+                        'filelable_id'   => $activity->id,
+                        'type'           => 'page',
+                        'filelable_type' => get_class($activity)
+                    ],
+                    [
+                        'title' => $match[$TITLE_INDEX][$key],
+                        'body'  => $match[$BODY_INDEX][$key],
+                        'link'  => $file,
+                        'type'  => 'page',
+                    ]);
                 }
+                
+                $activity->files()->saveMany($files);
+                $module->activities()->save($activity);
             }
-            
-            $module->activities()->saveMany($activities);
         }
 
+        $activity = null;
+
         if (isset($request->downloadable_activity_no)) {
-            $module->activities()->where('downloadable', 1)->delete();
-            foreach ($request->downloadable_activity_no as $key => $no) {
-                $activities[] = Activity::create([
+              foreach ($request->downloadable_activity_no as $key => $no) {
+                $activity = Activity::updateOrCreate(['activity_no' => $no], [
                     'module_id'    => $module->id,
                     'activity_no'  => $no,
                     'title'        => $request->downloadable_activity_name[$key],
@@ -184,7 +187,7 @@ class ModulesController extends Controller
                     'downloadable' => 1,
                 ]);
 
-                foreach ($activities as $k => $activity) {
+
                     $URL_INDEX   = 1;
                     $TITLE_INDEX = 2;
                     $BODY_INDEX  = 0;
@@ -192,19 +195,21 @@ class ModulesController extends Controller
                  
                     $files = [];
                     foreach ($match[$URL_INDEX] as $key => $file) {
-                       $files[] = new ActivityFile([
+                       $files[] = ActivityFile::firstOrCreate([
+                            'title'          => $match[$TITLE_INDEX][$key],
+                            'filelable_id'   => $activity->id,
+                            'filelable_type' => get_class($activity),
+                            ],
+                            [
                             'title' => $match[$TITLE_INDEX][$key],
                             'body'  => $match[$BODY_INDEX][$key],
                             'link'  => $file,
                             'type'  => 'file',
                         ]);
                     }
-
-                    $activity->files()->saveMany($files);
-                }
+                $activity->files()->saveMany($files);
+                $module->activities()->save($activity);
             }
-            $module->activities()->saveMany($activities);
-
             
         }
 

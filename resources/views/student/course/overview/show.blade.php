@@ -76,6 +76,24 @@
 
 @push('page-scripts')
 <script>
+	$.ajaxSetup({
+	    headers: {
+	        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+	    }
+	});
+</script>
+<script>
+	let fileId = "{{ $fileId }}";
+
+	
+	$(document).ready(function () {
+		$.ajax({
+			url : "{{ route('accomplish.store') }}",
+			method : 'POST',
+			data : {file_id : fileId},
+		});
+	});
+
 	$('#jumpToOptions').change(function (e) {
 		let selectedItemLink = $(this).children("option:selected").attr('data-link');
 		location.href = selectedItemLink;

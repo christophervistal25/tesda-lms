@@ -66,9 +66,26 @@
 
 </div>
 
-
 @push('page-scripts')
 <script>
+	$.ajaxSetup({
+	    headers: {
+	        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+	    }
+	});
+</script>
+
+<script>
+	let activityId = "{{ $activity_id }}";
+	$(document).ready(function () {
+		$.ajax({
+				url : "/student/activity/accomplish",
+				method : 'POST',
+				data : { activity_id : activityId },
+				success: (response) => {},
+			});
+	});
+
 	$('#jumpToOptions').change(function (e) {
 		let selectedItemLink = $(this).children("option:selected").attr('data-link');
 		location.href = selectedItemLink;
