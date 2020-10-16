@@ -1,4 +1,7 @@
 <?php
+use App\Exam;
+use App\Module;
+use App\MultipleChoice;
 
 
 
@@ -9,11 +12,6 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
-
-
-
-
-
 
 
 
@@ -74,6 +72,10 @@ Route::prefix('admin')->group(function() {
 
             Route::get('/forums', 'ForumController@index')->name('forum.index');
             Route::resource('/forums', 'ForumController');
+
+            Route::get('/module/{module}/final/exam', 'FinalExamController@create')->name('module.final.exam');
+
+            Route::post('/module/{module}/final/exam', 'FinalExamController@store')->name('module.final.exam.submit');
 	    });
     });
 
@@ -106,7 +108,14 @@ Route::prefix('student')->group(function() {
             Route::resource('accomplish', 'AccomplishController');
 
             Route::resource('course/status', 'CourseStatusController');
-            
+
+            Route::get('/final/exam/attempt/{module}', 'FinalExamController@userAddAttempt')->name('user.add.attempt');
+            Route::get('/final/exam/{module}', 'FinalExamController@view')->name('view.final.exam');
+
+            Route::get('/final/exam/answer/{module}', 'FinalExamController@answer')->name('answer.final.exam');
+            Route::post('/final/exam/answer/{module}', 'FinalExamController@submit')->name('answer.final.exam.submit');
+
+            Route::get('/final/exam/answer/{module}/result', 'FinalExamController@result')->name('answer.final.exam.result');
         });
         
     });

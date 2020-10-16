@@ -196,7 +196,12 @@
 										<div class="col-lg-5">
 											{{ Auth::user()->courses->last()->course->program->name }}
 											<br>
-											{{ Auth::user()->courses->last()->course->name }}
+											<span id="course-name-{{ $record->course->id }}">
+												@if($record->course->status->first()->star == 1)
+													<i id="star-icon-{{ $record->course->id }}" class="fas fa-star text-primary"></i>
+												@endif
+												<a  href="/student/course/view/{{ $record->course->id }}">{{ $record->course->name }}</a>
+											</span>
 										</div>
 										<div class="col-lg-5">
 											<div class="progress rounded-0" style="height : .8vh">
@@ -228,7 +233,12 @@
 										<div class="col-lg-5">
 											<span class="text-muted">{{ Auth::user()->courses->last()->course->program->name }}</span>
 											<br>
-											<h5>{{ Auth::user()->courses->last()->course->name }}</h5>
+											<span id="course-name-{{ $record->course->id }}">
+												@if($record->course->status->first()->star == 1)
+													<i id="star-icon-{{ $record->course->id }}" class="fas fa-star text-primary"></i>
+												@endif
+												<a  href="/student/course/view/{{ $record->course->id }}">{{ $record->course->name }}</a>
+											</span>
 										</div>
 										<div class="col-lg-4">
 											<br>
@@ -245,12 +255,6 @@
 											<i class="icon fa fa-ellipsis-h fa-fw"></i>
 											</button>
 											<div class="dropdown-menu dropdown-menu-right rounded-0" style="will-change: transform;">
-												<a class="dropdown-item " href="#" data-action="add-favourite" data-course-id="2" aria-controls="favorite-icon-2-7">
-													Star this course
-												</a>
-												<a class="dropdown-item hidden" href="#" data-action="remove-favourite" data-course-id="2" aria-controls="favorite-icon-2-7">
-													Unstar this course
-												</a>
 											</div>
 										</div>
 									</div>
@@ -309,6 +313,7 @@
 				$('#view-summary-type').addClass('d-none');
 		}
 	};
+	
 	$('#display-type a').click(function () {
 		let selectedItem = $(this).text();
 		let selectedItemType = $(this).attr('data-type');

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Collection;
 use App\File;
 use App\Activity;
 use App\Post;
+use App\Exam;
 
 class ActivityViewer
 {
@@ -76,7 +77,14 @@ class ActivityViewer
          }
 
          if (is_null($this->next)) {
-            dump('process the final exam.');
+            // Get the first value in activities_ids
+            $id = reset($activitiesIds);
+            $activity = Activity::find($id, ['module_id']);
+
+            if (!is_null(Exam::where('module_id', $activity->module_id)->first())) {
+                $this->next = Exam::where('module_id', $activity->module_id)->first();
+            } 
+            
          }
       }
 

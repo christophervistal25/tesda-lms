@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Course;
 use Auth;
+use App\Module;
 
 class CourseController extends Controller
 {
@@ -88,6 +89,7 @@ class CourseController extends Controller
         $noOfAccomplishByModule = Auth::user()->accomplish_activities->groupBy(function ($data) {
             return  $data->module_id;
         })->toJson();
+
 
         return view('student.course-enroll.module.show', compact('course', 'student_id', 'overview', 'noOfOverviewFiles', 'overviewFiles', 'studentAccomplish', 'studentActivitiesAccomplish', 'noOfAccomplishByModule'));
     }

@@ -6,7 +6,7 @@
 @endprepend
 <div class="card shadow mb-4">
 	<div class="card-header py-3">
-		<h6 class="m-0 font-weight-bold text-primary">List of course</h6>
+		<h6 class="m-0 text-primary">List of course</h6>
 	</div>
 	
 	<div class="card-body">
@@ -30,22 +30,31 @@
 			<tbody>
 				@foreach($courses as $course)
 				<tr>
-					<td class="text-primary">{{ $course->name }}</td>
-					<td>{{ $course->description }}</td>
-					<td><a href="{{ route('course.design', $course) }}">Course Design</a></td>
-					<td>{{ $course->program->name }}</td>
-					<td>{{ $course->program->batch->name }} - Batch {{ $course->program->batch->batch_no }}</td>
-					<td class="text-primary text-center text-capitalize">
-						@foreach($course->instructors as $instructor)
-						{{ $instructor->lastname  . ', ' . $instructor->firstname . ' ' . $instructor->middlename }}
-						@endforeach
+					<td class="text-primary align-middle">{{ $course->acronym }}</td>
+					<td class="align-middle">{{ $course->description }}</td>
+					<td class="align-middle"><a href="{{ route('course.design', $course) }}">Course Design</a></td>
+					<td class="align-middle">{{ $course->program->name }}</td>
+					<td class="align-middle">{{ $course->program->batch->name }} - Batch {{ $course->program->batch->batch_no }}</td>
+					<td class="text-primary text-center text-capitalize align-middle">
+							@forelse ($course->instructors as $instructor)
+								{{ $instructor->lastname  . ', ' . $instructor->firstname . ' ' . $instructor->middlename }}
+							@empty
+							    N/A
+							@endforelse
 					</td>
-					<td class="text-center">{{ $course->created_at->diffForHumans() }}</td>
-					<td class="text-center">
-						<a href="{{ route('course.add.module', $course) }}" title="Add module" class="btn btn-success btn-sm"> <i class="fas fa-plus"></i> </a>
-						<a href="{{ route('course.view.module', $course) }}" title="Edit module" class="btn btn-info btn-sm"> <i class="fas fa-eye"></i> </a>
-						<a href="{{ route('course.edit', $course) }}" title="Edit this course" class="btn btn-primary btn-sm"> <i class="fas fa-edit"></i> </a>
-						<a data-src="{{ $course->id }}" title="Delete this course" class="text-white btn btn-danger btn-sm btn-delete-course"> <i class="fas fa-trash"></i> </a>
+					<td class="text-center align-middle">{{ $course->created_at->diffForHumans() }}</td>
+					<td>
+						<div class="dropdown">
+								<button class="btn btn-secondary dropdown-toggle rounded-0 btn-sm text-white" type="button" id="actionDropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+									Actions
+								</button>
+								<div class="dropdown-menu" aria-labelledby="actionDropdownMenu">
+									<a href="{{ route('course.add.module', $course) }}" title="Add module" class="dropdown-item"><i class="text-primary fas fa-plus"></i> Add module</a>
+									<a href="{{ route('course.view.module', $course) }}" title="View module" class="dropdown-item"><i class="text-primary fas fa-eye"></i> View module</a>
+									<a href="{{ route('course.edit', $course) }}" title="Edit this course" class="dropdown-item"><i class="text-primary fas fa-edit"></i> Edit course</a>
+									<a data-src="{{ $course->id }}" title="Delete this course" class="dropdown-item btn-delete-course" style="cursor:pointer;"> <i class="text-primary fas fa-trash"></i> <span class="text-dark"> Delete course</span></a>
+								</div>
+							</div>
 					</td>
 				</tr>
 				@endforeach

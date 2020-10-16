@@ -28,7 +28,7 @@
 }
 
 .fab:hover {
-  height: 290px;
+  height: 230px;
 }
 
 .fab:hover .mainop {
@@ -136,7 +136,7 @@
         <div class="dropdown-header">Activities</div>
         <button id="btnAddActivity" class="dropdown-item text-capitalize text-gray-700"><i class="fas fa-plus"></i> Add activity</button>
         <button id="btnAaddActivityDownloadable" class="dropdown-item text-capitalize text-gray-700"><i class="fas fa-plus"></i> Add activity downloadable</button>
-        <button id="btnAddCourseOverview" class="dropdown-item text-capitalize text-gray-700"><i class="fas fa-plus"></i> Add Course Overview</button>
+        <button id="btnAddFinalExam" class="dropdown-item text-capitalize text-gray-700"><i class="fas fa-plus"></i> Add Final Exam</button>
       </div>
     </div>
   </div>
@@ -300,13 +300,10 @@
     <i id="addIcon" class="fas fa-plus"></i>
   </div>
 
-  <div id="drawings" class="minifab op4" data-toggle="tooltip" data-placement="left" title="Add Quiz">
+  <div id="drawings" class="minifab op4" onclick="generateFinalExam()" data-toggle="tooltip" data-placement="left" title="Add Final Exam">
     <img class="minifabIcon" src="https://vectr.com/doodleblu/b2DCtQvEHF.svg?width=64&height=64&select=b2DCtQvEHFpage0">
   </div>
 
-  <div id="slides" class="minifab op3" onclick="generateCourseOverview()" data-toggle="tooltip" data-placement="left" title="Add Course Overview">
-    <img class="minifabIcon" src="https://vectr.com/doodleblu/a12WZHDh0z.svg?width=64&height=64&select=a12WZHDh0zpage0">
-  </div>
   <div id="sheets" class="minifab op2" onclick="generateDownloadableActivity()" data-toggle="tooltip" data-placement="left" title="Add Downlable activity">
     <img class="minifabIcon" src="https://vectr.com/doodleblu/eoOhnACDe.svg?width=64&height=64&select=eoOhnACDepage0">
   </div>
@@ -331,6 +328,11 @@
   function generateDownloadableActivity() {
     $('#btnAaddActivityDownloadable').trigger('click');
   }
+
+  function generateFinalExam() {
+    $('#btnAddFinalExam').trigger('click');
+  }
+
 
 
 </script>
@@ -690,6 +692,12 @@
     `);
     applyCKEditorDynamically();
   });
+
+  $('#btnAddFinalExam').click(function () {
+      // Redirect to another page.
+      location.href = "{{ route('module.final.exam', $module->id) }}";
+  });
+
 
 
 

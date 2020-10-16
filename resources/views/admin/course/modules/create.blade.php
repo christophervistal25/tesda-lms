@@ -28,7 +28,7 @@
 }
 
 .fab:hover {
-  height: 290px;
+  height: 170px;
 }
 
 .fab:hover .mainop {
@@ -214,13 +214,6 @@
     <i id="addIcon" class="fas fa-plus"></i>
   </div>
 
-  <div id="drawings" class="minifab op4" data-toggle="tooltip" data-placement="left" title="Add Quiz">
-    <img class="minifabIcon" src="https://vectr.com/doodleblu/b2DCtQvEHF.svg?width=64&height=64&select=b2DCtQvEHFpage0">
-  </div>
-
-  <div id="slides" class="minifab op3" onclick="generateCourseOverview()" data-toggle="tooltip" data-placement="left" title="Add Course Overview">
-    <img class="minifabIcon" src="https://vectr.com/doodleblu/a12WZHDh0z.svg?width=64&height=64&select=a12WZHDh0zpage0">
-  </div>
   <div id="sheets" class="minifab op2" onclick="generateDownloadableActivity()" data-toggle="tooltip" data-placement="left" title="Add Downlable activity">
     <img class="minifabIcon" src="https://vectr.com/doodleblu/eoOhnACDe.svg?width=64&height=64&select=eoOhnACDepage0">
   </div>
@@ -244,6 +237,10 @@
 
   function generateDownloadableActivity() {
     $('#btnAaddActivityDownloadable').trigger('click');
+  }
+
+  function generateFinalExam() {
+    alert('This is just a sample');
   }
 
 

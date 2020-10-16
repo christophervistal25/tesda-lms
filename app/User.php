@@ -57,4 +57,14 @@ class User extends Authenticatable
     {
         return $this->morphedByMany('App\Activity', 'userable')->withTimestamps();
     }
+
+    public function exam_attempt()
+    {
+        return $this->hasMany('App\ExamAttempt');
+    }
+
+    public function exam_results()
+    {
+        return $this->hasMany('App\ExamResult');
+    }
 }

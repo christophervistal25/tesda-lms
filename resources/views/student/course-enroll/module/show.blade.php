@@ -76,7 +76,7 @@
 				  </div>
 				
 				  <div class="float-right py-2 mr-3 text-dark">
-				  	Label: 1
+				  	Label: 1 &nbsp;
 				  	@if($overview->files->where('type', 'page')->count() >= 2)
 				  		Pages: {{ $overview->files->where('type', 'page')->count() }} &nbsp;
 				  		@else
@@ -113,6 +113,7 @@
 
 			    <div id="module-{{$module->id}}" class="collapse" aria-labelledby="module-{{ $module->id }}" data-parent="#accordion">
 			      <div class="card-body pl-5 pr-5 text-dark">
+			      	@php $isFinalExamination = false @endphp
 			        {!! $module->body !!}
 			        	@foreach($module->activities as $activity)
 			        		@if($activity->downloadable == 0)
@@ -137,12 +138,22 @@
 								</span>
 							@endif
 			        	<br><br>
-			        	@endforeach	
+			        	@endforeach
+			        	@if($module->exams->count() != 0)
+			        		@php $isFinalExamination = true @endphp
+							<span>
+			        			<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601889372/icons/final-exam_mdj9vl.png" style="width:24px;" alt="Final exam">
+			        			<a href="">Final Exam</a>
+			        			<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1602065138/icons/activity-icon/not-check.webp" class="mt-1 float-right" style="cursor:pointer;" id="checkbox-{{$activity->id}}">
+			        			<br>
+			        			<span class="ml-4">Pass the exam to be able to receive a Certificate of Completion.</span>
+			        		</span>
+			        	@endif
 					</div>
 			      </div>
 			    </div>
 			    <div class="float-right py-2 mr-3 text-dark">
-				  	Label: 1
+				  	Label: 1 &nbsp;
 				  	@if($module->activities->where('downloadable', 0)->count() >= 2)
 				  		Pages: {{ $module->activities->where('downloadable', 0)->count() }} &nbsp;
 				  		@else
@@ -150,9 +161,13 @@
 				  	@endif
 
 				  	@if($module->activities->where('downloadable', 1)->count() >= 2)
-				  		Files: {{ $module->activities->where('downloadable', 1)->count() }} 
+				  		Files: {{ $module->activities->where('downloadable', 1)->count() }} &nbsp;
 				  		@else
-				  		File: {{ $module->activities->where('downloadable', 1)->count() }} 
+				  		File: {{ $module->activities->where('downloadable', 1)->count() }} &nbsp; 
+				  	@endif
+
+				  	@if($isFinalExamination)
+				  		Quiz: {{ $module->exams->groupBy('module_id')->count() }} &nbsp;
 				  	@endif
 				  </div>
 			  </div>

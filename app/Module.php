@@ -22,4 +22,9 @@ class Module extends Model
     {
     	return $this->morphMany('App\File', 'filelable');
     }
+
+    public function exams()
+    {
+        return $this->hasMany('App\Exam');
+    }
 }
