@@ -33,10 +33,10 @@
 						<span class="text-dark ml-3">PREVIOUS ACTIVITY</span>
 						<br>
 						<a href="{{ route('student.course.overview.show.file', [$course->id, $previous->id]) }}" id="prev-activity-link" class="btn btn-link" title="{{ $previous->title }}">◄ {{ $previous->title }}</a>
-					{{-- @else
+					@elseif($previous instanceof App\Post)
 						<span class="text-dark ml-3">PREVIOUS ACTIVITY</span>
 						<br>
-						<a href="">◄ Announcement & Forums</a> --}}
+						<a href="">◄Announcement & Forums</a>
 					@endif
 					
 				</div>
@@ -52,6 +52,7 @@
 								<option data-link="/student/activity/view/{{ $activity->id }}">{{ $activity->activity_no }} {{ $activity->title }}</option>
 							@endforeach
 						@endforeach
+						<option {{ $canTakeExam ?: 'disabled' }} data-link="/student/final/exam/{{ $moduleWithExam->id }}">{{ $moduleWithExam->exam->title }}</option>
 					</select>
 				</div>
 

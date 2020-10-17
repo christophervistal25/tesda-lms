@@ -47,18 +47,18 @@
 							@endforeach
 						@endforeach
 
+						<option {{ $canTakeExam ? '' : 'disabled' }} data-link="/student/final/exam/{{ $moduleWithExam->id }}">{{ $moduleWithExam->exam->title }}</option>
+
 					
 
 					</select>
 				</div>
-
 				<div class="col-md-4 text-right">
-
-					@if(!is_null($next->title))
+					@if(!is_null($next->title) && $next instanceof App\Activity)
 						<span class="text-dark mr-3">NEXT ACTIVITY</span>
 						<br>
 						<a href="{{ route('student.activity.view', $next->id) }}" class="btn btn-link" title="{{$next->title}}">{{ $next->activity_no }} {{ $next->title }} ►</a>
-					@elseif(!is_null($next->question_no))
+					@elseif($next instanceof App\Exam)
 						<span class="text-dark mr-3">NEXT ACTIVITY</span>
 						<br>
 						<a href="{{ route('view.final.exam', $module->id) }}" class="btn btn-link" title="Final Exam">Final Exam  ►</a>

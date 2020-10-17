@@ -15,7 +15,7 @@ class CreateMultipleChoicesTable extends Migration
     {
         Schema::create('multiple_choices', function (Blueprint $table) {
             $table->id();
-            $table->unsignedInteger('exam_id');
+            $table->unsignedInteger('question_id');
             $table->string('choice');
             $table->timestamps();
         });

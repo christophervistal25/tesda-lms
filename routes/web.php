@@ -115,7 +115,7 @@ Route::prefix('student')->group(function() {
             Route::get('/final/exam/answer/{module}', 'FinalExamController@answer')->name('answer.final.exam');
             Route::post('/final/exam/answer/{module}', 'FinalExamController@submit')->name('answer.final.exam.submit');
 
-            Route::get('/final/exam/answer/{module}/result', 'FinalExamController@result')->name('answer.final.exam.result');
+            Route::get('/final/exam/answer/{module}/result/{attempt}', 'FinalExamController@result')->name('answer.final.exam.result');
         });
         
     });

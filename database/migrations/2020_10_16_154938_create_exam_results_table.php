@@ -15,8 +15,9 @@ class CreateExamResultsTable extends Migration
     {
         Schema::create('exam_results', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('exam_id');
+            $table->bigInteger('question_id');
             $table->bigInteger('user_id');
+            $table->bigInteger('exam_attempt_id');
             $table->string('answer');
             $table->enum('status', ['correct', 'wrong']);
             $table->timestamps();

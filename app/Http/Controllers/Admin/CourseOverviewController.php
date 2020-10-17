@@ -102,6 +102,7 @@ class CourseOverviewController extends Controller
 
     public function show($course, $fileId = null)
     {
+      
        $course = Course::find($course);
 
        if ($fileId != null) {

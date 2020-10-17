@@ -59,10 +59,10 @@
 							<span>{{ Auth::user()->courses->last()->course->program->name }}</span>
 						</div>
 						<span id="recent-course-name-{{ Auth::user()->courses->last()->course->id }}">
-							@if(Auth::user()->courses->last()->course->status->first()->star === 1)
+{{-- 							@if(Auth::user()->courses->last()->course->status->first()->star === 1)
 									<i id="recent-star-icon-{{Auth::user()->courses->last()->course->id }}" class="fas fa-star text-primary"></i>
 							@endif
-							<a href="/student/course/view/{{Auth::user()->courses->last()->course->id}}">{{ Auth::user()->courses->last()->course->name }}</a>
+							<a href="/student/course/view/{{Auth::user()->courses->last()->course->id}}">{{ Auth::user()->courses->last()->course->name }}</a> --}}
 						</span>
 					</div>
 				</div>
@@ -148,10 +148,10 @@
 												<span>{{ $record->course->program->name }}</span>
 											</div>
 											<span id="course-name-{{ $record->course->id }}">
-												@if($record->course->status->first()->star == 1)
+{{-- 												@if($record->course->status->first()->star == 1)
 													<i id="star-icon-{{ $record->course->id }}" class="fas fa-star text-primary"></i>
 												@endif
-												<a  href="/student/course/view/{{ $record->course->id }}">{{ $record->course->name }}</a>
+ --}}												<a  href="/student/course/view/{{ $record->course->id }}">{{ $record->course->name }}</a>
 											</span>
 										</div>
 										<div class="col-lg-2 text-right">
@@ -160,7 +160,7 @@
 											</button>
 											<div class="dropdown-menu dropdown-menu-right rounded-0 text-dark" style="will-change: transform;">
 												<div id="course-{{$record->course->id}}-option-button">
-													@if($record->course->status->first()->star == 1)
+{{-- 													@if($record->course->status->first()->star == 1)
 														<a class="dropdown-item cursor-pointer" id="remove-star-course-{{ $record->course->id }}" data-id="{{ $record->course->id }}">
 														Unstar this course
 													</a>
@@ -169,7 +169,7 @@
 														Star this course
 														</a>	
 													@endif	
-												</div>
+ --}}												</div>
 												
 												<a class="dropdown-item cursor-pointer remove-from-view" data-id="{{ $record->course->id }}">
 													Remove from view
@@ -197,12 +197,12 @@
 											{{ Auth::user()->courses->last()->course->program->name }}
 											<br>
 											<span id="course-name-{{ $record->course->id }}">
-												@if($record->course->status->first()->star == 1)
+{{-- 												@if($record->course->status->first()->star == 1)
 													<i id="star-icon-{{ $record->course->id }}" class="fas fa-star text-primary"></i>
-												@endif
+												@endif --}}		
 												<a  href="/student/course/view/{{ $record->course->id }}">{{ $record->course->name }}</a>
 											</span>
-										</div>
+								</div>
 										<div class="col-lg-5">
 											<div class="progress rounded-0" style="height : .8vh">
 												<div class="progress-bar" id="course-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width:{{ $progress }}%;"></div>
@@ -234,9 +234,9 @@
 											<span class="text-muted">{{ Auth::user()->courses->last()->course->program->name }}</span>
 											<br>
 											<span id="course-name-{{ $record->course->id }}">
-												@if($record->course->status->first()->star == 1)
+{{-- 												@if($record->course->status->first()->star == 1)
 													<i id="star-icon-{{ $record->course->id }}" class="fas fa-star text-primary"></i>
-												@endif
+												@endif --}}
 												<a  href="/student/course/view/{{ $record->course->id }}">{{ $record->course->name }}</a>
 											</span>
 										</div>

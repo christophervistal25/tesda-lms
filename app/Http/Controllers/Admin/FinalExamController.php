@@ -7,9 +7,15 @@ use Illuminate\Http\Request;
 use App\Module;
 use App\MultipleChoice;
 use App\Exam;
+use App\Question;
+use App\Helpers\ExamRepository;
 
 class FinalExamController extends Controller
 {
+    public function __construct(ExamRepository $e)
+    {
+        $this->examRepository = $e;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -30,6 +36,10 @@ class FinalExamController extends Controller
         return view('admin.examination.create', compact('module'));
     }
 
+    private function insertMultipleChoiceQuestion(array $questions = [], Exam $exam)
+    {
+         
+    }
     /**
      * Store a newly created resource in storage.
      *
@@ -39,61 +49,21 @@ class FinalExamController extends Controller
     public function store(Request $request, Module $module)
     {
         if (request()->ajax()) {
-          
+            $exam = new Exam([ 'title' => 'Final Exam' ]);
+            $exam = $module->exam()->save($exam);
 
-            // check if there's multiple choice questions.
-            if (isset(request()->multipleChoice)) {
-               $exams = [];
-                foreach (request()->multipleChoice as $q) {
-                    $exams[] = new Exam([
-                        'question_no' => $q['question_no'],
-                        'question'    => $q['question'],
-                        'answer'      => $q['correct_answer'],
-                        'type'        => 'MULTIPLE',
-                    ]);
-
-                    $module->exams()->saveMany($exams);
-
-                    foreach ($q['choices'] as $key => $choice) {
-                        $choice = preg_replace('/^\w-/', '', $choice);
-                        foreach ($exams as $exam) {
-                            $exam->choices()->save(new MultipleChoice(['choice' => $choice]));    
-                        }
-                    }
-
-                }
+            if (isset($request->multipleChoice)) {
+                $this->examRepository->insertMultipleChoice($request->multipleChoice, $exam);
             }
 
-            // check if there's fill in the blank questions.
-
-            if (isset(request()->fillIntheBlank)) {
-                $exams = [];
-                foreach (request()->fillIntheBlank as $q) {
-                    $exams[] = new Exam([
-                        'question_no' => $q['question_no'],
-                        'question'    => $q['question'],
-                        'answer'      => $q['correct_answer'],
-                        'type'        => 'FITB',
-                    ]);
-                }
-
-                $module->exams()->saveMany($exams);
+            if (isset($request->fillIntheBlank)) {
+                $this->examRepository->insertFillIn($request->fillIntheBlank, $exam);   
             }
 
-            // check if there's true or false questions.
-            if (isset(request()->trueOrFalse)) {
-                $exams = [];
-                foreach (request()->trueOrFalse as $q) {
-                    $exams[] = new Exam([
-                        'question_no' => $q['question_no'],
-                        'question'    => $q['question'],
-                        'answer'      => $q['correct_answer'],
-                        'type'        => 'TORF',
-                    ]);
-                }
-
-                $module->exams()->saveMany($exams);
+            if (isset($request->trueOrFalse)) {
+                $this->examRepository->insertTrueOrFalse($request->trueOrFalse, $exam);      
             }
+
         }
 
         return response()->json(['success' => true]);

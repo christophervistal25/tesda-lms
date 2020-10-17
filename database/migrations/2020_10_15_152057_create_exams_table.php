@@ -16,10 +16,7 @@ class CreateExamsTable extends Migration
         Schema::create('exams', function (Blueprint $table) {
             $table->id();
             $table->unsignedInteger('module_id');
-            $table->unsignedInteger('question_no');
-            $table->text('question');
-            $table->string('answer');
-            $table->enum('type', ['FITB', 'MULTIPLE', 'TORF']);
+            $table->string('title');
             $table->timestamps();
         });
     }

@@ -6,19 +6,18 @@ use Illuminate\Database\Eloquent\Model;
 
 class Exam extends Model
 {
-    protected $fillable = ['question_no', 'question', 'answer', 'type'];
+    protected $fillable = ['title'];
+    public const PASSING_GRADE = 50;
 
-    /**
-     * This is for multiple choice type of question.
-     */
-    public function choices()
+
+    public function questions()
     {
-    	return $this->hasMany('App\MultipleChoice');
+        return $this->hasMany('App\Question');
     }
 
-    public function result()
+    public function module()
     {
-    	return $this->hasOne('App\ExamResult');
+        return $this->belongsTo('App\Module');
     }
 
 }

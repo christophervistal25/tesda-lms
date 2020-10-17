@@ -49,7 +49,6 @@
 					<div class="col-md-4 text-right">
 						<span class="text-dark mr-3">NEXT ACTIVITY</span>
 						<br>
-						
 					</div>
 
 				</div>

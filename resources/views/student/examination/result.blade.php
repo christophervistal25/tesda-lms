@@ -35,30 +35,31 @@
 
 						<tr>
 							<th class="text-right p-0 pr-1 border-right label-background" width="200px">Completed on</th>
-							<td class="p-0 pl-1">{{ $exam[0]->result->created_at->format('l d F Y, h:i A') }}</td>
+							<td class="p-0 pl-1">{{ $questions[0]->result->created_at->format('l d F Y, h:i A') }}</td>
 						</tr>
 
 						<tr>
 							<th class="text-right p-0 pr-1 border-right label-background" width="200px">Time Taken</th>
 							<td class="p-0 pl-1">
 								{{
-									$exam[0]->result->created_at->diff(
+									$questions[0]->result->created_at->diff(
 										Auth::user()->exam_attempt->first()->created_at
 									)->format('%H hours %i minutes %s seconds')
-								}}</td>
+								}}
+								</td>
 						</tr>
 
 						<tr>
 							<th class="text-right p-0 pr-1 border-right label-background" width="200px">Marks</th>
 							<td class="p-0 pl-1">
-								{{ $marks }}.00 / {{ $exam->count() }}.00
+								{{ $marks }}.00 / {{ $questions->count() }}.00
 							</td>
 						</tr>
 
 						<tr>
 							<th class="text-right p-0 pr-1 border-right label-background" width="200px">Grade</th>
 							<td class="p-0 pl-1">
-								<strong>{{ ( 100 / $exam->count() ) *  $marks }}.00</strong>
+								<strong>{{ ( 100 / $questions->count() ) *  $marks }}.00</strong>
 								out of {{ 100 }}.00
 							</td>
 						</tr>
@@ -66,7 +67,7 @@
 					</tbody>
 				</table>
 				<div class="row">
-					@foreach($exam as $q)
+					@foreach($questions as $q)
 						<div class="col-lg-1 mb-2 pl-1 pr-1" style="background :#dee2e6; height : 16vh; border : 1px solid #cad0d7;">
 							<small>Question</small> <strong>{{ $q->question_no }}</strong>
 							<small class="text-capitalize">{{ $q->result->status }}</small>
@@ -204,7 +205,7 @@
 				</div>
 				{{-- <div class="pl-4 pr-4"></div> --}}
 				<div class="float-right">
-					<a href="">Finish review</a>
+					<a href=" {{ route('view.final.exam', $module) }}">Finish review</a>
 				</div>
 				<div class="clearfix"></div>
 			</div>
@@ -216,17 +217,17 @@
 			<div class="card-body text-dark">
 				<h5 class="card-title">Quiz Navigation</h5>
 				<h3 class="card-text">Final Exam</h3>
-				@foreach($exam as $q)
+				@foreach($questions as $q)
 						<a href="">{{ $q->question_no }}</a>
 						@if($q->result->status == 'correct')
 							<span class="text-success"><i class="fas fa-check"></i></span>
 						@else
 							<span class="text-danger"><i class="fas fa-times"></i></span>
-						@endif |
+						@endif | 
 				@endforeach
 				<br>
 				<br>
-				<a href="#">Finish review</a>
+				<a href=" {{ route('view.final.exam', $module) }}">Finish review</a>
 			</div>
 		</div>
 	</div>

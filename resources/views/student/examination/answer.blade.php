@@ -13,7 +13,8 @@
 				@csrf
 			<div class="card-body text-dark">
 				<div class="row">
-					@foreach($exam as $q)
+					
+					@foreach($questions as $q)
 						<div class="col-lg-1 mb-2 pl-1 pr-1" style="background :#dee2e6; height : 16vh; border : 1px solid #cad0d7;">
 							<small>Question</small> <strong>{{ $q->question_no }}</strong>
 							<small>Answer saved</small>
@@ -65,6 +66,7 @@
 						</div>
 					@endforeach
 				</div>
+				<input type="hidden" name="attempt_id" value="{{ $attempt_id }}">
 				{{-- <div class="pl-4 pr-4"></div> --}}
 				<div class="float-right">
 					<input type="submit" class="btn btn-primary rounded-0" value="Finish attempt...">
@@ -80,7 +82,7 @@
 			<div class="card-body text-dark">
 				<h5 class="card-title">Quiz Navigation</h5>
 				<h3 class="card-text">Final Exam</h3>
-				@foreach(range(1, $exam->count()) as $item)
+				@foreach(range(1, $questions->count()) as $item)
 					<button class="btn btn-sm btn-secondary">{{ $item }}</button>
 				@endforeach
 				<br>

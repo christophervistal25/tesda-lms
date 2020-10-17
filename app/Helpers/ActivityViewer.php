@@ -84,7 +84,6 @@ class ActivityViewer
             if (!is_null(Exam::where('module_id', $activity->module_id)->first())) {
                 $this->next = Exam::where('module_id', $activity->module_id)->first();
             } 
-            
          }
       }
 

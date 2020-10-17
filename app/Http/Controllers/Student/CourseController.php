@@ -5,19 +5,34 @@ namespace App\Http\Controllers\Student;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Course;
+use App\Activity;
 use Auth;
 use App\Module;
+use App\Helpers\ExamRepository;
 
 class CourseController extends Controller
 {
 
+    public function __construct(ExamRepository $examRepo)
+    {
+        $this->examRepository = $examRepo;
+    }
+
     public function design(Course $course)
     {
-        $variables = ['course', 'forceview'];
+        $courseDesign = $course->modules->where('is_overview', 1)
+                               ->first()
+                               ->files
+                               ->where('title', 'like' , 'Course Design')
+                               ->first();
         
-       $courseModuleFirstActivity = $course->modules->first()->activities->where('activity_no', '1.1')->first();
+        return redirect()->route('student.course.overview.show.file', [$course, $courseDesign->id]);
+
+        // $variables = ['course', 'forceview'];
         
-        return view('student.course.design', compact('course', 'firstFile', 'courseModuleFirstActivity'));
+       // $courseModuleFirstActivity = $course->modules->first()->activities->where('activity_no', '1.1')->first();
+        
+        // return view('student.course.design', compact('course', 'firstFile', 'courseModuleFirstActivity'));
     }
 
     public function getCourseDesign($id)
@@ -70,28 +85,44 @@ class CourseController extends Controller
     {
         $modules = null;
         $overview = null;
+        $canTakeExam = false;
 
         $course = Course::with(['modules'])->find($id);
-        $overview = $course->modules->where('is_overview', 1)->first();
+        $overview = $course->modules->where('is_overview', 1)
+                            ->first();
+
         $student_id = Auth::user()->id;
 
         $noOfOverviewFiles = $overview->files->count();
         
+     
+        
         $overviewFiles     = $overview->files->toJson();
         
         $studentAccomplish = Auth::user()->accomplish_files
-                                    ->pluck('id')
-                                    ->toJson();
+                                    ->pluck('id')->toJson();
 
         $studentActivitiesAccomplish = Auth::user()->accomplish_activities
                                             ->pluck('id')
                                             ->toArray();
-        $noOfAccomplishByModule = Auth::user()->accomplish_activities->groupBy(function ($data) {
+
+        $canTakeExam = $this->examRepository->isUserCanTakeExam($course);
+
+
+        $studentAccomplishExam = Auth::user()->accomplish_exam->pluck('id');
+
+
+        $noOfAccomplishActivityByModule = Auth::user()->accomplish_activities->groupBy(function ($data) {
             return  $data->module_id;
         })->toJson();
 
 
-        return view('student.course-enroll.module.show', compact('course', 'student_id', 'overview', 'noOfOverviewFiles', 'overviewFiles', 'studentAccomplish', 'studentActivitiesAccomplish', 'noOfAccomplishByModule'));
+        $accomplishExamByModule = Auth::user()->accomplish_exam->groupBy(function ($data) {
+            return  $data->module_id;
+        })->toJson();
+
+
+        return view('student.course-enroll.module.show', compact('course', 'student_id', 'overview', 'noOfOverviewFiles', 'overviewFiles', 'studentAccomplish', 'studentActivitiesAccomplish', 'noOfAccomplishActivityByModule', 'studentAccomplishExam', 'accomplishExamByModule', 'canTakeExam'));
     }
 
     /**

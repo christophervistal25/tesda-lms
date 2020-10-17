@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateExamAttemptsTable extends Migration
+class CreateQuestionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,13 @@ class CreateExamAttemptsTable extends Migration
      */
     public function up()
     {
-        Schema::create('exam_attempts', function (Blueprint $table) {
+        Schema::create('questions', function (Blueprint $table) {
             $table->id();
-            $table->unsignedInteger('user_id');
-            $table->enum('status', ['passed', 'failed'])->nullable();
+            $table->bigInteger('exam_id');
+            $table->integer('question_no');
+            $table->text('question');
+            $table->string('answer');
+            $table->enum('type', ['FITB', 'MULTIPLE', 'TORF']);
             $table->timestamps();
         });
     }
@@ -28,6 +31,6 @@ class CreateExamAttemptsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('exam_attempts');
+        Schema::dropIfExists('questions');
     }
 }

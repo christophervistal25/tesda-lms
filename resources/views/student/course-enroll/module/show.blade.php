@@ -4,7 +4,9 @@
 @prepend('meta-data')
   <meta name="overview-files" content="{{ $overviewFiles }}">
   <meta name="student-files-accomplish" content="{{ $studentAccomplish }}">
-  <meta name="student-activities-accomplish" content="{{ $noOfAccomplishByModule }}">
+  <meta name="student-activities-accomplish" content="{{ $noOfAccomplishActivityByModule }}">
+  <meta name="student-exam-accomplish" content="{{ $studentAccomplishExam->toJson() }}">
+  <meta name="student-exam-accomplish-by-module" content="{{ $accomplishExamByModule }}">
 @endprepend
 @prepend('page-css')
 {{-- <style type="text/css">
@@ -139,16 +141,22 @@
 							@endif
 			        	<br><br>
 			        	@endforeach
-			        	@if($module->exams->count() != 0)
-			        		@php $isFinalExamination = true @endphp
-							<span>
-			        			<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601889372/icons/final-exam_mdj9vl.png" style="width:24px;" alt="Final exam">
-			        			<a href="">Final Exam</a>
-			        			<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1602065138/icons/activity-icon/not-check.webp" class="mt-1 float-right" style="cursor:pointer;" id="checkbox-{{$activity->id}}">
-			        			<br>
-			        			<span class="ml-4">Pass the exam to be able to receive a Certificate of Completion.</span>
-			        		</span>
-			        	@endif
+	        			<span>
+		        			<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601889372/icons/final-exam_mdj9vl.png" style="width:24px;" alt="Final exam">
+		        			@if($canTakeExam)
+		        				<a href="{{ route('view.final.exam', $module->id) }}" class=" belongs-to-{{ $module->id }}">{{ $module->exam->title }}</a>
+		        			@else
+		        				<a href="#" id="warning-cant-exam" class="belongs-to-{{ $module->id }}">{{ $module->exam->title }}</a>
+		        			@endif
+		        			
+		        			@if(in_array($module->exam->id, $studentAccomplishExam->toArray()))
+								<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1602065138/icons/activity-icon/readable_check.webp" class="mt-1 float-right" style="cursor:pointer;">
+								@else
+								<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1602065138/icons/activity-icon/not-check.webp" class="mt-1 float-right" style="cursor:pointer;" id="checkbox-{{$module->exam->id}}">
+							@endif
+		        			<br>
+		        			<span class="ml-4">Pass the exam to be able to receive a Certificate of Completion.</span>
+	        			</span>
 					</div>
 			      </div>
 			    </div>
@@ -165,10 +173,7 @@
 				  		@else
 				  		File: {{ $module->activities->where('downloadable', 1)->count() }} &nbsp; 
 				  	@endif
-
-				  	@if($isFinalExamination)
-				  		Quiz: {{ $module->exams->groupBy('module_id')->count() }} &nbsp;
-				  	@endif
+			  		Quiz: {{ $module->exam->count() }} &nbsp;
 				  </div>
 			  </div>
 			  
@@ -194,7 +199,6 @@
 	let overviewCount             = 0;
 	const overviewFiles           = JSON.parse($('meta[name="overview-files"]').attr('content'));
 	const accomplishOverviewFiles = JSON.parse($('meta[name="student-files-accomplish"]').attr('content'));
-
 	// get all activity checkbox icons
 	document.querySelectorAll('img').forEach((element, index) => {
 		// Align the checkbox in right
@@ -328,16 +332,26 @@
 
 {{-- PROCESS CHECK PROGRESS FOR ACTIVITIES --}}
 <script>
-	let noOfAccomplishByModule = JSON.parse($('meta[name="student-activities-accomplish"]').attr('content'));
+	let noOfAccomplishActivityByModule = JSON.parse($('meta[name="student-activities-accomplish"]').attr('content'));
+	let studentExamAccomplishByModule = JSON.parse($('meta[name="student-exam-accomplish-by-module"]').attr('content'));
 
-	Object.keys(noOfAccomplishByModule).map((id) => {
+	Object.keys(noOfAccomplishActivityByModule).map((id) => {
 		let noOfActivities = document.querySelectorAll(`.belongs-to-${id}`).length;
-		let progressPerActivity = parseFloat(100 / noOfActivities)
-
-		for(let i = 0; i<noOfAccomplishByModule[id].length; i++) {
+		let progressPerActivity = parseFloat(100 / noOfActivities);
+		if (typeof studentExamAccomplishByModule[id] != 'undefined') {
+			condition = noOfAccomplishActivityByModule[id].length + studentExamAccomplishByModule[id].length;
+		} else {
+			condition = noOfAccomplishActivityByModule[id].length;
+		}
+		
+		for(let i = 0; i<condition; i++) {
 			progressElement = document.querySelector(`#progress-${id}`);
 			progressElement.style.width = parseFloat(progressElement.style.width) + progressPerActivity + '%';
 		}
+	});
+
+	$('#warning-cant-exam').click(function () {
+		alert('Please review all the activities seem\'s like you left something.');
 	});
 
 	$(document).on('click', 'a.module-activity', function (e) {
