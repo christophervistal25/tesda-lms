@@ -11,13 +11,17 @@ use App\ExamResult;
 use App\Exam;
 use App\Activity;
 use App\Helpers\ExamRepository;
+use App\Helpers\FinalExamViewer;
+use App\Helpers\CertificateRepository;
 
 class FinalExamController extends Controller
 {
 
-    public function __construct(ExamRepository $examRepo)
+    public function __construct(FinalExamViewer $viewer, ExamRepository $examRepo, CertificateRepository $certificateRepo)
     {
-        $this->examRepository = $examRepo;
+        $this->examRepository        = $examRepo;
+        $this->viewer                = $viewer;
+        $this->certificateRepository = $certificateRepo;
     }
 
     private function calculateHighestGrade($attempts)
@@ -52,14 +56,26 @@ class FinalExamController extends Controller
     public function view(Module $module)
     {
         $canTakeExam = false;
-    	$course = $module->course;
-        $student = Auth::user();
-    	$exam = Module::with(['exam', 'exam.questions', 'exam.questions.choices'])->find($module->id);
-        $highestGrade = $this->calculateHighestGrade($student->exam_attempt);
+        $course      = $module->course;
+        $student     = Auth::user();
+        $exam        = Module::with(['exam', 'exam.questions', 'exam.questions.choices'])->find($module->id);
 
-        $canTakeExam = $this->examRepository->isUserCanTakeExam($course);
+        $highestGrade           = $this->calculateHighestGrade($student->exam_attempt);
+        $canTakeExam            = $this->examRepository->isUserCanTakeExam($course);
+        $canDownloadCertificate = $this->certificateRepository->isUserCanDownload();
 
-        return view('student.examination.view', compact('exam', 'course', 'module', 'student', 'highestGrade', 'canTakeExam'));
+        $modules  = $course->modules->where('is_overview', 0);
+        $overview = $course->modules->where('is_overview', 1)->first();
+        
+        $this->viewer->process([
+            'course' => $course,
+            'module_id' => $module->id,
+        ]);
+
+        $next     = $this->viewer->getNext();
+        $previous = $this->viewer->getPrevious();
+
+        return view('student.examination.view', compact('exam', 'course', 'overview', 'module', 'modules', 'student', 'next', 'previous', 'highestGrade', 'canTakeExam', 'canDownloadCertificate'));
     }
 
     public function userAddAttempt($module)
@@ -79,7 +95,20 @@ class FinalExamController extends Controller
 
         $attempt_id = Auth::user()->exam_attempt->last()->id;
 
-    	return view('student.examination.answer', compact('questions', 'course', 'module', 'attempt_id'));
+        $modules  = $course->modules->where('is_overview', 0);
+        $overview = $course->modules->where('is_overview', 1)->first();
+        
+        $canDownloadCertificate = $this->certificateRepository->isUserCanDownload();
+
+        $this->viewer->process([
+            'course' => $course,
+            'module_id' => $module->id,
+        ]);
+
+        $next     = $this->viewer->getNext();
+        $previous = $this->viewer->getPrevious();
+
+    	return view('student.examination.answer', compact('questions', 'course', 'module', 'attempt_id', 'next', 'previous', 'overview', 'modules', 'canDownloadCertificate'));
     }
 
     public function submit(Request $request, Module $module)
@@ -117,7 +146,7 @@ class FinalExamController extends Controller
         $examAttempt = ExamAttempt::find($request->attempt_id);
         if ($this->checkUserIfPassedOrFail($questions->count(), $correct) == 'passed') {
             $examAttempt->status = 'passed';
-            $student->accomplish_exam()->attach($module->exam);
+            $student->accomplish_exam()->sync($module->exam);
         } else {
             $examAttempt->status = 'failed';
         }
@@ -145,6 +174,19 @@ class FinalExamController extends Controller
             }
         });
 
-        return view('student.examination.result', compact('course', 'questions', 'module', 'marks'));
+        $modules  = $course->modules->where('is_overview', 0);
+        $overview = $course->modules->where('is_overview', 1)->first();
+        
+        $canDownloadCertificate = $this->certificateRepository->isUserCanDownload();
+
+        $this->viewer->process([
+            'course' => $course,
+            'module_id' => $module->id,
+        ]);
+
+        $next     = $this->viewer->getNext();
+        $previous = $this->viewer->getPrevious();
+
+        return view('student.examination.result', compact('course', 'questions', 'module', 'marks', 'previous', 'next', 'canDownloadCertificate', 'modules', 'overview'));
     }
 }

@@ -91,7 +91,7 @@ class ModulesController extends Controller
                 $TITLE_INDEX = 2;
                 $BODY_INDEX  = 0;
                 $url = preg_match_all('/<a href="(.+)">(.+)<\/a>/', $request->downloadable_activity_content[$key], $match);
-             
+
                 $files = [];
                 foreach ($match[$URL_INDEX] as $key => $file) {
                    $files[] = new ActivityFile([
@@ -199,6 +199,45 @@ class ModulesController extends Controller
                             'title'          => $match[$TITLE_INDEX][$key],
                             'filelable_id'   => $activity->id,
                             'filelable_type' => get_class($activity),
+                            ],
+                            [
+                            'title' => $match[$TITLE_INDEX][$key],
+                            'body'  => $match[$BODY_INDEX][$key],
+                            'link'  => $file,
+                            'type'  => 'file',
+                        ]);
+                    }
+                $activity->files()->saveMany($files);
+                $module->activities()->save($activity);
+            }
+            
+        }
+
+
+        if (isset($request->completion_activity_no)) {
+              foreach ($request->completion_activity_no as $key => $no) {
+                $activity = Activity::updateOrCreate(['activity_no' => $no], [
+                    'module_id'    => $module->id,
+                    'activity_no'  => $no,
+                    'title'        => $request->completion_activity_name[$key],
+                    'instructions' => '',
+                    'body'         => $request->completion_activity_content[$key],
+                    'downloadable' => 0,
+                    'completion'   => 1,
+                ]);
+
+
+                    $URL_INDEX   = 1;
+                    $TITLE_INDEX = 2;
+                    $BODY_INDEX  = 0;
+                    $url = preg_match_all('/<a href="(.+)">(.+)<\/a>/', $request->completion_activity_content[$key], $match);
+                    
+                    $files = [];
+                    foreach ($match[$URL_INDEX] as $key => $file) {
+                       $files[] = ActivityFile::firstOrCreate([
+                                'title'          => $match[$TITLE_INDEX][$key],
+                                'filelable_id'   => $activity->id,
+                                'filelable_type' => get_class($activity),
                             ],
                             [
                             'title' => $match[$TITLE_INDEX][$key],

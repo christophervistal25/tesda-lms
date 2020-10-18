@@ -9,7 +9,7 @@
 <div class="row">
 	<div class="col-lg-9">
 		<div class="card rounded-0 mb-4">
-			<form action="{{ route('answer.final.exam.submit', $module) }}" method="POST">
+			<form action="{{ route('answer.final.exam.submit', $module) }}" method="POST" id="formExam">
 				@csrf
 			<div class="card-body text-dark">
 				<div class="row">
@@ -69,11 +69,60 @@
 				<input type="hidden" name="attempt_id" value="{{ $attempt_id }}">
 				{{-- <div class="pl-4 pr-4"></div> --}}
 				<div class="float-right">
-					<input type="submit" class="btn btn-primary rounded-0" value="Finish attempt...">
+					<input type="submit" class="btn btn-primary rounded-0" id="btnSubmitExam" value="Finish attempt...">
 				</div>
 				<div class="clearfix"></div>
 			</div>
 		</form>
+			<hr>
+			<div class="container-fluid py-2">
+				<div class="row">
+					<div class="col-md-4 text-left">
+						@if($previous instanceof App\Activity)
+							<span class="text-dark mr-3">PREVIOUS ACTIVITY</span>
+							<br>
+							<a href="{{ route('student.activity.view', $previous->id) }}" class="btn btn-link" title="{{$previous->title}}">◄ {{ $previous->activity_no }} {{ $previous->title }}</a>
+						@elseif($previous instanceof App\File)
+							<span class="text-dark mr-3">PREVIOUS ACTIVITY</span>
+							<br>
+							<a href="{{ route('student.course.overview.show.file', [$course->id, $previous->id]) }}" id="prev-activity-link" class="btn btn-link" title="{{ $previous->title }}">◄ {{ $previous->title }}</a>
+						@endif
+					</div>
+
+					<div class="col-md-4 mt-2">
+						<select id="jumpToOptions" class="form-control rounded-0 text-dark">
+							<option selected disabled>Jump to...</option>
+							
+							@foreach($overview->files as $f)
+								<option data-link="/student/course/{{ $course->id }}/overview/show/{{ $f->id }}">{{ $f->title }}</option>
+							@endforeach
+
+							@foreach($modules as $module)
+								@foreach($module->activities->where('completion', '!=', 1) as $activity)
+									<option data-link="/student/activity/view/{{ $activity->id }}">{{ $activity->activity_no }} {{ $activity->title }}</option>
+								@endforeach
+							@endforeach 
+
+							<option selected data-link="/student/final/exam/{{ $module->exam->id }}">{{ $module->exam->title }}</option>
+
+							@foreach($modules as $module)
+								@foreach($module->activities->where('completion', 1) as $activity)
+									<option {{ $canDownloadCertificate ?: 'disabled' }} data-link="/student/activity/view/{{ $activity->id }}">{{ $activity->title }}</option>
+								@endforeach
+							@endforeach
+
+						</select>
+					</div>
+
+					<div class="col-md-4 text-right">
+						@if(!is_null($next->title) && $next instanceof App\Activity)
+							<span class="text-dark mr-3">NEXT ACTIVITY</span>
+							<br>
+							<a href="{{ route('student.activity.view', $next->id) }}" class="btn btn-link" title="{{$next->title}}"> {{ $next->title }} ►</a>
+						@endif
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 
@@ -92,15 +141,19 @@
 		</div>
 	</div>
 </div>
+
 @push('page-scripts')
 <script>
 	$('#sidebarToggle').trigger('click');
-</script>
-<script>
+
 	$('#jumpToOptions').change(function (e) {
 		let selectedItemLink = $(this).children("option:selected").attr('data-link');
 		location.href = selectedItemLink;
 	});
+	$('#formExam').submit(function () {
+		$('#btnSubmitExam').prop('disabled', true);
+	});
+	
 </script>
 @endpush
 @endsection

@@ -11,10 +11,27 @@
 <div class="card rounded-0 mb-4">
 	<div class="card-body pl-0 pr-0">
 		<div class="pl-4 pr-4">
-			<h2 class="text-dark">{{ $activity->activity_no }} {{ $activity->title }}</h2>
+			@if($activity->completion)
+				<h2 class="text-dark">{{ $activity->title }}</h2>
+			@else
+				<h2 class="text-dark">{{ $activity->activity_no }} {{ $activity->title }}</h2>
+			@endif
+			
 			<br>
 			<p class="text-dark">{{ $activity->instructions }}</p>
-				{!! $activity->body !!}
+				<div class="text-dark">
+					@if($activity->completion)
+						<div class="text-center">
+							{!! $activity->body !!}
+						</div>
+						<div class="text-center text-dark">
+							Click the file above to download your certificate
+						</div>
+					@else
+						{!! $activity->body !!}
+					@endif
+				</div>
+				
 			<br>
 			<p class="text-dark">Last modified: {{ $activity->updated_at->format('l, j  F Y, h:i A') }}</p>
 		</div>
@@ -30,6 +47,10 @@
 						<span class="text-dark mr-3">PREVIOUS ACTIVITY</span>
 						<br>
 						<a href="{{ route('student.course.overview.show.file', [$course->id, $previous->id]) }}" id="prev-activity-link" class="btn btn-link" title="{{ $previous->title }}">◄ {{ $previous->title }}</a>
+					@elseif($previous instanceof App\Exam)
+						<span class="text-dark mr-3">PREVIOUS ACTIVITY</span>
+						<br>
+						<a href="{{ route('view.final.exam', [$moduleWithExam->id]) }}" id="prev-activity-link" class="btn btn-link" title="{{ $previous->title }}">◄ {{ $previous->title }}</a>
 					@endif
 				</div>
 
@@ -42,19 +63,25 @@
 						@endforeach
 
 						@foreach($modules as $module)
-							@foreach($module->activities as $activity)
+							@foreach($module->activities->where('completion', '!=', 1) as $activity)
 								<option {{ $activity->id == $activity_id ? 'selected' : '' }} data-link="/student/activity/view/{{ $activity->id }}">{{ $activity->activity_no }} {{ $activity->title }}</option>
 							@endforeach
 						@endforeach
 
 						<option {{ $canTakeExam ? '' : 'disabled' }} data-link="/student/final/exam/{{ $moduleWithExam->id }}">{{ $moduleWithExam->exam->title }}</option>
 
+						@foreach($modules as $module)
+							@foreach($module->activities->where('completion', 1) as $activity)
+								<option {{ $canDownloadCertificate ?: 'disabled' }} data-link="/student/activity/view/{{ $activity->id }}">{{ $activity->title }}</option>
+							@endforeach
+						@endforeach
+
 					
 
 					</select>
 				</div>
 				<div class="col-md-4 text-right">
-					@if(!is_null($next->title) && $next instanceof App\Activity)
+					@if(!is_null($next) && !is_null($next->title) && $next instanceof App\Activity)
 						<span class="text-dark mr-3">NEXT ACTIVITY</span>
 						<br>
 						<a href="{{ route('student.activity.view', $next->id) }}" class="btn btn-link" title="{{$next->title}}">{{ $next->activity_no }} {{ $next->title }} ►</a>
@@ -62,6 +89,7 @@
 						<span class="text-dark mr-3">NEXT ACTIVITY</span>
 						<br>
 						<a href="{{ route('view.final.exam', $module->id) }}" class="btn btn-link" title="Final Exam">Final Exam  ►</a>
+					@else
 					@endif
 				</div>
 

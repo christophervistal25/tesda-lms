@@ -48,7 +48,10 @@
 		 						@endif
 		 						@if($attempt->result->count() != 0)
 		 							<td class="text-center align-middle">{{ $attempt->result->where('status', 'correct')->count() }}.00 </td>
-		 							<td class="text-center align-middle">{{ (int) ( 100 / $attempt->result->count() ) *  $attempt->result->where('status', 'correct')->count() }}.00 out of {{ 100 }}.00 </td>
+		 							@php
+		 							$grade = ( 100 / $attempt->result->count() ) *  $attempt->result->where('status', 'correct')->count();
+		 							@endphp
+		 							<td class="text-center align-middle">{{ number_format($grade, 2, '.', '') }} out of 100.00 </td>
 									<td class="text-center align-middle"><a href="{{ route('answer.final.exam.result', [$module, $attempt->id]) }}">Review</a></td>
 		 							@else
 		 							<td></td>
@@ -60,7 +63,7 @@
 		 	</tbody>
 		 </table>
 		 @if(!is_null($highestGrade))
-		 	<h4 class="text-dark ml-5 py-4">Highest grade : {{ (int) $highestGrade }}.00 / 100.00</h4>
+		 	<h4 class="text-dark ml-5 py-4">Highest grade : {{  number_format($highestGrade, 2, '.', '') }} / 100.00</h4>
 		 @endif
 		 
 			 <div class="text-center">
@@ -84,7 +87,7 @@
 		<hr>
 		<div class="container-fluid py-2">
 			<div class="row">
-				{{-- <div class="col-md-4 text-left">
+				<div class="col-md-4 text-left">
 					@if($previous instanceof App\Activity)
 						<span class="text-dark mr-3">PREVIOUS ACTIVITY</span>
 						<br>
@@ -96,25 +99,38 @@
 					@endif
 				</div>
 
-			{{-- 	<div class="col-md-4 mt-2">
+				<div class="col-md-4 mt-2">
 					<select id="jumpToOptions" class="form-control rounded-0 text-dark">
 						<option selected disabled>Jump to...</option>
 						
-						@foreach($files as $f)
+						@foreach($overview->files as $f)
 							<option data-link="/student/course/{{ $course->id }}/overview/show/{{ $f->id }}">{{ $f->title }}</option>
 						@endforeach
 
 						@foreach($modules as $module)
-							@foreach($module->activities as $activity)
-								<option {{ $activity->id == $activity_id ? 'selected' : '' }} data-link="/student/activity/view/{{ $activity->id }}">{{ $activity->activity_no }} {{ $activity->title }}</option>
+							@foreach($module->activities->where('completion', '!=', 1) as $activity)
+								<option data-link="/student/activity/view/{{ $activity->id }}">{{ $activity->activity_no }} {{ $activity->title }}</option>
+							@endforeach
+						@endforeach 
+
+						<option selected data-link="/student/final/exam/{{ $module->exam->id }}">{{ $module->exam->title }}</option>
+
+						@foreach($modules as $module)
+							@foreach($module->activities->where('completion', 1) as $activity)
+								<option {{ $canDownloadCertificate ?: 'disabled' }} data-link="/student/activity/view/{{ $activity->id }}">{{ $activity->title }}</option>
 							@endforeach
 						@endforeach
 
-					
-
 					</select>
-				</div> --}}
+				</div>
 
+				<div class="col-md-4 text-right">
+					@if(!is_null($next->title) && $next instanceof App\Activity)
+						<span class="text-dark mr-3">NEXT ACTIVITY</span>
+						<br>
+						<a href="{{ route('student.activity.view', $next->id) }}" class="btn btn-link" title="{{$next->title}}"> {{ $next->title }} ►</a>
+					@endif
+				</div>
 			</div>
 		</div>
 	</div>

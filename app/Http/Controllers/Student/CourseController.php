@@ -9,13 +9,15 @@ use App\Activity;
 use Auth;
 use App\Module;
 use App\Helpers\ExamRepository;
+use App\Helpers\CertificateRepository;
 
 class CourseController extends Controller
 {
 
-    public function __construct(ExamRepository $examRepo)
+    public function __construct(ExamRepository $examRepo, CertificateRepository $certificateRepo)
     {
         $this->examRepository = $examRepo;
+        $this->certificateRepository = $certificateRepo;
     }
 
     public function design(Course $course)
@@ -85,7 +87,8 @@ class CourseController extends Controller
     {
         $modules = null;
         $overview = null;
-        $canTakeExam = false;
+      
+        $canDownloadCertificate = $this->certificateRepository->isUserCanDownload();
 
         $course = Course::with(['modules'])->find($id);
         $overview = $course->modules->where('is_overview', 1)
@@ -122,7 +125,7 @@ class CourseController extends Controller
         })->toJson();
 
 
-        return view('student.course-enroll.module.show', compact('course', 'student_id', 'overview', 'noOfOverviewFiles', 'overviewFiles', 'studentAccomplish', 'studentActivitiesAccomplish', 'noOfAccomplishActivityByModule', 'studentAccomplishExam', 'accomplishExamByModule', 'canTakeExam'));
+        return view('student.course-enroll.module.show', compact('course', 'student_id', 'overview', 'noOfOverviewFiles', 'overviewFiles', 'studentAccomplish', 'studentActivitiesAccomplish', 'noOfAccomplishActivityByModule', 'studentAccomplishExam', 'accomplishExamByModule', 'canTakeExam', 'canDownloadCertificate'));
     }
 
     /**

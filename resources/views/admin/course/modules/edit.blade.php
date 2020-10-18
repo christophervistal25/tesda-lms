@@ -28,7 +28,7 @@
 }
 
 .fab:hover {
-  height: 230px;
+  height: 300px;
 }
 
 .fab:hover .mainop {
@@ -111,6 +111,16 @@
   cursor:pointer;
 }
 
+.op5 {
+  background-color: orange;
+  cursor:pointer;
+}
+
+.op6 {
+  background-color: pink;
+  cursor:pointer;
+}
+
 
 
 </style>
@@ -137,6 +147,7 @@
         <button id="btnAddActivity" class="dropdown-item text-capitalize text-gray-700"><i class="fas fa-plus"></i> Add activity</button>
         <button id="btnAaddActivityDownloadable" class="dropdown-item text-capitalize text-gray-700"><i class="fas fa-plus"></i> Add activity downloadable</button>
         <button id="btnAddFinalExam" class="dropdown-item text-capitalize text-gray-700"><i class="fas fa-plus"></i> Add Final Exam</button>
+        <button id="btnAddCompletionActivity" class="dropdown-item text-capitalize text-gray-700"><i class="fas fa-plus"></i> Add Completion Activity</button>
       </div>
     </div>
   </div>
@@ -170,7 +181,7 @@
 
         <div id="dynamic-activity-container">
               @foreach($module->activities as $activity)
-                @if($activity->downloadable == 0)
+                @if($activity->downloadable == 0 && !$activity->completion)
                 {{-- NORMAL ACTIVITY --}}
                     <div class="card shadow mb-2" id="activity-${activityIndex}">
                       <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
@@ -208,7 +219,7 @@
                         </div>
                       </div>
                     </div>
-                  @else
+                  @elseif($activity->downlable === 1 && !$activity->completion)
                   {{-- DOWNLOADABLE ACTIVITY --}}
                       <div class="card shadow mb-2" id="activity-${activityIndex}">
                         <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
@@ -253,6 +264,36 @@
 
                         </div>
                       </div>
+                    @else
+                     <div class="card shadow mb-2" id="activity-${activityIndex}">
+                      <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                        <h6 class="m-0 font-weight-bold text-primary">Completion Activity {{ $activity->activity_no }}</h6>
+                        <div class="dropdown no-arrow">
+                          <a class="text-danger pointer-cursor"  role="button" onclick="deleteActivity({{Str::after($activity->activity_no, '.')}})">
+                            <i class="fas fa-trash"></i>
+                          </a>
+                        </div>
+                      </div>
+                      <div class="card-body">
+                        <div class="form-group row">
+                          <div class="col-md-12">
+                            <input type="hidden" class="form-control activity-index" readonly name="completion_activity_no[]" value="{{ $activity->activity_no }}" required>
+                          </div>
+                        </div>
+                        <div class="form-group row">
+                          <label class="col-md-auto  text-md-right">Activity Name</label>
+                          <div class="col-md-12">
+                            <input type="text" class="form-control" name="completion_activity_name[]" value="{{ $activity->title }}" required  >
+                          </div>
+                        </div>
+                        <div class="form-group row">
+                          <label class="col-md-auto  text-md-right">Activity Content</label>
+                          <div class="col-md-12">
+                            <textarea name="completion_activity_content[]" class="current-activity-content" id="activity_content-{{Str::after($activity->activity_no, '.')}}" cols="30" rows="10">{{ $activity->body }}</textarea>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                 @endif
               @endforeach
         </div>
@@ -283,6 +324,7 @@
             <div class="fallback">
                 <input name="file" type="file" multiple />
             </div>
+            
         </form>
 
       </div>
@@ -307,6 +349,11 @@
   <div id="sheets" class="minifab op2" onclick="generateDownloadableActivity()" data-toggle="tooltip" data-placement="left" title="Add Downlable activity">
     <img class="minifabIcon" src="https://vectr.com/doodleblu/eoOhnACDe.svg?width=64&height=64&select=eoOhnACDepage0">
   </div>
+
+   <div id="docs" class="minifab op3" onclick="generateCompletionActivity();" data-toggle="tooltip" data-placement="left" title="Add Completion Activity">
+    <img class="minifabIcon" src="https://vectr.com/doodleblu/bo4WGZSAK.svg?width=64&height=64&select=bo4WGZSAKpage0">
+  </div>
+
   <div id="docs" class="minifab op1" onclick="generateActivity();" data-toggle="tooltip" data-placement="left" title="Add Activity">
     <img class="minifabIcon" src="https://vectr.com/doodleblu/bo4WGZSAK.svg?width=64&height=64&select=bo4WGZSAKpage0">
   </div>
@@ -331,6 +378,10 @@
 
   function generateFinalExam() {
     $('#btnAddFinalExam').trigger('click');
+  }
+
+  function generateCompletionActivity() {
+    $('#btnAddCompletionActivity').trigger('click');
   }
 
 
@@ -640,6 +691,49 @@
     applyCKEditorDynamically();
   });
 
+  $('#btnAddCompletionActivity').click(function () {
+    activityIndex++;
+    $('#dynamic-activity-container').append(`
+        <div class="card shadow mb-2" id="activity-${activityIndex}">
+         <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-primary">Completion Activity ${activityModuleNo}.${activityIndex}</h6>
+            <div class="dropdown no-arrow">
+              <a class="text-danger pointer-cursor" role="button" onclick="deleteActivity(${activityIndex})">
+                <i class="fas fa-trash"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="card-body">
+
+          <div class="form-group row">
+              <div class="col-md-12">
+                <input type="hidden" class="form-control  activity-index" readonly name="completion_activity_no[]" value="${activityModuleNo}.${activityIndex}" required>
+              </div>
+            </div>
+
+
+            <div class="form-group row">
+              <label class="col-md-auto  text-md-right">Activity Name</label>
+              <div class="col-md-12">
+                <input type="text" class="form-control" name="completion_activity_name[]" value="" required  >
+              </div>
+            </div>
+
+
+             <div class="form-group row">
+              <label class="col-md-auto  text-md-right">Activity Content</label>
+              <div class="col-md-12">
+                <textarea name="completion_activity_content[]" class="" id="activity_content-${activityIndex}" cols="30" rows="10"></textarea>
+              </div>
+            </div>
+
+          </div>
+        </div>
+    `);
+    applyCKEditorDynamically();
+  });
+
 
 
 
@@ -694,11 +788,10 @@
   });
 
   $('#btnAddFinalExam').click(function () {
-      // Redirect to another page.
-      location.href = "{{ route('module.final.exam', $module->id) }}";
+      $('#dynamic-activity-container').append(`
+        <iframe   frameborder="0" border="0" cellspacing="0" style="border-style: none;" src="/admin/module/2/final/exam" width="100%" height="1000;"></iframe>
+      `);
   });
-
-
 
 
   function applyCKEditorDynamically() {

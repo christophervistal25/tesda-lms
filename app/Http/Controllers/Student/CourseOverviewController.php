@@ -7,12 +7,12 @@ use Illuminate\Http\Request;
 use App\Course;
 use App\File as OverviewFile;
 use Illuminate\Support\Str;
-use App\Helpers\ActivityViewer;
+use App\Helpers\OverviewViewer;
 use App\Helpers\ExamRepository;
 
 class CourseOverviewController extends Controller
 {
-    public function __construct(ActivityViewer $viewer, ExamRepository $examRepo)
+    public function __construct(OverviewViewer $viewer, ExamRepository $examRepo)
     {
       $this->viewer = $viewer;
       $this->examRepository = $examRepo;
@@ -25,14 +25,13 @@ class CourseOverviewController extends Controller
        $course = Course::with('modules')->find($course);
 
        $this->viewer->process([
-          'state'   => 'overview',
           'course'  => $course,
           'file_id' => $fileId,
        ]);
 
        $file = OverviewFile::find($fileId);
        
-       $next = $this->viewer->getNext();
+       $next     = $this->viewer->getNext();
        $previous = $this->viewer->getPrevious();
 
 
