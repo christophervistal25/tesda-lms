@@ -75,7 +75,7 @@
           </button>
         </div>
         <div class="modal-body">
-       		<div class="alert alert-danger d-none" id="form-message" role="alert">
+       		<div class="alert alert-danger d-none" id="form-edit-message" role="alert">
        		</div>
         	<form method="POST" id="updateBatchForm">
         		<div class="form-group">
@@ -144,7 +144,6 @@
 			});
 
 		$('#newBatchForm').submit(function (e) {
-			$('#form-message').html('');
 			e.preventDefault();
 			let formData = $(this).serialize();
 			$.ajax({
@@ -159,6 +158,7 @@
 	            },
 	            error : (response) => {
 	            	if (response.status === 422) {
+	            		$('#form-message').html('');
 	        			$('#form-message').removeClass('d-none');
 	            		// Display error message.
 	            		let formErrorMessage = Object.values(response.responseJSON.errors);
@@ -196,6 +196,17 @@
 	            	$('#editBatchModal').modal('toggle');
 	            	batchTable.ajax.reload();
 				},
+	            error : (response) => {
+	            	$('#form-edit-message').html('');
+	            	if (response.status === 422) {
+	        			$('#form-edit-message').removeClass('d-none');
+	            		// Display error message.
+	            		let formErrorMessage = Object.values(response.responseJSON.errors);
+	            		formErrorMessage.forEach((errMessage) => {
+	            			$('#form-edit-message').append(`<li>${errMessage[0]}</li>`)
+	            		});
+	            	}
+	            },
 			});
 		});
 

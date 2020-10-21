@@ -30,7 +30,11 @@
 					<tr>
 						<td class="text-capitalize"> {{ $instructor->lastname  . ', ' . $instructor->firstname . ' ' . $instructor->middlename  }}</td>
 						<td>{{ $instructor->contact_no }}</td>
-						<td class="text-center"><a class="btn btn-sm btn-primary" href="{{ $instructor->image }}" target="_blank">Image</a></td>
+						<td class="text-center">
+							@if($instructor->image)
+								<a class="btn btn-sm btn-primary" href="{{ $instructor->image }}" target="_blank">Image</a>
+							@endif
+						</td>
 						<td class="text-center">
 							<button data-src="{{ $instructor }}" class="btn btn-sm btn-success btn-assign-course">Assign course</button>
 							<button data-src="{{ $instructor }}" class="btn btn-sm btn-info btn-course-handle">Handle Course</button>

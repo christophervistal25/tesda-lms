@@ -53,6 +53,21 @@
 			      </div>
 			    </div>
 			  </div>
+			   <div class="float-right py-2 mr-3 text-dark">
+			  	Label: 1 &nbsp;
+			  	@if($overview->files->where('type', 'page')->count() >= 2)
+			  		Pages: {{ $overview->files->where('type', 'page')->count() }} &nbsp;
+			  		@else
+			  		Page: {{ $overview->files->where('type', 'page')->count() }} &nbsp;
+			  	@endif
+
+			  	@if($overview->files->where('type', 'file')->count() >= 2)
+			  		Files: {{ $overview->files->where('type', 'file')->count() }} 
+			  		@else
+			  		File: {{ $overview->files->where('type', 'file')->count() }} 
+			  	@endif
+			  </div>
+			  <div class="clearfix"></div>
 
 		  @foreach($course->modules->where('is_overview', '!=', 1) as $module)
 		  <hr>
@@ -68,16 +83,41 @@
 			    <div id="module-{{$module->id}}" class="collapse" aria-labelledby="module-{{ $module->id }}" data-parent="#accordion">
 			      <div class="card-body pl-5 pr-5 text-dark">
 			        {!! $module->body !!}
-			        <ul>
-			        	@foreach($module->activities as $activity)
-			        	@if($activity->downloadable == 0)
-			        		<a href="{{ route('activity.view', $activity->id) }}"><p>{{ $activity->activity_no }} {{ $activity->title }}</p></a>
-			        		@else
-			        		<p>{{ $activity->activity_no }} {!! str_replace(['<p>','</p>'], '',  $activity->body) !!}</p>
-			        	@endif
-			        	@endforeach	
-			        </ul>
-
+			      	@foreach($module->activities->sortBy('activity_no') as $activity)
+			      		  @if($activity->downloadable == 0 && !$activity->completion)
+								<span>
+									<img src="{{ $activity->icon }}">
+									<a class="module-activity belongs-to-{{ $module->id }}" data-downloadable="{{ $activity->downloadable }}" data-id="{{ $activity->id }}" data-module="{{ $module->id }}" href="{{ route('student.activity.view', $activity->id) }}">{{ $activity->activity_no }} {{ $activity->title }}</a>
+									<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1602065138/icons/activity-icon/not-check.webp" class="mt-1 float-right" style="cursor:pointer;"  id="checkbox-{{$activity->id}}">
+								</span>
+								<br><br>
+								@elseif($activity->downloadable == 1 && !$activity->completion)
+								<span>
+									<img src="{{ $activity->icon }}">
+									<a class="module-activity belongs-to-{{ $module->id }}" data-downloadable="{{ $activity->downloadable }}" data-module="{{ $module->id }}" data-link="{{ $activity->files[0]->link }}" data-id="{{ $activity->id }}"  href="{{ $activity->files[0]->link }}">{{ $activity->activity_no }} {{ $activity->title }}</a>
+									<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1602065138/icons/activity-icon/not-check.webp" class="mt-1 float-right" style="cursor:pointer;" id="checkbox-{{$activity->id}}">
+								</span>
+								<br><br>
+							@endif
+			      	@endforeach
+			      	@if(!is_null($module->exam))
+			      	<span>
+		        			<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601889372/icons/final-exam_mdj9vl.png" style="width:24px;" alt="Final exam">
+		        			<a href="{{ route('view.final.exam', $module->id) }}" class=" belongs-to-{{ $module->id }}">{{ $module->exam->title }}</a>
+		        			<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1602065138/icons/activity-icon/not-check.webp" class="mt-1 float-right" style="cursor:pointer;" id="checkbox-{{$module->exam->id}}">
+		        			<br>
+		        			<span class="ml-4">Pass the exam to be able to receive a Certificate of Completion.</span>
+	        		</span>
+	       			<br><br>
+	       			@endif
+	       			@foreach($module->activities->where('completion', 1) as $activity)
+    				<span>
+							<img src="{{ $activity->icon }}">
+							<a class="belongs-to-{{ $module->id }}"  href="{{ route('student.activity.view', $activity->id) }}">{{ $activity->title }}</a>
+							<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1602065138/icons/activity-icon/not-check.webp" class="mt-1 float-right" style="cursor:pointer;"  id="checkbox-{{$activity->id}}">
+						</span>
+						<br><br>
+	        		@endforeach
 			        <hr>
 		      		<div class="text-right">
 		      			<a target="_blank" href="{{ route('course.edit.module', [$module->id]) }}" class="btn btn-sm btn-success">Modify</a>
@@ -86,6 +126,25 @@
 			      </div>
 			    </div>
 			  </div>
+			  <div class="float-right py-2 mr-3 text-dark">
+				  	Label: 1 &nbsp;
+				  	@if($module->activities->where('downloadable', 0)->count() >= 2)
+				  		Pages: {{ $module->activities->where('downloadable', 0)->count() }} &nbsp;
+				  		@else
+				  		Page: {{ $module->activities->where('downloadable', 0)->count() }} &nbsp;
+				  	@endif
+
+				  	@if($module->activities->where('downloadable', 1)->count() >= 2)
+				  		Files: {{ $module->activities->where('downloadable', 1)->count() }} &nbsp;
+				  		@else
+				  		File: {{ $module->activities->where('downloadable', 1)->count() }} &nbsp; 
+				  	@endif
+			  		
+			  		@if(!is_null($module->exam))
+			  			Quiz: {{ $module->exam->count() }} &nbsp;
+			  		@endif
+				  </div>
+				  <div class="clearfix"></div>
 		  @endforeach
 		</div>
 	</div>

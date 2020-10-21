@@ -30,7 +30,13 @@
 									@if($q->choices->count() !== 0)
 										<div class="ml-3">
 											@foreach($q->choices as $c)
-												<p><label for="choice-{{ $c->id }}"><input type="radio" id="choice-{{ $c->id }}"  value="{{ $c->choice }}" name="question_{{ $q->question_no }}"> {{ $c->choice }}</label></p>
+												<div class="float-right">
+													<button onclick="removeChoice(this)" class="btn btn-sm btn-danger rounded-0" data-point-to="${id}"><i class="fas fa-times" ></i> </button>
+												</div>
+												<div class="clearfix"></div>
+												<div contenteditable="true" id="choice-${id}" class="border border-white p-2 ml-2 mb-2"  data-choice="{{ $c->choice }}">
+													{{ $c->choice }}
+												</div> 
 											@endforeach
 										</div>
 									@endif
@@ -98,7 +104,7 @@
 							@endforeach
 
 							@foreach($modules as $module)
-								@foreach($module->activities->where('completion', '!=', 1) as $activity)
+								@foreach($module->activities->where('completion', null) as $activity)
 									<option data-link="/student/activity/view/{{ $activity->id }}">{{ $activity->activity_no }} {{ $activity->title }}</option>
 								@endforeach
 							@endforeach 
@@ -115,7 +121,7 @@
 					</div>
 
 					<div class="col-md-4 text-right">
-						@if(!is_null($next->title) && $next instanceof App\Activity)
+						@if(!is_null($next) && $next instanceof App\Activity)
 							<span class="text-dark mr-3">NEXT ACTIVITY</span>
 							<br>
 							<a href="{{ route('student.activity.view', $next->id) }}" class="btn btn-link" title="{{$next->title}}"> {{ $next->title }} ►</a>

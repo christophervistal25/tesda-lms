@@ -11,6 +11,10 @@
     cursor : pointer;
   }
 
+  .select-activity-icon:hover {
+      background :#4e73df;
+  }
+
 
 .fab {
   background-color: transparent;
@@ -28,7 +32,7 @@
 }
 
 .fab:hover {
-  height: 170px;
+  height: 280px;
 }
 
 .fab:hover .mainop {
@@ -111,6 +115,16 @@
   cursor:pointer;
 }
 
+.op5 {
+  background-color: orange;
+  cursor:pointer;
+}
+
+.op6 {
+  background-color: pink;
+  cursor:pointer;
+}
+
 
 
 </style>
@@ -118,10 +132,27 @@
 @if(Session::has('success'))
 <div class="card bg-primary text-white shadow mb-2">
   <div class="card-body">
-    {{ Session::get('success') }} <a class="font-weight-bold text-white" href=" {{ route('course.index') }}"> / <u>View records</u></a>
+    {{ Session::get('success') }} <a class="text-white" href="{{ route('course.view.module', $course) }}"> / <u>View Course</u></a>
+  </div>
+</div>
+
+<div class="card bg-info text-white shadow mb-2">
+  <div class="card-body">
+    <a class="text-white" href="{{ route('module.final.exam', Session::get('module_id')) }}">Add final exam to new created module.</a>
   </div>
 </div>
 @endif
+
+{{-- @if(!$canAddCompletion)
+<div class="card bg-danger text-white shadow mb-2">
+  <div class="card-body">
+    You can't add activity completion without adding first a final exam.
+  </div>
+</div>
+@endif --}}
+
+
+
 
 
 
@@ -137,7 +168,8 @@
         <div class="dropdown-header">Activities</div>
         <button id="btnAddActivity" class="dropdown-item text-capitalize text-gray-700"><i class="fas fa-plus"></i> Add activity</button>
         <button id="btnAaddActivityDownloadable" class="dropdown-item text-capitalize text-gray-700"><i class="fas fa-plus"></i> Add activity downloadable</button>
-        <button id="btnAddCourseOverview" class="dropdown-item text-capitalize text-gray-700"><i class="fas fa-plus"></i> Add Course Overview</button>
+        <button id="btnAddFinalExam" class="dropdown-item text-capitalize text-gray-700"><i class="fas fa-plus"></i> Add Final Exam</button>
+        <button id="btnAddCompletionActivity" class="dropdown-item text-capitalize text-gray-700"><i class="fas fa-plus"></i> Add Completion Activity</button>
       </div>
     </div>
   </div>
@@ -150,7 +182,7 @@
         <div class="form-group row">
           <label for="email" class="col-md-auto  text-md-right">{{ __('Module Title') }}</label>
           <div class="col-md-12">
-            <input id="title" type="text" class="form-control @error('title') is-invalid @enderror" name="title" value="{{ old('title') }}" required autocomplete="title" autofocus>
+            <input id="title" type="text" class="form-control @error('title') is-invalid @enderror" name="title" value="{{ old('title') }}"  autocomplete="title" autofocus>
             @error('title')
             <span class="invalid-feedback" role="alert">
               <strong>{{ $message }}</strong>
@@ -169,7 +201,28 @@
           @enderror
         </div>
 
-        <div id="dynamic-activity-container"></div>
+        <div id="dynamic-activity-container">
+          @if(old('activity_no') || old('downloadable_activity_no') || old('completion_activity_no'))
+             @php
+                $allOldValues = array_merge(old('activity_no') ?? [], old('downloadable_activity_no') ?? []);
+                sort($allOldValues);
+                $noOfOldValues = count($allOldValues);
+             @endphp
+             @include('layouts.admin.validation.modules.generate-activity')
+          @else
+             @php
+              $noOfOldValues = 0;
+             @endphp
+          @endif
+
+        {{--   @if(old('downloadable_activity_no'))
+            @include('layouts.admin.validation.modules.generate-downloadable-activity')
+          @endif
+
+          @if(old('completion_activity_no'))
+            @include('layouts.admin.validation.modules.generate-completion-activity')
+          @endif --}}
+        </div>
 
 
         <div class="clearfix"></div>
@@ -179,8 +232,8 @@
           </div>
         </div>
       </div>
-      
     </form>
+
   </div>
 </div>
 
@@ -214,9 +267,19 @@
     <i id="addIcon" class="fas fa-plus"></i>
   </div>
 
+  <div id="drawings" class="minifab op4" onclick="generateFinalExam()" data-toggle="tooltip" data-placement="left" title="Add Final Exam">
+    <img class="minifabIcon" src="https://vectr.com/doodleblu/b2DCtQvEHF.svg?width=64&height=64&select=b2DCtQvEHFpage0">
+  </div>
+
+
+  <div id="docs" class="minifab op3" onclick="generateCompletionActivity();" data-toggle="tooltip" data-placement="left" title="Add Completion Activity">
+    <img class="minifabIcon" src="https://vectr.com/doodleblu/bo4WGZSAK.svg?width=64&height=64&select=bo4WGZSAKpage0">
+  </div>
+
   <div id="sheets" class="minifab op2" onclick="generateDownloadableActivity()" data-toggle="tooltip" data-placement="left" title="Add Downlable activity">
     <img class="minifabIcon" src="https://vectr.com/doodleblu/eoOhnACDe.svg?width=64&height=64&select=eoOhnACDepage0">
   </div>
+
   <div id="docs" class="minifab op1" onclick="generateActivity();" data-toggle="tooltip" data-placement="left" title="Add Activity">
     <img class="minifabIcon" src="https://vectr.com/doodleblu/bo4WGZSAK.svg?width=64&height=64&select=bo4WGZSAKpage0">
   </div>
@@ -226,9 +289,12 @@
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
 <script src="https://cdn.ckeditor.com/4.14.1/standard/ckeditor.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script>
-  $(document).ready(function(){
+  $(document).ready(function() {
     $('[data-toggle="tooltip"]').tooltip();
+     
+
   })
 
   function generateActivity() {
@@ -239,8 +305,25 @@
     $('#btnAaddActivityDownloadable').trigger('click');
   }
 
+  function generateCompletionActivity() {
+    let canAddCompletion = "{{ $canAddCompletion }}";
+    if (canAddCompletion) {
+      $('#btnAddCompletionActivity').trigger('click');
+    } else {
+       swal({
+        title: 'Important Message',
+        text: `Please add final exam first.`,
+        icon: 'warning',
+        buttons: true,
+        dangerMode: true,
+        closeOnClickOutside: false
+      });
+    }
+    
+  }
+
   function generateFinalExam() {
-    alert('This is just a sample');
+    $('#btnAddFinalExam').trigger('click');
   }
 
 
@@ -254,26 +337,24 @@
         }
     });
 
-
-    moduleBodyEditor.ui.addButton('AddFileButton', {
-        label: "Add Downloable file",
-        command: 'addFile',
-        toolbar: 'insert',
-        icon: 'https://avatars1.githubusercontent.com/u/5500999?v=2&s=16'
-    });
-
-
     moduleBodyEditor.addCommand("courseDesign", {
        exec: function(edt) {
            edt.insertHtml(`<a href="/admin/course/design/${courseId}">Course Design</a>`);
        }
     });
 
+    moduleBodyEditor.ui.addButton('AddFileButton', {
+        label: "Add Downloable file",
+        command: 'addFile',
+        toolbar: 'insert',
+        icon: 'https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601890164/icons/folder_pk0fos.png'
+    });
+
     moduleBodyEditor.ui.addButton('CourseDesignButton', {
        label: "Add Course Design",
        command: 'courseDesign',
        toolbar: 'insert',
-       icon: 'http://lms.mnpvi-tesda.com/theme/image.php/moove/theme/1598161402/favicon'
+       icon: 'https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601890160/icons/mortarboard_frosqa.png'
     });
 
 
@@ -342,7 +423,7 @@
 {{-- CUSTOM CS FOR DYNAMIC ADD ACTIVITY --}}
 <script>
   let activityModuleNo = "{{ $moduleNo }}";
-  let activityIndex = 0;
+  let activityIndex =  {{ $noOfOldValues }};
   let selectedActivityContent = "";
   let courseId = "{{ $course->id }}";
 
@@ -412,6 +493,18 @@
               </div>
             </div>
 
+            <div class="form-group row">
+              <label class="col-md-auto  text-md-right">Select Activity Icon</label>
+              <input type="hidden" id="activity-icon-${activityIndex}" name="activity_icon[]">
+              <div class="col-md-12" id="activity-icon-container-${activityIndex}">
+                @foreach($fileIcons as $icon)
+                  <img class="p-2 select-activity-icon pointer-cursor" data-index="${activityIndex}" src="{{ $icon }}" alt="">
+                @endforeach              
+              </div>
+            </div>
+
+            
+
              <div class="form-group row">
               <label class="col-md-auto  text-md-right">Activity Content</label>
               <div class="col-md-12">
@@ -425,8 +518,21 @@
     applyCKEditorDynamically();
   });
 
-
-
+  $(document).on('click', 'img.select-activity-icon', function (e) {
+        let index = $(this).attr('data-index');
+        let iconSource = $(this).attr('src');
+        
+        // if the user select another let's change all the background of icons.
+        if ($(`#activity-icon-${index}`).val().length != 0) {
+          $(`#activity-icon-container-${index}`).children().each(function (index, element) {
+            $(element).css('background', '#ffffff');
+          });  
+        }
+        // Then apply the style to the selected icon.
+        $(this).css('background', '#4e73df');
+        
+        $(`#activity-icon-${index}`).val(iconSource);
+  });
 
   $('#btnAaddActivityDownloadable').click(function () {
     activityIndex++;
@@ -465,6 +571,16 @@
               </div>
             </div>
 
+            <div class="form-group row">
+              <label class="col-md-auto  text-md-right">Select Activity Icon</label>
+              <input type="hidden" id="activity-icon-${activityIndex}" name="downloadable_activity_icon[]">
+              <div class="col-md-12" id="activity-icon-container-${activityIndex}">
+                @foreach($fileIcons as $icon)
+                  <img class="p-2 select-activity-icon pointer-cursor" data-index="${activityIndex}" src="{{ $icon }}" alt="">
+                @endforeach              
+              </div>
+            </div>
+
              <div class="form-group row">
               <label class="col-md-auto  text-md-right">Activity Content</label>
               <div class="col-md-12">
@@ -478,44 +594,82 @@
     applyCKEditorDynamically();
   });
 
+  $('#btnAddCompletionActivity').click(function () {
+    activityIndex++;
+    $('#dynamic-activity-container').append(`
+        <div class="card shadow mb-2" id="activity-${activityIndex}">
+         <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-primary">Completion Activity ${activityModuleNo}.${activityIndex}</h6>
+            <div class="dropdown no-arrow">
+              <a class="text-danger pointer-cursor" role="button" onclick="deleteActivity(${activityIndex})">
+                <i class="fas fa-trash"></i>
+              </a>
+            </div>
+          </div>
 
-  // function applyCKEditorForCourseOverview()  {
-  //     courseOverviewEditor = CKEDITOR.replace( `activity_content-overview` );
-  //     courseOverviewEditor.setData(`
-  //           <p>Please review the course design.</p>
-  //           <a href="/admin/course/design/${courseId}">Course Design</a>
-  //     `);
-  //         courseOverviewEditor.addCommand("addFile", {
-  //             exec: function(edt) {
-  //               selectedActivityContent = edt;
-  //               $('#addFileInActivityModal').modal('toggle');
-  //             }
-  //         });
+          <div class="card-body">
 
-  //         courseOverviewEditor.ui.addButton('SuperButton', {
-  //             label: "Add downloable",
-  //             command: 'addFile',
-  //             toolbar: 'insert',
-  //             icon: 'https://avatars1.githubusercontent.com/u/5500999?v=2&s=16'
-  //         });
-  // }
+          <div class="form-group row">
+              <div class="col-md-12">
+                <input type="hidden" class="form-control  activity-index" readonly name="completion_activity_no[]" value="${activityModuleNo}.${activityIndex}" required>
+              </div>
+            </div>
+
+
+            <div class="form-group row">
+              <label class="col-md-auto  text-md-right">Activity Name</label>
+              <div class="col-md-12">
+                <input type="text" class="form-control" name="completion_activity_name[]" value="" required  >
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label class="col-md-auto  text-md-right">Select Activity Icon</label>
+              <input type="hidden" id="activity-icon-${activityIndex}" name="completion_activity_icon[]">
+              <div class="col-md-12" id="activity-icon-container-${activityIndex}">
+                @foreach($fileIcons as $icon)
+                  <img class="p-2 select-activity-icon pointer-cursor" data-index="${activityIndex}" src="{{ $icon }}" alt="">
+                @endforeach              
+              </div>
+            </div>
+
+             <div class="form-group row">
+              <label class="col-md-auto  text-md-right">Activity Content</label>
+              <div class="col-md-12">
+                <textarea name="completion_activity_content[]" class="" id="activity_content-${activityIndex}" cols="30" rows="10"></textarea>
+              </div>
+            </div>
+
+          </div>
+        </div>
+    `);
+    applyCKEditorDynamically();
+  });
+
+  $('#btnAddFinalExam').click(function () {
+
+    swal({
+      title: 'Important Message',
+      text: `1. Before adding a final exam make sure you create module first, when new module is created a message will prompt if you want to add final exam to this module.
+             2. If you miss the prompt you can also add a final exam by navigating to Edit module in Course view.
+          `,
+      icon: 'warning',
+      buttons: true,
+      dangerMode: true,
+      closeOnClickOutside: false
+    });
+      
+  });
 
   function applyCKEditorDynamically() {
     editor = CKEDITOR.replace( `activity_content-${activityIndex}`, { tabSpaces: 4 } );
+
     editor.addCommand("addFile", {
         exec: function(edt) {
           selectedActivityContent = edt;
           $('#addFileInActivityModal').modal('toggle');
         }
     });
-
-    editor.ui.addButton('SuperButton', {
-        label: "Add downloable",
-        command: 'addFile',
-        toolbar: 'insert',
-        icon: 'https://avatars1.githubusercontent.com/u/5500999?v=2&s=16'
-    });
-
 
    editor.addCommand("courseDesign", {
        exec: function(edt) {
@@ -618,6 +772,120 @@
       selectedActivityContent.setData(`${previousData} ${content}`);
   });
 
+   
+
+  // For form validation check if there's ckeditor error content.
+   $('textarea').each(function(index, element) {
+      
+      if (typeof $(element).attr('id') != 'undefined' && $(element).attr('id').includes('from_error_')) {
+
+         var validateEditor = CKEDITOR.replace($(element).attr('id'), { tabSpaces: 4 } );
+           validateEditor.addCommand("addFile", {
+            exec: function(edt) {
+              selectedActivityContent = edt;
+              $('#addFileInActivityModal').modal('toggle');
+            }
+        });
+
+        validateEditor.ui.addButton('SuperButton', {
+            label: "Add downloable",
+            command: 'addFile',
+            toolbar: 'insert',
+            icon: 'https://avatars1.githubusercontent.com/u/5500999?v=2&s=16'
+        });
+
+
+       validateEditor.addCommand("courseDesign", {
+           exec: function(edt) {
+               edt.insertHtml(`<a href="/admin/course/design/${courseId}">Course Design</a>`);
+           }
+        });
+
+       validateEditor.addCommand("pdfIcon", {
+           exec: function(edt) {
+               edt.insertHtml(`<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601889372/icons/pdf_icon_nfqvrw.png" />`);
+           }
+        });
+
+       validateEditor.addCommand("activityIcon", {
+           exec: function(edt) {
+               edt.insertHtml(`<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601889372/icons/course_design_icon_jfq35v.png" />`);
+           }
+        });
+
+       validateEditor.addCommand("pptIcon", {
+           exec: function(edt) {
+               edt.insertHtml(`<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601889372/icons/powerpoint-24_moxfoh.png" />`);
+           }
+        });
+
+       validateEditor.addCommand("finalExamIcon", {
+           exec: function(edt) {
+               edt.insertHtml(`<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601889372/icons/final-exam_mdj9vl.png" />`);
+           }
+        });
+
+       validateEditor.addCommand("cerficateIcon", {
+           exec: function(edt) {
+               edt.insertHtml(`<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601889768/icons/cerificate_hvcpx5.png" />`);
+           }
+        });
+
+
+        validateEditor.ui.addButton('AddPDFicon', {
+            label: "Add PDF Icon",
+            command: 'pdfIcon',
+            toolbar: 'insert',
+            icon: 'https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601889372/icons/pdf_icon_nfqvrw.png'
+        });
+
+        validateEditor.ui.addButton('addActivityIcon', {
+            label: "Add Activity Icon",
+            command: 'activityIcon',
+            toolbar: 'insert',
+            icon: 'https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601888589/icons/course_design_icon_ljqk9r.png'
+        });
+
+
+        validateEditor.ui.addButton('addPPTicon', {
+            label: "Add Powerpoint icon",
+            command: 'pptIcon',
+            toolbar: 'insert',
+            icon: 'https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601889372/icons/powerpoint-24_moxfoh.png'
+        });
+
+        validateEditor.ui.addButton('addFinalExam', {
+            label: "Add Final Exam icon",
+            command: 'finalExamIcon',
+            toolbar: 'insert',
+            icon: 'https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601889372/icons/final-exam_mdj9vl.png'
+        });
+
+        validateEditor.ui.addButton('addCertificateIcon', {
+            label: "Add Certificate icon",
+            command: 'cerficateIcon',
+            toolbar: 'insert',
+            icon: 'https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601889768/icons/cerificate_hvcpx5.png'
+        });
+     
+        validateEditor.ui.addButton('CourseDesignButton', {
+           label: "Add Course Design",
+           command: 'courseDesign',
+           toolbar: 'insert',
+           icon: 'https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601890160/icons/mortarboard_frosqa.png'
+        });
+
+        validateEditor.ui.addButton('AddFileButton', {
+            label: "Add Downloable file",
+            command: 'addFile',
+            toolbar: 'insert',
+            icon: 'https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601890164/icons/folder_pk0fos.png'
+        });
+      }
+   });
+
+
+     
 </script>
 
 @endpush

@@ -52,15 +52,16 @@ class CourseController extends Controller
      */
     public function store(Request $request)
     {
-
-        $batch_ids = Batch::get(['id'])
-                    ->pluck(['id'])
-                    ->toArray();
+        $programs = Program::get(['id'])
+                            ->pluck('id')
+                            ->toArray();
 
         $this->validate($request, [
             'name'        => 'required',
             'description' => 'required',
-            'program'     => 'required'
+            'design'      => 'required',
+            'duration'    => 'required',
+            'program'     => 'in:'. implode(',', $programs),
         ]);
 
         if ($request->hasFile('image')) {
@@ -133,14 +134,16 @@ class CourseController extends Controller
     public function update(Request $request, Course $course)
     {
 
-       $batch_ids = Batch::get(['id'])
+       $programs = Program::get(['id'])
                     ->pluck(['id'])
                     ->toArray();
 
         $this->validate($request, [
             'name'        => 'required',
             'description' => 'required',
-            'program'     => 'required',
+            'design'      => 'required',
+            'duration'    => 'required',
+            'program'     => 'in:'. implode(',', $programs),
         ]);
 
         if ($request->hasFile('image')) {

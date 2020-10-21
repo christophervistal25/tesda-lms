@@ -46,7 +46,13 @@ class InstructorController extends Controller
      */
     public function store(Request $request)
     {
-        
+        $this->validate($request, [
+            'firstname'  => 'required|string',
+            'middlename' => 'required|string',
+            'lastname'   => 'required|string',
+            'contact_no' => 'required',
+        ]);
+
         if ($request->hasFile('image')) {
             $image_name = $request->file('image')->getRealPath();
             \Cloudder::upload($image_name, null);
@@ -101,7 +107,13 @@ class InstructorController extends Controller
      */
     public function update(Request $request, Instructor $instructor)
     {
-
+        $this->validate($request, [
+            'firstname'  => 'required|string',
+            'middlename' => 'required|string',
+            'lastname'   => 'required|string',
+            'contact_no' => 'required',
+        ]);
+        
         if ($request->hasFile('image')) {
             $image_name = $request->file('image')->getRealPath();
             \Cloudder::upload($image_name, null);

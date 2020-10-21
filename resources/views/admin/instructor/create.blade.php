@@ -8,10 +8,11 @@
 @if(Session::has('success'))
 	<div class="card bg-primary text-white shadow mb-2">
 		<div class="card-body">
-			{{ Session::get('success') }} <a class="font-weight-bold text-white" href=" {{ route('instructor.index') }}"> / <u>View records</u></a>
+			{{ Session::get('success') }} <a class="text-white" href=" {{ route('instructor.index') }}"> / <u>View records</u></a>
 		</div>
 	</div>
 @endif
+
 
 <div class="card shadow mb-4">
 	<div class="card-header py-3">

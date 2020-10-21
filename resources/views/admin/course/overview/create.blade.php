@@ -8,17 +8,33 @@
 <div class="card bg-primary text-white shadow mb-2">
   <div class="card-body">
     {{ Session::get('success') }}
+    <br>
+    <ul>
+      <li><a class="text-white" href="{{ route('course.view.module', $course) }}">View Course</a></li>
+      <li><a class="text-white" href="{{ route('course.add.module', $course) }}">Add module</a>
+      </li>
+    </ul>
   </div>
 </div>
 @endif
 
-@if(is_null($course))
+@if(is_null($overview))
 <div class="card bg-danger text-white shadow mb-2">
   <div class="card-body">
-    Before adding a module you should create course overview first.
+    You should add course overview first.
   </div>
 </div>
 @endif
+
+
+@if(Session::has('no_activity'))
+<div class="card bg-danger text-white shadow mb-2">
+  <div class="card-body">
+    {{ Session::get('no_activity') }}
+  </div>
+</div>
+@endif
+
 
 <div class="card mb-4">
   <!-- Card Header - Dropdown -->
@@ -32,7 +48,7 @@
 
         <div class="form-group">
           <label>Title</label>
-          <input type="text" name="title" class="form-control @error('title') is-invalid @enderror">{{ old('title') }}</textarea>
+          <input type="text" name="title" value="Course Overview" class="form-control @error('title') is-invalid @enderror" value="{{ old('title') }}"></input>
           @error('title')
           <span class="invalid-feedback" role="alert">
             <strong>{{ $message }}</strong>
@@ -111,7 +127,7 @@
 
     moduleBodyEditor.addCommand("insertDocx", {
        exec: function(edt) {
-           edt.insertHtml(`<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1602063746/icons/docx_drgokv.png" />`);
+           edt.insertHtml(`<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1602063746/icons/docx.png" />`);
        }
     });
 
@@ -162,10 +178,10 @@
 
  // UI BUTTONS
     moduleBodyEditor.ui.addButton('addDocxIcon', {
-        label: "Add PDF Icon",
+        label: "Add Docx Icon",
         command: 'insertDocx',
         toolbar: 'insert',
-        icon: 'https://res.cloudinary.com/dfm6cr1l9/image/upload/v1602063746/icons/docx_drgokv.png'
+        icon: 'https://res.cloudinary.com/dfm6cr1l9/image/upload/v1602063746/icons/docx.png'
     });
 
     moduleBodyEditor.ui.addButton('AddPDFicon', {
@@ -222,14 +238,14 @@
         label: "Add checkable checkbox",
         command: 'insertCheckableBox',
         toolbar: 'insert',
-        icon: 'https://res.cloudinary.com/dfm6cr1l9/image/upload/v1602063768/icons/checkable_jxix4b.webp'
+        icon: 'https://res.cloudinary.com/dfm6cr1l9/image/upload/v1602065137/icons/activity-icon/checkable.webp'
     });
 
     moduleBodyEditor.ui.addButton('addReadable', {
         label: "Add checkable checkbox",
         command: 'insertReadableBox',
         toolbar: 'insert',
-        icon: 'https://res.cloudinary.com/dfm6cr1l9/image/upload/v1602064353/icons/not-check_b0v5jh.webp'
+        icon: 'https://res.cloudinary.com/dfm6cr1l9/image/upload/v1602065138/icons/activity-icon/not-check.webp'
     });
 
 

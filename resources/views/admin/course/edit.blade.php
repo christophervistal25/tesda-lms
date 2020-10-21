@@ -6,12 +6,14 @@
 @endprepend
 
 @if(Session::has('success'))
-	<div class="card bg-success text-white shadow mb-2">
-		<div class="card-body">
-			{{ Session::get('success') }} <a class="font-weight-bold text-white" href=" {{ route('course.index') }}"> / <u>View records</u></a>
-		</div>
-	</div>
+  <div class="card bg-success text-white shadow mb-2">
+    <div class="card-body">
+      {{ Session::get('success') }} <a class="text-white" href=" {{ route('course.index') }}"> / <u>View records</u></a>
+    </div>
+  </div>
 @endif
+
+@include('layouts.admin.error')
 
 <div class="card shadow mb-4">
 	<div class="card-header py-3">

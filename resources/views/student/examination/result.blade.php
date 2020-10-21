@@ -233,7 +233,7 @@
 							@endforeach
 
 							@foreach($modules as $module)
-								@foreach($module->activities->where('completion', '!=', 1) as $activity)
+								@foreach($module->activities->where('completion', null) as $activity)
 									<option data-link="/student/activity/view/{{ $activity->id }}">{{ $activity->activity_no }} {{ $activity->title }}</option>
 								@endforeach
 							@endforeach 

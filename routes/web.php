@@ -75,7 +75,12 @@ Route::prefix('admin')->group(function() {
 
             Route::get('/module/{module}/final/exam', 'FinalExamController@create')->name('module.final.exam');
 
+
             Route::post('/module/{module}/final/exam', 'FinalExamController@store')->name('module.final.exam.submit');
+
+            Route::get('/module/{module}/final/exam/edit', 'FinalExamController@edit')->name('module.final.exam.edit');
+
+            Route::put('/final/exam/{exam}/edit', 'FinalExamController@update')->name('module.final.exam.update');            
 	    });
     });
 

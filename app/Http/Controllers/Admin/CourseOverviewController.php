@@ -13,13 +13,19 @@ use App\Module;
 class CourseOverviewController extends Controller
 {
 
-   public function create(Course $course)
+  public function create(Course $course)
 	{
-		return view('admin.course.overview.create', compact('course'));
+    $overview = $course->modules->where('is_overview', 1)->first();
+		return view('admin.course.overview.create', compact('course', 'overview'));
 	}
 
  	public function store(Request $request, Course $course)
  	{
+        $this->validate($request, [
+          'title' => 'required',
+          'body'  => 'required',
+        ]);
+
         $module = Module::create([
             'title'       => $request->title,
             'body'        => $request->body,
@@ -39,6 +45,9 @@ class CourseOverviewController extends Controller
 
         foreach ($match[$URL_INDEX] as $key => $file) {
            $type = Str::contains($file, ['https', 'http']) ? 'file' : 'page';
+           if ($type == 'page') {
+             $type = Str::contains($file, ['.pdf']) ? 'file' : 'page';
+           }
            preg_match( '@src="([^"]+)"@' , $images[0][$key], $iconSrc);
            $icon = isset($iconSrc[$ICON_INDEX])  ? $iconSrc[$ICON_INDEX] : null;
 
@@ -64,6 +73,12 @@ class CourseOverviewController extends Controller
 
     public function update(Request $request, $id)
     {
+        $this->validate($request, [
+            'title' => 'required',
+            'body'  => 'required',
+        ]);
+
+
         $module = Module::find($id);
         $module->title = $request->title;
         $module->body = $request->body;
@@ -80,16 +95,22 @@ class CourseOverviewController extends Controller
         
         foreach ($match[$URL_INDEX] as $key => $file) {
            $type = Str::contains($file, ['https', 'http']) ? 'file' : 'page';
+           if ($type == 'page') { $type = Str::contains($file, ['.pdf']) ? 'file' : 'page'; }
            preg_match( '@src="([^"]+)"@' , $images[0][$key], $iconSrc);
            $icon = isset($iconSrc[$ICON_INDEX])  ? $iconSrc[$ICON_INDEX] : null;
 
-           $files[] = ModuleFile::firstOrNew(['title' => $match[$TITLE_INDEX][$key]], [
-                'title' => $match[$TITLE_INDEX][$key],
-                'body'  => $match[$BODY_INDEX][$key],
-                'link'  => $file,
-                'type'  => $type,
-                'icon'  => $icon,
-           ]);
+           $files[] = ModuleFile::firstOrNew([
+                  'title'          => $match[$TITLE_INDEX][$key],
+                  'link'           => $file,
+                  'filelable_id'   => $module->id,
+                  'filelable_type' => get_class($module),
+                ], [
+                  'title' => $match[$TITLE_INDEX][$key],
+                  'body'  => $match[$BODY_INDEX][$key],
+                  'link'  => $file,
+                  'type'  => $type,
+                  'icon'  => $icon,
+                ]);
          
         }
 

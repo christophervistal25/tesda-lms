@@ -128,10 +128,28 @@
 @if(Session::has('success'))
 <div class="card bg-primary text-white shadow mb-2">
   <div class="card-body">
-    {{ Session::get('success') }} <a class="font-weight-bold text-white" href=" {{ route('course.index') }}"> / <u>View records</u></a>
+    {{ Session::get('success') }} <a class="text-white" href="{{ route('course.view.module', $module->course) }}"> / <u>View Module</u></a>
   </div>
 </div>
 @endif
+
+
+@if(Session::has('no_activity'))
+<div class="card bg-danger text-white shadow mb-2">
+  <div class="card-body">
+    {{ Session::get('no_activity') }}
+  </div>
+</div>
+@endif
+
+
+{{-- @if(!$canAddCompletion)
+<div class="card bg-danger text-white shadow mb-2">
+  <div class="card-body">
+    You can't add activity completion without adding first a final exam.
+  </div>
+</div>
+@endif --}}
 
 
 <div class="card  mb-4">
@@ -146,7 +164,9 @@
         <div class="dropdown-header">Activities</div>
         <button id="btnAddActivity" class="dropdown-item text-capitalize text-gray-700"><i class="fas fa-plus"></i> Add activity</button>
         <button id="btnAaddActivityDownloadable" class="dropdown-item text-capitalize text-gray-700"><i class="fas fa-plus"></i> Add activity downloadable</button>
-        <button id="btnAddFinalExam" class="dropdown-item text-capitalize text-gray-700"><i class="fas fa-plus"></i> Add Final Exam</button>
+        @if(!$hasExam)
+          <button id="btnAddFinalExam" class="dropdown-item text-capitalize text-gray-700"><i class="fas fa-plus"></i> Add Final Exam</button>
+        @endif
         <button id="btnAddCompletionActivity" class="dropdown-item text-capitalize text-gray-700"><i class="fas fa-plus"></i> Add Completion Activity</button>
       </div>
     </div>
@@ -179,133 +199,202 @@
           @enderror
         </div>
 
+        @php $hasOld = false; @endphp
+
         <div id="dynamic-activity-container">
-              @foreach($module->activities as $activity)
-                @if($activity->downloadable == 0 && !$activity->completion)
-                {{-- NORMAL ACTIVITY --}}
-                    <div class="card shadow mb-2" id="activity-${activityIndex}">
-                      <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                        <h6 class="m-0 font-weight-bold text-primary">Activity {{ $activity->activity_no }}</h6>
-                        <div class="dropdown no-arrow">
-                          <a class="text-danger pointer-cursor"  role="button" onclick="deleteActivity({{Str::after($activity->activity_no, '.')}})">
-                            <i class="fas fa-trash"></i>
-                          </a>
-                        </div>
-                      </div>
-                      <div class="card-body">
-                        <div class="form-group row">
-                          <label class="col-md-auto  text-md-right">Activity No.</label>
-                          <div class="col-md-12">
-                            <input type="text" class="form-control activity-index" readonly name="activity_no[]" value="{{ $activity->activity_no }}" required>
-                          </div>
-                        </div>
-                        <div class="form-group row">
-                          <label class="col-md-auto  text-md-right">Activity Name</label>
-                          <div class="col-md-12">
-                            <input type="text" class="form-control" name="activity_name[]" value="{{ $activity->title }}" required  >
-                          </div>
-                        </div>
-                        <div class="form-group row">
-                          <label class="col-md-auto  text-md-right">Activity Instruction</label>
-                          <div class="col-md-12">
-                            <input type="text" class="form-control" name="activity_instructions[]" value="{{ $activity->instructions }}" required  >
-                          </div>
-                        </div>
-                        <div class="form-group row">
-                          <label class="col-md-auto  text-md-right">Activity Content</label>
-                          <div class="col-md-12">
-                            <textarea name="activity_content[]" class="current-activity-content" id="activity_content-{{Str::after($activity->activity_no, '.')}}" cols="30" rows="10">{{ $activity->body }}</textarea>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  @elseif($activity->downlable === 1 && !$activity->completion)
-                  {{-- DOWNLOADABLE ACTIVITY --}}
-                      <div class="card shadow mb-2" id="activity-${activityIndex}">
+                <div id="dynamic-activity-container">
+                @if(old('activity_no') || old('downloadable_activity_no') || old('completion_activity_no'))
+                   @php
+                      $allOldValues = array_merge(old('activity_no') ?? [], old('downloadable_activity_no') ?? []);
+                      sort($allOldValues);
+                      $noOfOldValues = count($allOldValues);
+                      $hasOld = true;
+                   @endphp
+                   @include('layouts.admin.validation.modules.generate-activity')
+                @else
+                   @php
+                    $noOfOldValues = 0;
+                   @endphp
+                @endif
+
+              @if(!$hasOld)
+                @foreach($module->activities->sortBy('activity_no') as $index => $activity)
+                  @if($activity->downloadable == 0 && !$activity->completion)
+                  {{-- NORMAL ACTIVITY --}}
+                      <div class="card shadow mb-2" id="activity-{{ $activity->activity_no }}">
                         <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                          <h6 class="m-0 font-weight-bold text-primary">Downloadable Activity {{$activity->activity_no }}</h6>
+                          <h6 class="m-0 font-weight-bold text-primary">Activity {{ $activity->activity_no }}</h6>
                           <div class="dropdown no-arrow">
-                            <a class="text-danger pointer-cursor" role="button" onclick="deleteActivity({{Str::after($activity->activity_no, '.')}})">
+                            <a class="text-danger pointer-cursor"  role="button" onclick="deleteActivity({{Str::after($activity->activity_no, '.')}})">
                               <i class="fas fa-trash"></i>
                             </a>
                           </div>
                         </div>
-
                         <div class="card-body">
-
-                            <div class="form-group row">
+                          <div class="form-group row">
                             <label class="col-md-auto  text-md-right">Activity No.</label>
                             <div class="col-md-12">
-                              <input type="text" class="form-control activity-index" readonly name="downloadable_activity_no[]" value="{{ $activity->activity_no }}" required>
+                              <input type="text" class="form-control activity-index" readonly name="activity_no[]" value="{{ $activity->activity_no }}" required>
                             </div>
                           </div>
-
-
                           <div class="form-group row">
                             <label class="col-md-auto  text-md-right">Activity Name</label>
                             <div class="col-md-12">
-                              <input type="text" class="form-control" name="downloadable_activity_name[]" value="{{ $activity->title }}" required  >
+                              <input type="text" class="form-control" name="activity_name[]" value="{{ $activity->title }}" required  >
+                            </div>
+                          </div>
+                          <div class="form-group row">
+                            <label class="col-md-auto  text-md-right">Activity Instruction</label>
+                            <div class="col-md-12">
+                              <input type="text" class="form-control" name="activity_instructions[]" value="{{ $activity->instructions }}" required  >
+                            </div>
+                          </div>
+                          <div class="form-group row">
+                            <label class="col-md-auto  text-md-right">Select Activity Icon</label>
+                            <input type="hidden" id="activity-icon-{{ $index }}" name="activity_icon[]" value="{{ $activity->icon }}">
+                            <div class="col-md-12" id="activity-icon-container-{{ $index }}">
+                              @foreach($fileIcons as $icon)
+                                @if($activity->icon == $icon)
+                                  <img style="background : #4e73df;" class="p-2 select-activity-icon pointer-cursor" data-index="{{ $index }}" src="{{ $icon }}" alt="">
+                                  @else
+                                  <img class="p-2 select-activity-icon pointer-cursor" data-index="{{ $index }}" src="{{ $icon }}" alt="">
+                                @endif
+                                
+                              @endforeach              
+                            </div>
+                          </div>
+                          <div class="form-group row">
+                            <label class="col-md-auto  text-md-right">Activity Content</label>
+                            <div class="col-md-12">
+                              <textarea name="activity_content[]" class="current-activity-content" id="activity_content-{{Str::after($activity->activity_no, '.')}}" cols="30" rows="10">{{ $activity->body }}</textarea>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      
+                    @elseif($activity->downloadable == 1 && !$activity->completion)
+                    {{-- DOWNLOADABLE ACTIVITY --}}
+                        <div class="card shadow mb-2" id="activity-{{ $activity->activity_no }}">
+                          <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                            <h6 class="m-0 font-weight-bold text-primary">Downloadable Activity {{$activity->activity_no }}</h6>
+                            <div class="dropdown no-arrow">
+                              <a class="text-danger pointer-cursor" role="button" onclick="deleteActivity({{Str::after($activity->activity_no, '.')}})">
+                                <i class="fas fa-trash"></i>
+                              </a>
+                            </div>
+                          </div>
+
+                          <div class="card-body">
+
+                              <div class="form-group row">
+                              <label class="col-md-auto  text-md-right">Activity No.</label>
+                              <div class="col-md-12">
+                                <input type="text" class="form-control activity-index" readonly name="downloadable_activity_no[]" value="{{ $activity->activity_no }}" required>
+                              </div>
+                            </div>
+
+
+                            <div class="form-group row">
+                              <label class="col-md-auto  text-md-right">Activity Name</label>
+                              <div class="col-md-12">
+                                <input type="text" class="form-control" name="downloadable_activity_name[]" value="{{ $activity->title }}" required  >
+                              </div>
+                            </div>
+
+                            <div class="form-group row">
+                              <label class="col-md-auto  text-md-right">Activity Instruction</label>
+                              <div class="col-md-12">
+                                <input type="text" class="form-control" name="downloadable_activity_instructions[]" value="{{ $activity->instructions }}" required  >
+                              </div>
+                            </div>
+
+                            <div class="form-group row">
+                              <label class="col-md-auto  text-md-right">Select Activity Icon</label>
+                                <input type="hidden" id="activity-icon-{{ $index }}" name="downloadable_activity_icon[]" value="{{ $activity->icon }}">
+                                <div class="col-md-12" id="activity-icon-container-{{ $index }}">
+                                  @foreach($fileIcons as $icon)
+                                    @if($activity->icon == $icon)
+                                      <img style="background : #4e73df;" class="p-2 select-activity-icon pointer-cursor" data-index="{{ $index }}" src="{{ $icon }}" alt="">
+                                      @else
+                                      <img class="p-2 select-activity-icon pointer-cursor" data-index="{{ $index }}" src="{{ $icon }}" alt="">
+                                    @endif
+                                    
+                                  @endforeach              
+                                </div>
+                            </div>
+
+                             <div class="form-group row">
+                              <label class="col-md-auto  text-md-right">Activity Content</label>
+                              <div class="col-md-12">
+                                <textarea name="downloadable_activity_content[]" class="current-activity-content" id="activity_content-{{Str::after($activity->activity_no, '.')}}" cols="30" rows="10">{!! $activity->body !!}</textarea>
+                              </div>
+                            </div>
+
+                          </div>
+                        </div>
+                      @else
+                       <div class="card shadow mb-2" id="activity-{{ $activity->activity_no }}">
+                        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                          <h6 class="m-0 font-weight-bold text-primary">Completion Activity {{ $activity->activity_no }}</h6>
+                          <div class="dropdown no-arrow">
+                            <a class="text-danger pointer-cursor"  role="button" onclick="deleteActivity({{Str::after($activity->activity_no, '.')}})">
+                              <i class="fas fa-trash"></i>
+                            </a>
+                          </div>
+                        </div>
+                        <div class="card-body">
+                          <div class="form-group row">
+                            <div class="col-md-12">
+                              <input type="hidden" class="form-control activity-index" readonly name="completion_activity_no[]" value="{{ $activity->activity_no }}" required>
+                            </div>
+                          </div>
+                          <div class="form-group row">
+                            <label class="col-md-auto  text-md-right">Activity Name</label>
+                            <div class="col-md-12">
+                              <input type="text" class="form-control" name="completion_activity_name[]" value="{{ $activity->title }}" required  >
                             </div>
                           </div>
 
                           <div class="form-group row">
-                            <label class="col-md-auto  text-md-right">Activity Instruction</label>
-                            <div class="col-md-12">
-                              <input type="text" class="form-control" name="downloadable_activity_instructions[]" value="{{ $activity->instructions }}" required  >
+                              <label class="col-md-auto  text-md-right">Select Activity Icon</label>
+                                <input type="hidden" id="activity-icon-{{ $index }}" name="completion_activity_icon[]" value="{{ $activity->icon }}">
+                                <div class="col-md-12" id="activity-icon-container-{{ $index }}">
+                                  @foreach($fileIcons as $icon)
+                                    @if($activity->icon == $icon)
+                                      <img style="background : #4e73df;" class="p-2 select-activity-icon pointer-cursor" data-index="{{ $index }}" src="{{ $icon }}" alt="">
+                                      @else
+                                      <img class="p-2 select-activity-icon pointer-cursor" data-index="{{ $index }}" src="{{ $icon }}" alt="">
+                                    @endif
+                                    
+                                  @endforeach              
+                                </div>
                             </div>
-                          </div>
 
-                           <div class="form-group row">
+                          <div class="form-group row">
                             <label class="col-md-auto  text-md-right">Activity Content</label>
                             <div class="col-md-12">
-                              <textarea name="downloadable_activity_content[]" class="current-activity-content" id="activity_content-{{Str::after($activity->activity_no, '.')}}" cols="30" rows="10">{!! $activity->body !!}</textarea>
+                              <textarea name="completion_activity_content[]" class="current-activity-content" id="activity_content-{{Str::after($activity->activity_no, '.')}}" cols="30" rows="10">{{ $activity->body }}</textarea>
                             </div>
                           </div>
+                        </div>
+                      </div>
+                  @endif
 
-                        </div>
-                      </div>
-                    @else
-                     <div class="card shadow mb-2" id="activity-${activityIndex}">
-                      <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                        <h6 class="m-0 font-weight-bold text-primary">Completion Activity {{ $activity->activity_no }}</h6>
-                        <div class="dropdown no-arrow">
-                          <a class="text-danger pointer-cursor"  role="button" onclick="deleteActivity({{Str::after($activity->activity_no, '.')}})">
-                            <i class="fas fa-trash"></i>
-                          </a>
-                        </div>
-                      </div>
-                      <div class="card-body">
-                        <div class="form-group row">
-                          <div class="col-md-12">
-                            <input type="hidden" class="form-control activity-index" readonly name="completion_activity_no[]" value="{{ $activity->activity_no }}" required>
-                          </div>
-                        </div>
-                        <div class="form-group row">
-                          <label class="col-md-auto  text-md-right">Activity Name</label>
-                          <div class="col-md-12">
-                            <input type="text" class="form-control" name="completion_activity_name[]" value="{{ $activity->title }}" required  >
-                          </div>
-                        </div>
-                        <div class="form-group row">
-                          <label class="col-md-auto  text-md-right">Activity Content</label>
-                          <div class="col-md-12">
-                            <textarea name="completion_activity_content[]" class="current-activity-content" id="activity_content-{{Str::after($activity->activity_no, '.')}}" cols="30" rows="10">{{ $activity->body }}</textarea>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                @endif
-              @endforeach
+                @endforeach
+
+              @endif
         </div>
 
 
-        <div class="clearfix"></div>
+       
+      </div>
+
+       <div class="clearfix"></div>
         <div class="form-group mb-0 text-right">
           <div class="col-md-auto">
             <button type="submit" class="btn btn-success">{{ __('Update') }}</button>
           </div>
         </div>
-      </div>
       
     </form>
   </div>
@@ -342,9 +431,15 @@
     <i id="addIcon" class="fas fa-plus"></i>
   </div>
 
-  <div id="drawings" class="minifab op4" onclick="generateFinalExam()" data-toggle="tooltip" data-placement="left" title="Add Final Exam">
-    <img class="minifabIcon" src="https://vectr.com/doodleblu/b2DCtQvEHF.svg?width=64&height=64&select=b2DCtQvEHFpage0">
-  </div>
+  @if(!$hasExam)
+    <div id="drawings" class="minifab op4" onclick="generateFinalExam()" data-toggle="tooltip" data-placement="left" title="Add Final Exam">
+      <img class="minifabIcon" src="https://vectr.com/doodleblu/b2DCtQvEHF.svg?width=64&height=64&select=b2DCtQvEHFpage0">
+    </div>
+    @else
+    <div id="drawings" class="minifab op4" onclick="updateExam({{ $module->exam }})" data-toggle="tooltip" data-placement="left" title="Update Final Exam">
+      <img class="minifabIcon" src="https://vectr.com/doodleblu/b2DCtQvEHF.svg?width=64&height=64&select=b2DCtQvEHFpage0">
+    </div>
+  @endif
 
   <div id="sheets" class="minifab op2" onclick="generateDownloadableActivity()" data-toggle="tooltip" data-placement="left" title="Add Downlable activity">
     <img class="minifabIcon" src="https://vectr.com/doodleblu/eoOhnACDe.svg?width=64&height=64&select=eoOhnACDepage0">
@@ -363,6 +458,7 @@
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
 <script src="https://cdn.ckeditor.com/4.14.1/standard/ckeditor.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script>
   $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip();
@@ -380,8 +476,24 @@
     $('#btnAddFinalExam').trigger('click');
   }
 
+  function updateExam(exam) {
+    location.href = `/admin/module/${exam.id}/final/exam/edit`;
+  }
+
   function generateCompletionActivity() {
-    $('#btnAddCompletionActivity').trigger('click');
+    let canAddCompletion = "{{ $canAddCompletion }}";
+    if (canAddCompletion) {
+        $('#btnAddCompletionActivity').trigger('click');
+    } else {
+      swal({
+        title: 'Important Message',
+        text: `Please add final exam first.`,
+        icon: 'warning',
+        buttons: true,
+        dangerMode: true,
+        closeOnClickOutside: false
+      });
+    }
   }
 
 
@@ -404,27 +516,26 @@
         }
     });
 
-
-    moduleBodyEditor.ui.addButton('AddFileButton', {
-        label: "Add Downloable file",
-        command: 'addFile',
-        toolbar: 'insert',
-        icon: 'https://avatars1.githubusercontent.com/u/5500999?v=2&s=16'
-    });
-
-
     moduleBodyEditor.addCommand("courseDesign", {
        exec: function(edt) {
            edt.insertHtml(`<a href="/admin/course/design/${courseId}">Course Design</a>`);
        }
     });
 
+    moduleBodyEditor.ui.addButton('AddFileButton', {
+        label: "Add Downloable file",
+        command: 'addFile',
+        toolbar: 'insert',
+        icon: 'https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601890164/icons/folder_pk0fos.png'
+    });
+
     moduleBodyEditor.ui.addButton('CourseDesignButton', {
        label: "Add Course Design",
        command: 'courseDesign',
        toolbar: 'insert',
-       icon: 'http://lms.mnpvi-tesda.com/theme/image.php/moove/theme/1598161402/favicon'
+       icon: 'https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601890160/icons/mortarboard_frosqa.png'
     });
+
 
     $(".current-activity-content").each(function (index, element) {
       let elementId = $(element).attr('id')
@@ -678,6 +789,17 @@
               </div>
             </div>
 
+
+           <div class="form-group row">
+              <label class="col-md-auto  text-md-right">Select Activity Icon</label>
+              <input type="hidden" id="activity-icon-${activityIndex}" name="activity_icon[]">
+              <div class="col-md-12" id="activity-icon-container-${activityIndex}">
+                @foreach($fileIcons as $icon)
+                  <img class="p-2 select-activity-icon pointer-cursor" data-index="${activityIndex}" src="{{ $icon }}" alt="">
+                @endforeach              
+              </div>
+            </div>
+
              <div class="form-group row">
               <label class="col-md-auto  text-md-right">Activity Content</label>
               <div class="col-md-12">
@@ -720,6 +842,15 @@
               </div>
             </div>
 
+            <div class="form-group row">
+              <label class="col-md-auto  text-md-right">Select Activity Icon</label>
+              <input type="hidden" id="activity-icon-${activityIndex}" name="completion_activity_icon[]">
+              <div class="col-md-12" id="activity-icon-container-${activityIndex}">
+                @foreach($fileIcons as $icon)
+                  <img class="p-2 select-activity-icon pointer-cursor" data-index="${activityIndex}" src="{{ $icon }}" alt="">
+                @endforeach              
+              </div>
+            </div>
 
              <div class="form-group row">
               <label class="col-md-auto  text-md-right">Activity Content</label>
@@ -774,6 +905,16 @@
               </div>
             </div>
 
+            <div class="form-group row">
+              <label class="col-md-auto  text-md-right">Select Activity Icon</label>
+              <input type="hidden" id="activity-icon-${activityIndex}" name="downloadable_activity_icon[]">
+              <div class="col-md-12" id="activity-icon-container-${activityIndex}">
+                @foreach($fileIcons as $icon)
+                  <img class="p-2 select-activity-icon pointer-cursor" data-index="${activityIndex}" src="{{ $icon }}" alt="">
+                @endforeach              
+              </div>
+            </div>
+
              <div class="form-group row">
               <label class="col-md-auto  text-md-right">Activity Content</label>
               <div class="col-md-12">
@@ -788,11 +929,9 @@
   });
 
   $('#btnAddFinalExam').click(function () {
-      $('#dynamic-activity-container').append(`
-        <iframe   frameborder="0" border="0" cellspacing="0" style="border-style: none;" src="/admin/module/2/final/exam" width="100%" height="1000;"></iframe>
-      `);
+    let routeId = {{ $module->id }};
+    location.href = `/admin/module/${routeId}/final/exam`;
   });
-
 
   function applyCKEditorDynamically() {
     editor = CKEDITOR.replace( `activity_content-${activityIndex}`, { tabSpaces: 4 } );
@@ -912,6 +1051,134 @@
       selectedActivityContent.setData(`${previousData} ${content}`);
   });
 
+   $(document).on('click', 'img.select-activity-icon', function (e) {
+        let index = $(this).attr('data-index');
+        let iconSource = $(this).attr('src');
+        
+        // if the user select another let's change all the background of icons.
+        if ($(`#activity-icon-${index}`).val().length != 0) {
+          $(`#activity-icon-container-${index}`).children().each(function (index, element) {
+            $(element).css('background', '#ffffff');
+          });  
+        }
+        // Then apply the style to the selected icon.
+        $(this).css('background', '#4e73df');
+        
+        $(`#activity-icon-${index}`).val(iconSource);
+  });
+
+</script>
+
+<script>
+  // For form validation check if there's ckeditor error content.
+   $('textarea').each(function(index, element) {
+      
+      if (typeof $(element).attr('id') != 'undefined' && $(element).attr('id').includes('from_error_')) {
+
+         var validateEditor = CKEDITOR.replace($(element).attr('id'), { tabSpaces: 4 } );
+           validateEditor.addCommand("addFile", {
+            exec: function(edt) {
+              selectedActivityContent = edt;
+              $('#addFileInActivityModal').modal('toggle');
+            }
+        });
+
+        validateEditor.ui.addButton('SuperButton', {
+            label: "Add downloable",
+            command: 'addFile',
+            toolbar: 'insert',
+            icon: 'https://avatars1.githubusercontent.com/u/5500999?v=2&s=16'
+        });
+
+
+       validateEditor.addCommand("courseDesign", {
+           exec: function(edt) {
+               edt.insertHtml(`<a href="/admin/course/design/${courseId}">Course Design</a>`);
+           }
+        });
+
+       validateEditor.addCommand("pdfIcon", {
+           exec: function(edt) {
+               edt.insertHtml(`<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601889372/icons/pdf_icon_nfqvrw.png" />`);
+           }
+        });
+
+       validateEditor.addCommand("activityIcon", {
+           exec: function(edt) {
+               edt.insertHtml(`<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601889372/icons/course_design_icon_jfq35v.png" />`);
+           }
+        });
+
+       validateEditor.addCommand("pptIcon", {
+           exec: function(edt) {
+               edt.insertHtml(`<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601889372/icons/powerpoint-24_moxfoh.png" />`);
+           }
+        });
+
+       validateEditor.addCommand("finalExamIcon", {
+           exec: function(edt) {
+               edt.insertHtml(`<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601889372/icons/final-exam_mdj9vl.png" />`);
+           }
+        });
+
+       validateEditor.addCommand("cerficateIcon", {
+           exec: function(edt) {
+               edt.insertHtml(`<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601889768/icons/cerificate_hvcpx5.png" />`);
+           }
+        });
+
+
+        validateEditor.ui.addButton('AddPDFicon', {
+            label: "Add PDF Icon",
+            command: 'pdfIcon',
+            toolbar: 'insert',
+            icon: 'https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601889372/icons/pdf_icon_nfqvrw.png'
+        });
+
+        validateEditor.ui.addButton('addActivityIcon', {
+            label: "Add Activity Icon",
+            command: 'activityIcon',
+            toolbar: 'insert',
+            icon: 'https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601888589/icons/course_design_icon_ljqk9r.png'
+        });
+
+
+        validateEditor.ui.addButton('addPPTicon', {
+            label: "Add Powerpoint icon",
+            command: 'pptIcon',
+            toolbar: 'insert',
+            icon: 'https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601889372/icons/powerpoint-24_moxfoh.png'
+        });
+
+        validateEditor.ui.addButton('addFinalExam', {
+            label: "Add Final Exam icon",
+            command: 'finalExamIcon',
+            toolbar: 'insert',
+            icon: 'https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601889372/icons/final-exam_mdj9vl.png'
+        });
+
+        validateEditor.ui.addButton('addCertificateIcon', {
+            label: "Add Certificate icon",
+            command: 'cerficateIcon',
+            toolbar: 'insert',
+            icon: 'https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601889768/icons/cerificate_hvcpx5.png'
+        });
+     
+        validateEditor.ui.addButton('CourseDesignButton', {
+           label: "Add Course Design",
+           command: 'courseDesign',
+           toolbar: 'insert',
+           icon: 'https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601890160/icons/mortarboard_frosqa.png'
+        });
+
+        validateEditor.ui.addButton('AddFileButton', {
+            label: "Add Downloable file",
+            command: 'addFile',
+            toolbar: 'insert',
+            icon: 'https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601890164/icons/folder_pk0fos.png'
+        });
+      }
+   });
 </script>
 
 @endpush

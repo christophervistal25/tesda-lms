@@ -16,7 +16,7 @@
 @if(Session::has('success'))
 <div class="card bg-success text-white shadow mb-2">
   <div class="card-body">
-    {{ Session::get('success') }}
+    {{ Session::get('success') }} / <a class="text-white" href="{{ route('course.view.module', $course) }}">View Course</a>
   </div>
 </div>
 @endif
@@ -36,7 +36,7 @@
 
         <div class="form-group">
           <label>Title</label>
-          <input name="title" type="text" class="form-control @error('text') is-invalid @enderror" value="{{ old('title') ?? $overview->title }}">
+          <input name="title" type="text" class="form-control @error('title') is-invalid @enderror" value="{{ old('title') ?? $overview->title }}">
           @error('title')
           <span class="invalid-feedback" role="alert">
             <strong>{{ $message }}</strong>
@@ -115,7 +115,7 @@
 
     moduleBodyEditor.addCommand("insertDocx", {
        exec: function(edt) {
-           edt.insertHtml(`<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1602063746/icons/docx_drgokv.png" />`);
+           edt.insertHtml(`<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1602063746/icons/docx.png" />`);
        }
     });
 
@@ -166,10 +166,10 @@
 
  // UI BUTTONS
     moduleBodyEditor.ui.addButton('addDocxIcon', {
-        label: "Add PDF Icon",
+        label: "Add Docx Icon",
         command: 'insertDocx',
         toolbar: 'insert',
-        icon: 'https://res.cloudinary.com/dfm6cr1l9/image/upload/v1602063746/icons/docx_drgokv.png'
+        icon: 'https://res.cloudinary.com/dfm6cr1l9/image/upload/v1602063746/icons/docx.png'
     });
 
     moduleBodyEditor.ui.addButton('AddPDFicon', {
@@ -226,14 +226,14 @@
         label: "Add checkable checkbox",
         command: 'insertCheckableBox',
         toolbar: 'insert',
-        icon: 'https://res.cloudinary.com/dfm6cr1l9/image/upload/v1602063768/icons/checkable_jxix4b.webp'
+        icon: 'https://res.cloudinary.com/dfm6cr1l9/image/upload/v1602065137/icons/activity-icon/checkable.webp'
     });
 
     moduleBodyEditor.ui.addButton('addReadable', {
         label: "Add checkable checkbox",
         command: 'insertReadableBox',
         toolbar: 'insert',
-        icon: 'https://res.cloudinary.com/dfm6cr1l9/image/upload/v1602064353/icons/not-check_b0v5jh.webp'
+        icon: 'https://res.cloudinary.com/dfm6cr1l9/image/upload/v1602065138/icons/activity-icon/not-check.webp'
     });
 
 

@@ -41,6 +41,8 @@
 		</div>
 		<div class="modal-body">
 			<form id="newProgramForm">
+				<div class="alert alert-danger d-none" id="form-message" role="alert">
+       			</div>
 				<div class="form-group">
 					<label for="name">Program name</label>
 					<input class="form-control" type="text" name="program_name">
@@ -77,6 +79,8 @@
 		</div>
 		<div class="modal-body">
 			<form id="editProgramForm">
+				<div class="alert alert-danger d-none" id="form-edit-message" role="alert">
+       			</div>
 				<div class="form-group">
 					<label for="name">Program name</label>
 					<input class="form-control" type="text" id="programName" name="program_name">
@@ -155,14 +159,27 @@
 				data: formData,
 				success : (response) => {
 					if (response.success) {
+						$('#form-message').addClass('d-none');
 						programTable.ajax.reload();
 						$('#newProgramForm')[0].reset();
 						swal("Good job!", "Succesfully add new program", "success");
 						$('#addNewProgram').modal('toggle');
 					}
 				},
+				error : (response) => {
+					if (response.status === 422) {
+	            		$('#form-message').html('');
+	        			$('#form-message').removeClass('d-none');
+	            		// Display error message.
+	            		let formErrorMessage = Object.values(response.responseJSON.errors);
+	            		formErrorMessage.forEach((errMessage) => {
+	            			$('#form-message').append(`<li>${errMessage[0]}</li>`)
+	            		});
+	            	}
+				}
 			});
 		});
+
 		$(document).on('click', 'button.btnEditProgram', function (e) {
 			data = {};
 			data = JSON.parse($(e.target).attr('data-src'));
@@ -170,11 +187,13 @@
 			$('.editSelectPicker').selectpicker('val', data.batch_id);
 			$('#editProgram').modal('toggle');
 		});
+
 		$(document).on('click', 'button.btnDeleteProgram', function (e) {
 			data = {};
 			data = JSON.parse($(e.target).attr('data-src'));
 			$('#deleteProgram').modal('toggle');
 		});
+
 		$('#editProgramForm').submit(function (e) {
 			e.preventDefault();
 			$.ajax({
@@ -183,14 +202,27 @@
 				data : { id : data.id, name : $('#programName').val(), batch_no: $('#editBatchNo').val() },
 				success : (response) => {
 					if (response.success) {
+						$('#form-edit-message').addClass('d-none');
 						programTable.ajax.reload();
 						$('#editProgramForm')[0].reset();
 						swal("Good job!", "Succesfully update program", "success");
 						$('#editProgram').modal('toggle');
 					}
 				},
+				error : (response) => {
+					if (response.status === 422) {
+	            		$('#form-edit-message').html('');
+	        			$('#form-edit-message').removeClass('d-none');
+	            		// Display error message.
+	            		let formErrorMessage = Object.values(response.responseJSON.errors);
+	            		formErrorMessage.forEach((errMessage) => {
+	            			$('#form-edit-message').append(`<li>${errMessage[0]}</li>`)
+	            		});
+	            	}
+				},
 			});
 		});
+
 		$('#btnDeleteButton').click(function (e) {
 			e.preventDefault();
 			$.ajax({

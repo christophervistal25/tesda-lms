@@ -108,7 +108,7 @@
 						@endforeach
 
 						@foreach($modules as $module)
-							@foreach($module->activities->where('completion', '!=', 1) as $activity)
+							@foreach($module->activities->where('completion', null) as $activity)
 								<option data-link="/student/activity/view/{{ $activity->id }}">{{ $activity->activity_no }} {{ $activity->title }}</option>
 							@endforeach
 						@endforeach 
@@ -125,7 +125,7 @@
 				</div>
 
 				<div class="col-md-4 text-right">
-					@if(!is_null($next->title) && $next instanceof App\Activity)
+					@if(!is_null($next) && $next instanceof App\Activity)
 						<span class="text-dark mr-3">NEXT ACTIVITY</span>
 						<br>
 						<a href="{{ route('student.activity.view', $next->id) }}" class="btn btn-link" title="{{$next->title}}"> {{ $next->title }} ►</a>

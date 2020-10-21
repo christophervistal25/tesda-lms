@@ -44,9 +44,8 @@ class BatchController extends Controller
     public function store(Request $request)
     {
         if ($request->ajax()) {
-            // Add validation.
             $this->validate($request, [
-                'name' => 'required',
+                'name'         => 'required',
                 'batch_number' => 'required|integer',
             ]);
 
@@ -89,6 +88,11 @@ class BatchController extends Controller
     public function update(Request $request, $id)
     {
         if ($request->ajax()) {
+            $this->validate($request, [
+                'name'         => 'required',
+                'batch_number' => 'required|integer',
+            ]);
+            
             $batch = Batch::find($id);
             $batch->name = $request->name;
             $batch->batch_no = $request->batch_number;

@@ -45,8 +45,10 @@ class ProgramsController extends Controller
     public function store(Request $request)
     {
         if ($request->ajax()) {
+            $batchs = Batch::get(['id'])->pluck('id')->toArray();
             $this->validate($request, [
                 'program_name' => 'required',
+                'batch'        => 'in:' . implode(',', $batchs)
             ]);
 
             $batch   = Batch::find($request->batch_no);
@@ -94,6 +96,14 @@ class ProgramsController extends Controller
     public function update(Request $request, Program $program)
     {
         if ($request->ajax()) {
+            $batchs = Batch::get(['id'])->pluck('id')->toArray();
+
+            $this->validate($request, [
+                'name'  => 'required',
+                'batch' => 'in:' . implode(',', $batchs)
+            ]);
+
+
             $batch   = Batch::find($request->batch_no);
 
             $program->name = $request->name;

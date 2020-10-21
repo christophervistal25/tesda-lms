@@ -117,10 +117,10 @@
 			      <div class="card-body pl-5 pr-5 text-dark">
 			      	@php $isFinalExamination = false @endphp
 			        {!! $module->body !!}
-			        	@foreach($module->activities as $activity)
+			        	@foreach($module->activities->sortBy('activity_no') as $activity)
 			        		@if($activity->downloadable == 0 && !$activity->completion)
 								<span>
-									<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601889372/icons/course_design_icon_jfq35v.png" style="width:24px">
+									<img src="{{ $activity->icon }}">
 									<a class="module-activity belongs-to-{{ $module->id }}" data-downloadable="{{ $activity->downloadable }}" data-id="{{ $activity->id }}" data-module="{{ $module->id }}" href="{{ route('student.activity.view', $activity->id) }}">{{ $activity->activity_no }} {{ $activity->title }}</a>
 									@if(in_array($activity->id, $studentActivitiesAccomplish))
 									<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1602065138/icons/activity-icon/readable_check.webp" class="mt-1 float-right" style="cursor:pointer;">
@@ -131,7 +131,7 @@
 								<br><br>
 								@elseif($activity->downloadable == 1 && !$activity->completion)
 								<span>
-									<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601889372/icons/course_design_icon_jfq35v.png" style="width:24px">
+									<img src="{{ $activity->icon }}">
 									<a class="module-activity belongs-to-{{ $module->id }}" data-downloadable="{{ $activity->downloadable }}" data-module="{{ $module->id }}" data-link="{{ $activity->files[0]->link }}" data-id="{{ $activity->id }}"  href="{{ $activity->files[0]->link }}">{{ $activity->activity_no }} {{ $activity->title }}</a>
 									@if(in_array($activity->id, $studentActivitiesAccomplish))
 									<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1602065138/icons/activity-icon/readable_check.webp" class="mt-1 float-right" style="cursor:pointer;">
@@ -142,27 +142,29 @@
 								<br><br>
 							@endif
 			        	@endforeach
-	        			<span>
-		        			<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601889372/icons/final-exam_mdj9vl.png" style="width:24px;" alt="Final exam">
-		        			@if($canTakeExam)
-		        				<a href="{{ route('view.final.exam', $module->id) }}" class=" belongs-to-{{ $module->id }}">{{ $module->exam->title }}</a>
-		        			@else
-		        				<a href="#" id="warning-cant-exam" class="belongs-to-{{ $module->id }}">{{ $module->exam->title }}</a>
-		        			@endif
-		        			
-		        			@if(in_array($module->exam->id, $studentAccomplishExam->toArray()))
-								<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1603003803/icons/activity-icon/completion-auto-pass_a4ca9d.png" class="mt-1 float-right" style="cursor:pointer;">
-								@else
-								<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1602065138/icons/activity-icon/not-check.webp" class="mt-1 float-right" style="cursor:pointer;" id="checkbox-{{$module->exam->id}}">
+	        			@if(!is_null($module->exam))
+	        				<span>
+			        			<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601889372/icons/final-exam_mdj9vl.png" style="width:24px;" alt="Final exam">
+			        			@if($canTakeExam)
+			        				<a href="{{ route('view.final.exam', $module->id) }}" class=" belongs-to-{{ $module->id }}">{{ $module->exam->title }}</a>
+			        			@else
+			        				<a href="#" id="warning-cant-exam" class="belongs-to-{{ $module->id }}">{{ $module->exam->title }}</a>
+			        			@endif
+			        			
+			        			@if(in_array($module->exam->id, $studentAccomplishExam->toArray()))
+									<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1603003803/icons/activity-icon/completion-auto-pass_a4ca9d.png" class="mt-1 float-right" style="cursor:pointer;">
+									@else
+									<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1602065138/icons/activity-icon/not-check.webp" class="mt-1 float-right" style="cursor:pointer;" id="checkbox-{{$module->exam->id}}">
 
-							@endif
-		        			<br>
-		        			<span class="ml-4">Pass the exam to be able to receive a Certificate of Completion.</span>
-	        			</span>
-	        			<br><br>
+								@endif
+			        			<br>
+			        			<span class="ml-4">Pass the exam to be able to receive a Certificate of Completion.</span>
+		        			</span>
+		        			<br><br>
+	        			@endif
 	        			@foreach($module->activities->where('completion', 1) as $activity)
 	        				<span>
-									<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601889372/icons/course_design_icon_jfq35v.png" style="width:24px">
+									<img src="{{ $activity->icon }}">
 									@if($canDownloadCertificate)
 										<a class="belongs-to-{{ $module->id }}"  href="{{ route('student.activity.view', $activity->id) }}">{{ $activity->title }}</a>
 									@else
@@ -193,7 +195,10 @@
 				  		@else
 				  		File: {{ $module->activities->where('downloadable', 1)->count() }} &nbsp; 
 				  	@endif
-			  		Quiz: {{ $module->exam->count() }} &nbsp;
+			  		
+			  		@if(!is_null($module->exam))
+			  			Quiz: {{ $module->exam->count() }} &nbsp;
+			  		@endif
 				  </div>
 			  </div>
 			  

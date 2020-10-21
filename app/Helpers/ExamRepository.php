@@ -74,16 +74,13 @@ class ExamRepository
         $moduleIds = $course->modules->where('is_overview', 0)
                             ->pluck('id')
                             ->toArray();
-		
+        $noOfActivities = Activity::whereIn('module_id', $moduleIds)->where('completion', null)->count();
 
-        $noOfActivities = Activity::whereIn('module_id', $moduleIds)->where('completion', '!=', 1)->count();
 
-        
         $studentAccomplish = Auth::user()->accomplish_files->count();
 
         $studentActivitiesAccomplish = Auth::user()->accomplish_activities
                                             ->pluck('id')->count();
-
         $needToAccomplishForExam = $noOfOverviewFiles + $noOfActivities;
         $studentOverallAccomplish = $studentAccomplish + $studentActivitiesAccomplish;
 

@@ -9,6 +9,9 @@ use App\MultipleChoice;
 use App\Exam;
 use App\Question;
 use App\Helpers\ExamRepository;
+use App\Activity;
+use Illuminate\Support\Arr;
+
 
 class FinalExamController extends Controller
 {
@@ -33,7 +36,19 @@ class FinalExamController extends Controller
      */
     public function create(Module $module)
     {
-        return view('admin.examination.create', compact('module'));
+        
+        $course = $module->course;
+        $moduleIds = $course->modules->where('is_overview', 0)
+                          ->pluck('id')
+                          ->toArray();
+                          
+        $activities = Activity::whereIn('module_id', $moduleIds)->count();
+        
+        if ($activities != 0) {
+            return view('admin.examination.create', compact('module'));    
+        } else {
+            return redirect(route('course.edit.module', $module))->with('no_activity', 'Please add activity first before making a final exam.');
+        }
     }
 
     private function insertMultipleChoiceQuestion(array $questions = [], Exam $exam)
@@ -86,9 +101,11 @@ class FinalExamController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($exam)
     {
-        //
+        $exam = Exam::find($exam);
+        $questions = $exam->questions->sortBy('question_no');
+        return view('admin.examination.edit', compact('exam', 'questions'));
     }
 
     /**
@@ -100,7 +117,70 @@ class FinalExamController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        if ($request->ajax()) {
+            $exam = Exam::find($id);
+            if (isset($request->multipleChoice)) {
+                foreach ($request->multipleChoice as $key => $q) {
+                    $question = Question::firstOrNew([ 'question_no' => $q['question_no'] ], [
+                        'exam_id'  => $id,
+                        'question' => $q['question'],
+                        'answer'   => $q['correct_answer'],
+                        'type'     => 'MULTIPLE',
+                    ]);
+                    $exam->questions()->save($question);
+
+                    foreach ($q['choices'] as $choice) {
+                        $question->choices()->updateOrCreate(
+                            [
+                                'question_id' => $question->id,
+                                'choice'      => $choice,
+                            ],
+                            [
+                                'question_id' => $question->id,
+                                'choice'      => $choice,
+                            ]
+                        );
+                    }
+                }
+            }
+
+
+            if (isset($request->fillIntheBlank)) {
+                foreach ($request->fillIntheBlank as $key => $q) {
+                    $question = Question::firstOrNew(
+                        [ 
+                            'question_no' => $q['question_no'] 
+                        ],
+                        [
+                            'exam_id'  => $id,
+                            'question' => $q['question'],
+                            'answer'   => $q['correct_answer'],
+                            'type'     => 'FITB',
+                        ]
+                );
+                    $exam->questions()->save($question);
+                }
+            }
+
+            if (isset($request->trueOrFalse)) {
+                foreach ($request->trueOrFalse as $key => $q) {
+                    $question = Question::firstOrNew(
+                        [ 
+                            'question_no' => $q['question_no'] 
+                        ],
+                        [
+                            'exam_id'  => $id,
+                            'question' => $q['question'],
+                            'answer'   => $q['correct_answer'],
+                            'type'     => 'TORF',
+                        ]
+                     );
+                    $exam->questions()->save($question);
+                }
+            }
+            return response()->json(['success' => true]);
+        }
+        
     }
 
     /**

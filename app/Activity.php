@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Activity extends Model
 {
-	protected $fillable = ['module_id', 'activity_no', 'title', 'body', 'instructions', 'downloadable', 'completion'];
+	protected $fillable = ['module_id', 'activity_no', 'title', 'body', 'instructions', 'icon', 'downloadable', 'completion'];
 
  	
  	public function files()
