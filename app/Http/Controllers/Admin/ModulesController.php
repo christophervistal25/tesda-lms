@@ -165,6 +165,7 @@ class ModulesController extends Controller
     public function view(Course $course)
     {
         $overview = $course->modules->where('is_overview', 1)->first();
+        $overview->body = str_replace('href="/student/', 'href="/admin/', $overview->body);
         return view('admin.course.modules.view', compact('course', 'overview'));
     }
 

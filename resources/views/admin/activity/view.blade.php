@@ -11,10 +11,27 @@
 <div class="card rounded-0 mb-4">
 	<div class="card-body pl-0 pr-0">
 		<div class="pl-4 pr-4">
-			<h2 class="text-dark">{{ $activity->activity_no }} {{ $activity->title }}</h2>
+			@if($activity->completion)
+				<h2 class="text-dark">{{ $activity->title }}</h2>
+			@else
+				<h2 class="text-dark">{{ $activity->activity_no }} {{ $activity->title }}</h2>
+			@endif
+			
 			<br>
 			<p class="text-dark">{{ $activity->instructions }}</p>
-				{!! $activity->body !!}
+				<div class="text-dark">
+					@if($activity->completion)
+						<div class="text-center">
+							{!! $activity->body !!}
+						</div>
+						<div class="text-center text-dark">
+							Click the file above to download your certificate
+						</div>
+					@else
+						{!! $activity->body !!}
+					@endif
+				</div>
+				
 			<br>
 			<p class="text-dark">Last modified: {{ $activity->updated_at->format('l, j  F Y, h:i A') }}</p>
 		</div>
@@ -22,44 +39,61 @@
 		<div class="container-fluid py-2">
 			<div class="row">
 				<div class="col-md-4 text-left">
-					<span class="text-dark ml-3">PREVIOUS ACTIVITY</span>
-					<br>
-					@if(!is_null($previousActivity))
-					{{-- THE PREVIOUS IS ACTIVITY --}}
-						<a href="{{ route('activity.view', $previousActivity->id) }}" id="prev-activity-link" class="btn btn-link" title="{{ $previousActivity->title }}">◄ {{ $previousActivity->activity_no }} {{ $previousActivity->title }}</a>
-					@elseif(!is_null($lastPageOfCourseOverview))
-					{{-- THERE IS A FILE ATTACH IN COURSE OVERVIEW --}}
-						<a href="{{ route('course.overview.show.file', [$course->id, $lastPageOfCourseOverview->id]) }}" id="prev-activity-link" class="btn btn-link" title="{{ $lastPageOfCourseOverview->title }}">◄ {{ $lastPageOfCourseOverview->title }}</a>
-					@else 
-					{{-- THERE IS NO FILE ATTACH IN COURSE OVERVIEW --}}
-						<a href="{{ route('course.design', [$course->id, 1]) }}" id="prev-activity-link" class="btn btn-link" title="Course Design">◄ Course Design</a>
+					@if($previous instanceof App\Activity)
+						<span class="text-dark mr-3">PREVIOUS ACTIVITY</span>
+						<br>
+						<a href="{{ route('activity.view', $previous->id) }}" class="btn btn-link" title="{{$previous->title}}">◄ {{ $previous->activity_no }} {{ $previous->title }}</a>
+					@elseif($previous instanceof App\File)
+						<span class="text-dark mr-3">PREVIOUS ACTIVITY</span>
+						<br>
+						<a href="{{ route('course.overview.show.file', [$course->id, $previous->id]) }}" id="prev-activity-link" class="btn btn-link" title="{{ $previous->title }}">◄ {{ $previous->title }}</a>
+					@elseif($previous instanceof App\Exam)
+						<span class="text-dark mr-3">PREVIOUS ACTIVITY</span>
+						<br>
+						<a href="{{ route('admin.view.final.exam', [$moduleWithExam->id]) }}" id="prev-activity-link" class="btn btn-link" title="{{ $previous->title }}">◄ {{ $previous->title }}</a>
 					@endif
-					
 				</div>
 
 				<div class="col-md-4 mt-2">
 					<select id="jumpToOptions" class="form-control rounded-0 text-dark">
 						<option selected disabled>Jump to...</option>
-						<option data-link="{{ route('course.forum.show', $course->id) }}">Announcement & Forums</option>
-						<option data-link="/admin/course/design/{{ $course->id}}/1">Course Design</option>
-						@foreach($course->overview->files as $file)
-							<option data-link="/admin/course/{{$course->id}}/overview/show/{{$file->id}}">{{ $file->title }}</option>
+						
+						@foreach($files as $f)
+							<option data-link="/admin/course/{{ $course->id }}/overview/show/{{ $f->id }}">{{ $f->title }}</option>
 						@endforeach
-						@foreach($course->modules as $module)
-							@foreach($module->activities as $activity)
-									<option value="{{ $activity->id }}" data-link="/admin/activity/view/{{$activity->id}}">{{ $activity->activity_no }} {{ $activity->title }}</option>
+
+						@foreach($modules as $module)
+							@foreach($module->activities->where('completion', '!=', 1)->sortBy('activity_no') as $activity)
+								<option {{ $activity->id == $activity_id ? 'selected' : '' }} data-link="/admin/activity/view/{{ $activity->id }}">{{ $activity->activity_no }} {{ $activity->title }}</option>
 							@endforeach
 						@endforeach
+
+						@if($moduleWithExam)
+							<option data-link="/admin/final/exam/{{ $moduleWithExam->id}}">{{ $moduleWithExam->exam->title}}</option>
+						@endif
+						
+
+						@foreach($modules as $module)
+							@foreach($module->activities->where('completion', 1) as $activity)
+								<option data-link="/admin/activity/view/{{ $activity->id }}">{{ $activity->title }}</option>
+							@endforeach
+						@endforeach
+
+					
+
 					</select>
 				</div>
-
 				<div class="col-md-4 text-right">
-					@if(!is_null($nextActivity))
+					@if(!is_null($next) && !is_null($next->title) && $next instanceof App\Activity)
 						<span class="text-dark mr-3">NEXT ACTIVITY</span>
 						<br>
-						<a href="{{ route('activity.view', $nextActivity->id) }}" class="btn btn-link" title="{{$nextActivity->title}}">{{ $nextActivity->activity_no }} {{ $nextActivity->title }} ►</a>
+						<a href="{{ route('activity.view', $next->id) }}" class="btn btn-link" title="{{$next->title}}">{{ $next->activity_no }} {{ $next->title }} ►</a>
+					@elseif($next instanceof App\Exam)
+						<span class="text-dark mr-3">NEXT ACTIVITY</span>
+						<br>
+						<a href="{{ route('admin.view.final.exam', $module->id) }}" class="btn btn-link" title="Final Exam">Final Exam  ►</a>
+					@else
 					@endif
-					
 				</div>
 
 			</div>
@@ -68,8 +102,15 @@
 
 </div>
 
-
 @push('page-scripts')
+<script>
+	$.ajaxSetup({
+	    headers: {
+	        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+	    }
+	});
+</script>
+
 <script>
 	$('#jumpToOptions').change(function (e) {
 		let selectedItemLink = $(this).children("option:selected").attr('data-link');

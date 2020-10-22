@@ -9,15 +9,39 @@ use App\MultipleChoice;
 use App\Exam;
 use App\Question;
 use App\Helpers\ExamRepository;
+use App\Helpers\FinalExamViewer;
 use App\Activity;
-use Illuminate\Support\Arr;
+use App\Http\Requests\CreateFinalExamRequest;
 
 
 class FinalExamController extends Controller
 {
-    public function __construct(ExamRepository $e)
+    public function __construct(ExamRepository $e, FinalExamViewer $examViewer)
     {
         $this->examRepository = $e;
+        $this->viewer = $examViewer;
+    }
+
+    public function view(Module $module)
+    {
+
+        $canTakeExam = false;
+        $course      = $module->course;
+        $module        = Module::with(['exam', 'exam.questions', 'exam.questions.choices'])->find($module->id);
+
+
+        $modules  = $course->modules->where('is_overview', 0);
+        $overview = $course->modules->where('is_overview', 1)->first();
+        
+        $this->viewer->process([
+            'course'    => $course,
+            'module_id' => $module->id,
+        ]);
+
+        $next     = $this->viewer->getNext() ?? null;
+        $previous = $this->viewer->getPrevious();
+
+        return view('admin.examination.view', compact('module', 'course', 'overview', 'module', 'modules', 'student', 'next', 'previous'));
     }
     /**
      * Display a listing of the resource.
@@ -36,7 +60,6 @@ class FinalExamController extends Controller
      */
     public function create(Module $module)
     {
-        
         $course = $module->course;
         $moduleIds = $course->modules->where('is_overview', 0)
                           ->pluck('id')
@@ -51,17 +74,13 @@ class FinalExamController extends Controller
         }
     }
 
-    private function insertMultipleChoiceQuestion(array $questions = [], Exam $exam)
-    {
-         
-    }
     /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, Module $module)
+    public function store(CreateFinalExamRequest $request, Module $module)
     {
         if (request()->ajax()) {
             $exam = new Exam([ 'title' => 'Final Exam' ]);
@@ -101,11 +120,33 @@ class FinalExamController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($exam)
+    public function edit($exam, $forceview = 0)
     {
+
         $exam = Exam::find($exam);
         $questions = $exam->questions->sortBy('question_no');
-        return view('admin.examination.edit', compact('exam', 'questions'));
+        $viewData = [];
+        if ($forceview == 1) {
+            $course = $exam->module->course;
+            $moduleId = $exam->module->id;
+
+            $this->viewer->process([
+                'course'    => $course,
+                'module_id' => $moduleId,
+            ]);
+
+            $modules  = $course->modules->where('is_overview', 0);
+            $overview = $course->modules->where('is_overview', 1)->first();
+
+            $next     = $this->viewer->getNext() ?? null;
+            $previous = $this->viewer->getPrevious();
+
+            $viewData = ['exam', 'questions', 'next', 'previous', 'overview', 'modules', 'course', 'forceview'];
+        } else {
+            $viewData = ['exam', 'questions', 'forceview'];
+        }
+
+        return view('admin.examination.edit', compact($viewData));
     }
 
     /**

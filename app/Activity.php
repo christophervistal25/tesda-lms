@@ -8,7 +8,25 @@ class Activity extends Model
 {
 	protected $fillable = ['module_id', 'activity_no', 'title', 'body', 'instructions', 'icon', 'downloadable', 'completion'];
 
- 	
+    
+    public static function paginateGetPrevious($moduleAndIndex)
+    {
+        return self::where('activity_no', '<', $moduleAndIndex)
+                    ->where('completion', null)
+                    ->get()
+                    ->sortBy('activity_no')
+                    ->last();
+    }
+
+    public static function paginateGetNext($moduleAndIndex)
+    {
+        return self::where('activity_no', '>', $moduleAndIndex)
+                    ->where('completion', null)
+                    ->get()
+                    ->sortBy('activity_no')
+                    ->first();
+    }
+
  	public function files()
     {
     	return $this->morphMany('App\File', 'filelable');

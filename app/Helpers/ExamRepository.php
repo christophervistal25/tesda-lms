@@ -29,28 +29,33 @@ class ExamRepository
 	 * This must be in the MultipleChoiceRepository
 	 * Create when you refactor 
 	 */
-	private function createMultipleChoice(array $choices = [], array $questions = [])
-	{
-		foreach ($choices as $key => $choice) {
-                $choice = preg_replace('/^\w-/', '', $choice);
-                foreach ($questions as $question) {
-                    $question->choices()->save(new MultipleChoice(['choice' => $choice]));    
-                }
-            }
-	}
+	
     
     private function pushToExam(array $questions = [], Exam $exam)
     {
     	return $exam->questions()->saveMany($questions);
     }
 
+    private function createMultipleChoice(array $createdQuestions = [], array $questions = [])
+	{
+		$choices = array_column($questions, 'choices');
+
+		foreach ($createdQuestions as $key => $question) {
+			foreach ($choices[$key] as $choice) {
+				$choice = preg_replace('/^\w-/', '', $choice);
+				$question->choices()->save(
+					new MultipleChoice(['choice' => $choice])
+				);
+			}
+		}
+		
+	}
+
 	public function insertMultipleChoice(array $questions = [], Exam $exam)
 	{
 		$createdQuestions = $this->createQuestions($questions, 'MULTIPLE');
 		$this->pushToExam($createdQuestions, $exam);
-		foreach ($questions as $question) {
-			$this->createMultipleChoice($question['choices'], $createdQuestions);
-		}
+		$this->createMultipleChoice($createdQuestions, $questions);
 	}
 
 	public function insertFillIn(array $questions = [], Exam $exam)
@@ -85,6 +90,11 @@ class ExamRepository
         $studentOverallAccomplish = $studentAccomplish + $studentActivitiesAccomplish;
 
         return $studentOverallAccomplish >= $needToAccomplishForExam;
+	}
+
+	public function userExamResult() :bool
+	{
+		return Auth::user()->exam_attempt->where('status', 'passed')->count() !== 0;
 	}
 
 

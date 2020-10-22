@@ -20,6 +20,9 @@
 	</div>
 	
 	<div class="card-body rounded-0">
+		<div class="alert alert-danger rounded-0 d-none" role="alert" id="form-message-error">
+			
+		</div>
 		<form method="POST" id="formExamination">
 			@csrf
 			<div class="row">
@@ -107,7 +110,7 @@
 		questionIndex++;
 		$('#dynamic-question-container').append(`<div class="card text-white bg-info rounded-0">
 						<div class="card-body">
-							<div class="card-text p-2 text-white border border-white mb-2 questions" contenteditable="true" data-question-type="MULTIPLE" data-question-index="${questionIndex}">${questionIndex}. (Click this label to enter question)</div>
+							${questionIndex}. <div class="card-text p-2 text-white border border-white mb-2 questions multiple-question" contenteditable="true" data-question-type="MULTIPLE" data-question-index="${questionIndex}"></div>
 							<div id="dynamic-choice-${questionIndex}"></div>
 							<hr style="background :white;">
 							<div class="form-inline">
@@ -126,7 +129,7 @@
 		questionIndex++;
 		$('#dynamic-question-container').append(`<div class="card text-white bg-info rounded-0">
 						<div class="card-body">
-							<div class="card-text p-1 text-white border border-white questions" contenteditable="true" data-question-type="TORF" data-question-index="${questionIndex}">${questionIndex}. (Click this label to enter question)</div>
+							${questionIndex}.<div class="card-text p-1 text-white border border-white questions true-or-false-question" contenteditable="true" data-question-type="TORF" data-question-index="${questionIndex}"></div>
 							<br>
 							<div id="dynamic-true-or-false-${questionIndex}">
 								<div contenteditable="true" class="ml-2 p-2 text-white border border-white mb-2">
@@ -154,7 +157,8 @@
 		questionIndex++;
 		$('#dynamic-question-container').append(`<div class="card text-white bg-info rounded-0">
 						<div class="card-body">
-							<div class="card-text p-1 text-white questions" contenteditable="true" data-question-type="FITB" data-question-index=${questionIndex}>${questionIndex}. (Click this label to enter question)</div>
+						${questionIndex}.
+							<div class="card-text p-1 text-white questions border border-white fill-in-the-blank-question" contenteditable="true" data-question-type="FITB" data-question-index=${questionIndex}></div>
 							<p></p>
 							<div id="dynamic-fill-in-blank-${questionIndex}">
 								<div class="form-group">
@@ -169,6 +173,11 @@
 	$('#formExamination').submit(function (e) {
 		e.preventDefault();
 	});
+	function elementError(data) {
+		if (typeof data.errors[`${data.group}.${data.index}.${data.type}`] != 'undefined') {
+			return `<li>(${data.text}) - Question ${data.question_no} ${data.errors[`${data.group}.${data.index}.${data.type}`]}</li>`
+		} 
+	}
 
 	$('#btnSubmitFinalExam').click(function (e) {
 		e.preventDefault();
@@ -217,17 +226,115 @@
 				})
 			}
 		});
-
 		$.ajax({
 				url : '{{ route('module.final.exam.submit', $module->id) }}',
 				method : 'POST',
 				data : { multipleChoice, fillIntheBlank, trueOrFalse },
 				success : (response) => {
 					if (response.success) {
+						$('#form-message-error').addClass('d-none');
 						swal("Good job!", "Succesfully add final examination", "success");	
 					}
 				},
-			})
+				error : (response) => {
+					
+					if (response.status === 422) {
+						// navigate to top
+						$('.scroll-to-top').trigger('click');
+						// show the form message container
+						$('#form-message-error').removeClass('d-none');
+						// clean previous content.
+						$('#form-message-error').html('');
+
+						// form errors
+						let errors = response.responseJSON.errors;
+						console.log(errors);
+
+						// Check error for each multiple choice question
+						$('.multiple-question').each(function (index, element) {
+							var questionNo = $(this).attr('data-question-index');
+					
+							questionError = elementError({
+								question_no : questionNo,
+								errors : errors,
+								group : 'multipleChoice',
+								index : index,
+								type : 'question',
+								text : 'Multiple Choice',
+							});
+
+
+							questionCorrectAnswerError = elementError({
+								question_no : questionNo,
+								errors : errors,
+								group : 'multipleChoice',
+								index : index,
+								type : 'correct_answer',
+								text : 'Multiple Choice',
+							})
+
+							questionChoicesError =  elementError({
+								question_no : questionNo,
+								errors : errors,
+								group : 'multipleChoice',
+								index : index,
+								type : 'choices',
+								text : 'Multiple Choice',
+							});
+
+							$('#form-message-error').prepend(questionError);
+							$('#form-message-error').prepend(questionChoicesError);
+							$('#form-message-error').prepend(questionCorrectAnswerError);
+							
+						});
+
+						// Check error for each true or false question
+						$('.true-or-false-question').each(function (index, element) {
+							var questionNo = $(this).attr('data-question-index');
+					
+							questionError = elementError({
+								question_no : questionNo,
+								errors : errors,
+								group : 'trueOrFalse',
+								index : index,
+								type : 'question',
+								text : 'True or False',
+							});
+
+
+							$('#form-message-error').prepend(questionError);
+						});
+	            		
+	            		// Check error for each fill in the blank question
+	            		$('.fill-in-the-blank-question').each(function (index, element) {
+	            			console.log(element);
+	            			var questionNo = $(this).attr('data-question-index');
+					
+							questionError = elementError({
+								question_no : questionNo,
+								errors : errors,
+								group : 'fillIntheBlank',
+								index : index,
+								type : 'question',
+								text : 'Fill in the blank',
+							});
+
+							questionCorrectAnswerError = elementError({
+								question_no : questionNo,
+								errors : errors,
+								group : 'fillIntheBlank',
+								index : index,
+								type : 'correct_answer',
+								text : 'Fill in the blank',
+							});
+
+
+							$('#form-message-error').prepend(questionError);
+							$('#form-message-error').prepend(questionCorrectAnswerError);
+	            		});
+					}
+				}
+			});
 	});
 </script>
 @endpush

@@ -65,8 +65,8 @@
 								</div>
 							<br>
 							@elseif($q->type == 'TORF')
-								<div class="pl-4 pt-3 pb-3 bg-info">
-									<div class="card-text p-1 text-white border border-white questions" contenteditable="true" data-question-type="{{ $q->type }}" data-question-index="{{ $q->question_no }}">{{ $q->question }}
+								<div class="pl-4 pt-3 pb-3 bg-info text-white">
+									<div class="card-text p-1 border border-white questions" contenteditable="true" data-question-type="{{ $q->type }}" data-question-index="{{ $q->question_no }}">{{ $q->question }}
 									</div>
 									<p></p>
 									<p>Select one:</p>
@@ -123,10 +123,62 @@
 		{{-- </form --}}
 		</div>
 	</div>
-
-	
 </div>
+	@if($forceview == 1)
+		<div class="card rounded-0">
+			<div class="card-body">
+				<hr>
+					<div class="container-fluid py-2">
+						<div class="row">
+							<div class="col-md-4 text-left">
+								@if($previous instanceof App\Activity)
+									<span class="text-dark mr-3">PREVIOUS ACTIVITY</span>
+									<br>
+									<a href="{{ route('activity.view', $previous->id) }}" class="btn btn-link" title="{{$previous->title}}">◄ {{ $previous->activity_no }} {{ $previous->title }}</a>
+								@elseif($previous instanceof App\File)
+									<span class="text-dark mr-3">PREVIOUS ACTIVITY</span>
+									<br>
+									<a href="{{ route('course.overview.show.file', [$course->id, $previous->id]) }}" id="prev-activity-link" class="btn btn-link" title="{{ $previous->title }}">◄ {{ $previous->title }}</a>
+								@endif
+							</div>
 
+							<div class="col-md-4 mt-2">
+								<select id="jumpToOptions" class="form-control rounded-0 text-dark">
+									<option selected disabled>Jump to...</option>
+									
+									@foreach($overview->files as $f)
+										<option data-link="/admin/course/{{ $course->id }}/overview/show/{{ $f->id }}">{{ $f->title }}</option>
+									@endforeach
+
+									@foreach($modules as $module)
+										@foreach($module->activities->where('completion', null) as $activity)
+											<option data-link="/admin/activity/view/{{ $activity->id }}">{{ $activity->activity_no }} {{ $activity->title }}</option>
+										@endforeach
+									@endforeach 
+
+									<option selected data-link="/admin/final/exam/{{ $module->exam->id }}">{{ $module->exam->title }}</option>
+
+									@foreach($modules as $module)
+										@foreach($module->activities->where('completion', 1) as $activity)
+											<option data-link="/admin/activity/view/{{ $activity->id }}">{{ $activity->title }}</option>
+										@endforeach
+									@endforeach
+
+								</select>
+							</div>
+
+							<div class="col-md-4 text-right">
+								@if(!is_null($next) && $next instanceof App\Activity)
+									<span class="text-dark mr-3">NEXT ACTIVITY</span>
+									<br>
+									<a href="{{ route('activity.view', $next->id) }}" class="btn btn-link" title="{{$next->title}}"> {{ $next->title }} ►</a>
+								@endif
+							</div>
+						</div>
+					</div>
+			</div>
+		</div>
+	@endif
 @push('page-scripts')
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script>

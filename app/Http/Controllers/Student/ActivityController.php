@@ -30,6 +30,7 @@ class ActivityController extends Controller
 
         $this->viewer->process([
           'course'      => $course,
+          'activity_no' => $activity->activity_no,
           'activity_id' => $activity_id,
        ]);
 
@@ -45,7 +46,6 @@ class ActivityController extends Controller
             $next     = $this->viewer->getNext();
             $previous = $this->viewer->getPrevious();    
         } else { // This means that the user currently in the activity completion
-            // Refactor this code write own class.
             $next = Activity::where('module_id', $activity->module_id)->where('completion', 1)->get();
             $next = $next->filter(function ($next) use ($activity_id) {
                     return $next->id != $activity_id;

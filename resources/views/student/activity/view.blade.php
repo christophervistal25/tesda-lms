@@ -63,12 +63,15 @@
 						@endforeach
 
 						@foreach($modules as $module)
-							@foreach($module->activities->where('completion', '!=', 1) as $activity)
+							@foreach($module->activities->where('completion', '!=', 1)->sortBy('activity_no') as $activity)
 								<option {{ $activity->id == $activity_id ? 'selected' : '' }} data-link="/student/activity/view/{{ $activity->id }}">{{ $activity->activity_no }} {{ $activity->title }}</option>
 							@endforeach
 						@endforeach
 
-						<option {{ $canTakeExam ? '' : 'disabled' }} data-link="/student/final/exam/{{ $moduleWithExam->id }}">{{ $moduleWithExam->exam->title }}</option>
+						@if($moduleWithExam)
+							<option {{ $canTakeExam ? '' : 'disabled' }} data-link="/student/final/exam/{{ $moduleWithExam->id}}">{{ $moduleWithExam->exam->title}}</option>
+						@endif
+						
 
 						@foreach($modules as $module)
 							@foreach($module->activities->where('completion', 1) as $activity)

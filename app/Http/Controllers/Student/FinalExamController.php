@@ -62,17 +62,18 @@ class FinalExamController extends Controller
 
         $highestGrade           = $this->calculateHighestGrade($student->exam_attempt);
         $canTakeExam            = $this->examRepository->isUserCanTakeExam($course);
+        $isUserHasExamResult    = $this->examRepository->userExamResult();
         $canDownloadCertificate = $this->certificateRepository->isUserCanDownload();
 
         $modules  = $course->modules->where('is_overview', 0);
         $overview = $course->modules->where('is_overview', 1)->first();
         
         $this->viewer->process([
-            'course' => $course,
+            'course'    => $course,
             'module_id' => $module->id,
         ]);
 
-        $next     = $this->viewer->getNext();
+        $next     = ($isUserHasExamResult) ? $this->viewer->getNext() : null;
         $previous = $this->viewer->getPrevious();
 
         return view('student.examination.view', compact('exam', 'course', 'overview', 'module', 'modules', 'student', 'next', 'previous', 'highestGrade', 'canTakeExam', 'canDownloadCertificate'));
@@ -99,13 +100,14 @@ class FinalExamController extends Controller
         $overview = $course->modules->where('is_overview', 1)->first();
         
         $canDownloadCertificate = $this->certificateRepository->isUserCanDownload();
+        $isUserHasExamResult    = $this->examRepository->userExamResult();
 
         $this->viewer->process([
             'course' => $course,
             'module_id' => $module->id,
         ]);
 
-        $next     = $this->viewer->getNext();
+        $next     = ($isUserHasExamResult) ? $this->viewer->getNext() : null;
         $previous = $this->viewer->getPrevious();
 
     	return view('student.examination.answer', compact('questions', 'course', 'module', 'attempt_id', 'next', 'previous', 'overview', 'modules', 'canDownloadCertificate'));
@@ -178,13 +180,14 @@ class FinalExamController extends Controller
         $overview = $course->modules->where('is_overview', 1)->first();
         
         $canDownloadCertificate = $this->certificateRepository->isUserCanDownload();
+        $isUserHasExamResult    = $this->examRepository->userExamResult();
 
         $this->viewer->process([
             'course' => $course,
             'module_id' => $module->id,
         ]);
 
-        $next     = $this->viewer->getNext();
+        $next     = ($isUserHasExamResult) ? $this->viewer->getNext() : null;
         $previous = $this->viewer->getPrevious();
 
         return view('student.examination.result', compact('course', 'questions', 'module', 'marks', 'previous', 'next', 'canDownloadCertificate', 'modules', 'overview'));

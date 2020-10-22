@@ -8,10 +8,19 @@ use App\Course;
 use App\File as ModuleFile;
 use Illuminate\Support\Str;
 use App\Module;
+use App\File as OverviewFile;
+use App\Helpers\OverviewViewer;
+use App\Helpers\ExamRepository;
 
 
 class CourseOverviewController extends Controller
 {
+
+  public function __construct(ExamRepository $examRepo, OverviewViewer $viewer)
+  {
+    $this->examRepository = $examRepo;
+    $this->viewer = $viewer;
+  }
 
   public function create(Course $course)
 	{
@@ -124,15 +133,25 @@ class CourseOverviewController extends Controller
     public function show($course, $fileId = null)
     {
       
-       $course = Course::find($course);
+       $course = Course::with('modules')->find($course);
 
-       if ($fileId != null) {
-            $file = OverviewFile::find($fileId);
-            $previousFile = OverviewFile::find(--$fileId);
-            $nextFile = OverviewFile::find($fileId + 2);
-            $firstActivity = $course->modules->first()->activities->first();
-       }
+       $this->viewer->process([
+          'course'  => $course,
+          'file_id' => $fileId,
+       ]);
+
+       $file = OverviewFile::find($fileId);
        
-       return view('admin.course.overview.show', compact('course', 'file', 'previousFile', 'nextFile', 'firstActivity'));
+       $next     = $this->viewer->getNext();
+       $previous = $this->viewer->getPrevious();
+
+
+       $files = $course->modules->where('is_overview', 1)->first()->files;
+       $modules = $course->modules->where('is_overview', 0);
+       
+       
+       $moduleWithExam = $this->examRepository->getExam($course);
+       
+       return view('admin.course.overview.show', compact('course', 'next', 'previous', 'file', 'files', 'modules', 'fileId', 'moduleWithExam'));
     }
 }

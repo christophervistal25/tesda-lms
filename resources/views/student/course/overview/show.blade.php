@@ -48,11 +48,13 @@
 						<option {{ $f->id == $fileId ? 'selected' : '' }} data-link="/student/course/{{ $course->id }}/overview/show/{{ $f->id }}">{{ $f->title }}</option>
 						@endforeach
 						@foreach($modules as $module)
-							@foreach($module->activities->where('completion', '!=', 1) as $activity)
+							@foreach($module->activities->where('completion', '!=', 1)->sortBy('activity_no') as $activity)
 								<option data-link="/student/activity/view/{{ $activity->id }}">{{ $activity->activity_no }} {{ $activity->title }}</option>
 							@endforeach
 						@endforeach
-						<option {{ $canTakeExam ?: 'disabled' }} data-link="/student/final/exam/{{ $moduleWithExam->id }}">{{ $moduleWithExam->exam->title }}</option>
+						@if($moduleWithExam)
+							<option {{ $canTakeExam ?: 'disabled' }} data-link="/student/final/exam/{{ $moduleWithExam->id }}">{{ $moduleWithExam->exam->title }}</option>
+						@endif
 						@foreach($modules as $module)
 							@foreach($module->activities->where('completion', 1) as $activity)
 								<option data-link="/student/activity/view/{{ $activity->id }}">{{ $activity->title }}</option>

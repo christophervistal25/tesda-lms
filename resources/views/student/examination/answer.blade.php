@@ -30,13 +30,7 @@
 									@if($q->choices->count() !== 0)
 										<div class="ml-3">
 											@foreach($q->choices as $c)
-												<div class="float-right">
-													<button onclick="removeChoice(this)" class="btn btn-sm btn-danger rounded-0" data-point-to="${id}"><i class="fas fa-times" ></i> </button>
-												</div>
-												<div class="clearfix"></div>
-												<div contenteditable="true" id="choice-${id}" class="border border-white p-2 ml-2 mb-2"  data-choice="{{ $c->choice }}">
-													{{ $c->choice }}
-												</div> 
+												<p><label for="choice-{{ $c->id }}"><input type="radio" id="choice-{{ $c->id }}"  value="{{ $c->choice }}" name="question_{{ $q->question_no }}"> {{ $c->choice }}</label></p>
 											@endforeach
 										</div>
 									@endif

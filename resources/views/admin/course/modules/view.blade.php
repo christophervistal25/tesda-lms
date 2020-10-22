@@ -87,7 +87,7 @@
 			      		  @if($activity->downloadable == 0 && !$activity->completion)
 								<span>
 									<img src="{{ $activity->icon }}">
-									<a class="module-activity belongs-to-{{ $module->id }}" data-downloadable="{{ $activity->downloadable }}" data-id="{{ $activity->id }}" data-module="{{ $module->id }}" href="{{ route('student.activity.view', $activity->id) }}">{{ $activity->activity_no }} {{ $activity->title }}</a>
+									<a class="module-activity belongs-to-{{ $module->id }}" data-downloadable="{{ $activity->downloadable }}" data-id="{{ $activity->id }}" data-module="{{ $module->id }}" href="{{ route('activity.view', $activity->id) }}">{{ $activity->activity_no }} {{ $activity->title }}</a>
 									<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1602065138/icons/activity-icon/not-check.webp" class="mt-1 float-right" style="cursor:pointer;"  id="checkbox-{{$activity->id}}">
 								</span>
 								<br><br>
@@ -113,7 +113,7 @@
 	       			@foreach($module->activities->where('completion', 1) as $activity)
     				<span>
 							<img src="{{ $activity->icon }}">
-							<a class="belongs-to-{{ $module->id }}"  href="{{ route('student.activity.view', $activity->id) }}">{{ $activity->title }}</a>
+							<a class="belongs-to-{{ $module->id }}"  href="{{ route('activity.view', $activity->id) }}">{{ $activity->title }}</a>
 							<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1602065138/icons/activity-icon/not-check.webp" class="mt-1 float-right" style="cursor:pointer;"  id="checkbox-{{$activity->id}}">
 						</span>
 						<br><br>
@@ -153,6 +153,8 @@
 
 @push('page-scripts')
 <script>
+	let links = document.querySelectorAll('a');
+	console.log(links);
 	// get all activity checkbox icons
 	document.querySelectorAll('img').forEach((element) => {
 		// Align the checkbox in right

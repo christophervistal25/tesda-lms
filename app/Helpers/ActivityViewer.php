@@ -5,6 +5,7 @@ use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Collection;
 use App\Activity;
 use App\Exam;
+use App\Module;
 use App\Contracts\ModuleActivityFinder;
 
 class ActivityViewer implements ModuleActivityFinder
@@ -64,13 +65,13 @@ class ActivityViewer implements ModuleActivityFinder
         return Exam::where('module_id', $activity->module_id)->first() ?? null;
     }
 
-    private function getActivityIds(array $data = []) :array
+    private function getAllActivityNo(array $data = []) :array
     {
         $modules = $data['course']->modules->where('is_overview', 0);
         
         $activities = [];
         foreach ($modules as $module) {
-          $activities[] = $module->activities->toArray();
+          $activities[] = $module->activities->sortBy('activity_no')->toArray();
         }
 
         $new_activities = [];
@@ -79,24 +80,36 @@ class ActivityViewer implements ModuleActivityFinder
           return $new_activities[$key][] = $data;
         });
 
-        return $new_activities['id'];
+        return $new_activities['activity_no'];
+    }
+
+    private function getModuleAndIndex(string $activity_no) : array
+    {
+        $activity = Activity::where('activity_no', $activity_no)->first();
+        list($module, $index) = explode('.', $activity_no);
+        return [$activity->module_id, $module, $index];
     }
 
     public function process(array $data = [])
     {
-        $activityIds = $this->getActivityIds($data);
-        $key = array_search($data['activity_id'], $activityIds);
-        $this->setPrevious(Activity::find(@$activityIds[$key - 1]));
-        $this->setNext(Activity::find(@$activityIds[$key + 1]));
+        $listOfActivityNo = $this->getAllActivityNo($data);
+
+        list($moduleId, $module, $index) = $this->getModuleAndIndex($data['activity_no']);
+
+        // Transform string float to float datatype.
+        $moduleAndIndex =  floatval($module . '.' . $index);
+
+        // Get the closest 
+        $this->setPrevious(Activity::paginateGetPrevious($moduleAndIndex));
+        $this->setNext(Activity::paginateGetNext($moduleAndIndex));
 
         if ($this->isPreviousEmpty()) {
             $this->setPrevious( $this->possiblePrevious(['course' => $data['course'] ]));
         }
 
         if ($this->isNextEmpty()) {
-            // Get the first value in activities_ids
-            $id = reset($activityIds);
-            $this->setNext($this->possibleNext(['id' => $id]));
+            $data = ['id' => $data['activity_id'] ];
+            $this->setNext( $this->possibleNext($data) );
         }
     }
 }
