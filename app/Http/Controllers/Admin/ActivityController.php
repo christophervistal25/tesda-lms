@@ -50,11 +50,10 @@ class ActivityController extends Controller
             $next     = $this->viewer->getNext();
             $previous = $this->viewer->getPrevious();    
         } else { 
-            $next = Activity::where('module_id', $activity->module_id)->where('completion', 1)->get();
-            $next = $next->filter(function ($next) use ($activity_id) {
-                    return $next->id != $activity_id;
-            });
-            $next = $next->count() == 0 ? null : $next;
+            // This means that the user currently in the activity completion
+            $next = Activity::where(['module_id' => $activity->module_id, 'completion' => 1])->where('id', '>', $activity_id)->first();
+            $previous = Activity::where(['module_id' => $activity->module_id, 'completion' => 1])->where('id', '<', $activity_id)->first();
+            $previous = $previous ?? $moduleWithExam->exam;
             $previous = $moduleWithExam->exam;
         }
 

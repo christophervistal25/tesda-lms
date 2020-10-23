@@ -39,15 +39,14 @@ class CourseStatusController extends Controller
     {
         if ($request->ajax()) {
             $course = Course::find($request->course_id);
-            $status = CourseStatus::updateOrCreate([
+            $course->status()->updateOrCreate([
                 'course_id' => $request->course_id,
                 'status'    => $request->status,
-            ], [
+            ],
+            [
                 'star'      => $request->star,
                 'status'    => $request->status
             ]);
-
-            $course->status()->save($status);
             return response()->json(['success' => true]);
         }
     }
@@ -83,7 +82,12 @@ class CourseStatusController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        if ($request->ajax()) {
+            $status = CourseStatus::where('course_id', $id)->first();
+            $status->status = $request->status;
+            $status->save();
+            return response()->json(['success' => true]);
+        }
     }
 
     /**

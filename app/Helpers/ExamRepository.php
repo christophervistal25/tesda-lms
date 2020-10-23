@@ -7,6 +7,8 @@ use App\MultipleChoice;
 use App\Activity;
 use App\Course;
 use Auth;
+use Illuminate\Http\Request;
+use App\ExamSave;
 
 class ExamRepository
 {
@@ -106,6 +108,29 @@ class ExamRepository
 			}
 		}
 		return null;
+	}
+
+	public function saveExamination(Request $request, Module $module)
+	{
+		$questions = collect($module->exam->questions)->sortBy('question_no');
+		$data = $request->except('_token');
+		foreach ($questions as $key => $q) {
+			foreach ($data as $questionNo => $answer) {
+				if ('question_' . $q->question_no === $questionNo) {
+					// save the answer
+					ExamSave::updateOrCreate(
+						[
+							'question_id'     => $q->id,
+							'exam_attempt_id' => $request->attempt_id
+						],
+						[
+						'question_id'     => $q->id,
+						'exam_attempt_id' => $request->attempt_id,
+						'answer'          => $answer,
+					]);
+				}
+			}
+		}
 	}
 
 

@@ -10,6 +10,11 @@ class ExamAttempt extends Model
 	
     public function result()
     {
-    	return  $this->hasMany('App\ExamResult');
+    	return $this->hasMany('App\ExamResult');
+    }
+
+    public function save_record()
+    {
+    	return $this->hasMany('App\ExamSave');
     }
 }

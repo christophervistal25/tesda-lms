@@ -21,7 +21,7 @@ class CreateCoursesTable extends Migration
             $table->text('design');
             $table->unsignedInteger('duration');
             $table->unsignedInteger('program_id');
-            $table->string('image')->nullable();
+            $table->string('image')->default('https://res.cloudinary.com/dfm6cr1l9/image/upload/v1603438627/TESDA-Logo_zrv8wm.jpg');
             $table->tinyInteger('active')->default(1);
             $table->timestamps();
         });

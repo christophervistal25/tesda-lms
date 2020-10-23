@@ -156,7 +156,7 @@ class FinalExamController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(CreateFinalExamRequest $request, $id)
     {
         if ($request->ajax()) {
             $exam = Exam::find($id);

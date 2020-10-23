@@ -59,8 +59,8 @@
 						<tr>
 							<th class="text-right p-0 pr-1 border-right label-background" width="200px">Grade</th>
 							<td class="p-0 pl-1">
-								<strong>{{ ( 100 / $questions->count() ) *  $marks }}.00</strong>
-								out of {{ 100 }}.00
+								<strong>{{ number_format(( 100 / $questions->count() ) *  $marks , 2, '.', '') }}</strong>
+								out of {{ config('student_progress.max_percentage') }}.00
 							</td>
 						</tr>
 
@@ -250,7 +250,7 @@
 					</div>
 
 					<div class="col-md-4 text-right">
-						@if(!is_null($next->title) && $next instanceof App\Activity)
+						@if(!is_null($next) && $next instanceof App\Activity)
 							<span class="text-dark mr-3">NEXT ACTIVITY</span>
 							<br>
 							<a href="{{ route('student.activity.view', $next->id) }}" class="btn btn-link" title="{{$next->title}}"> {{ $next->title }} ►</a>

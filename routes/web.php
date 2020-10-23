@@ -1,6 +1,5 @@
 <?php
 
-
 Route::get('/', function () {
     return view('welcome');
 });
@@ -89,7 +88,6 @@ Route::prefix('student')->group(function() {
 
     Route::group(['middleware' => 'auth'], function () {
         Route::get('/site/home', 'HomeController@siteHome')->name('site.home');
-        
 
         Route::namespace('Student')->group(function () {
             Route::get('/enroll/{program}', 'EnrollCourseController@show')->name('enroll.course');
@@ -118,6 +116,7 @@ Route::prefix('student')->group(function() {
             Route::post('/final/exam/answer/{module}', 'FinalExamController@submit')->name('answer.final.exam.submit');
 
             Route::get('/final/exam/answer/{module}/result/{attempt}', 'FinalExamController@result')->name('answer.final.exam.result');
+            Route::post('/final/exam/answer/{module}/save', 'FinalExamController@examSave')->name('answer.final.exam.save');
         });
         
     });

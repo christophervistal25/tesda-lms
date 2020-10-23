@@ -74,7 +74,7 @@
 			 		<a href="{{ route('answer.final.exam', $module) }}" class="btn rounded-0 text-dark" style="background :#ced4da">Continue the last attempt</a>
 			 	{{-- IF THE USER DOESN'T TAKE EXAMINATION --}}
 			 	@elseif(is_null($student->exam_attempt->last()) ||  $student->exam_attempt->count() < 3)
-			 		<a href="{{ route('user.add.attempt', $module) }}" class="btn rounded-0 text-dark" style="background :#ced4da">Take Final Exam</a>
+			 		<a href="{{ route('user.add.attempt', $module) }}" class="btn rounded-0 text-dark" style="background :#ced4da">Attempt Take Final Exam</a>
 			 	@endif
 		 	
 		 	</div>

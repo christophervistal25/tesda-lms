@@ -140,7 +140,7 @@
                 <span>Private files</span></a>
             </li>
 
-        {{--      <li class="nav-item ">
+             <li class="nav-item ">
               <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseCourseSection" aria-expanded="false" aria-controls="collapseCourseSection">
                 <i class="fas fa-fw fa-align-justify"></i>
                 <span>Course sections</span>
@@ -148,21 +148,18 @@
               <div id="collapseCourseSection" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar" style="">
                  <div class="bg-white p-2 rounded">
                    <ul>
-                    <li><a class="collapse-item font-weight-bold" href="/student/course/view/{{ $course->id }}"><small>Course Introduction</small></a></li>
-                      @foreach(Auth::user()->courses as $enroll)
-                        @if(!is_null($enroll->course->overview))
-                          <li><a class="collapse-item font-weight-bold" href="/student/course/view/{{ $course->id }}"><small>Course Overview</small></a></li>
-                        @endif
+                    @foreach($course_sections as $module => $sections)
+                      <li><a class="collapse-item" href="/student/course/view/{{ $current_course->id }}"><small>{{ Str::limit(str_replace('_', ' ', $module), 10, '...')}}</small></a></li>
+                      @foreach($sections as $section)
+                        <li class="ml-2"><a class="collapse-item" href="/student/course/view/{{ $current_course->id }}"><small class="text-capitalize">{{  Str::limit($section, 10, '...') }}</small></a></li>
                       @endforeach
-                      @foreach(Auth::user()->courses as $enroll)
-                          @foreach($enroll->course->modules as $module)
-                            <li><a class="collapse-item font-weight-bold" href="/student/course/view/{{ $course->id }}"><small>{{ $module->title }}</small></a></li>
-                          @endforeach
-                      @endforeach
+                      <div class="dropdown-divider"></div>
+                    @endforeach
+                      
                    </ul>
                 </div>
               </div>
-            </li> --}}
+            </li>
       @endif
 
 
@@ -285,7 +282,7 @@
                 </h6>
                 <a class="dropdown-item d-flex align-items-center" href="#">
                   <div class="dropdown-list-image mr-3">
-                    <img class="rounded-circle" src="https://source.unsplash.com/fn_BT9fwg_E/60x60" alt="">
+                    <img class="rounded-circle" src="" alt="">
                     <div class="status-indicator bg-success"></div>
                   </div>
                   <div class="font-weight-bold">
@@ -295,7 +292,7 @@
                 </a>
                 <a class="dropdown-item d-flex align-items-center" href="#">
                   <div class="dropdown-list-image mr-3">
-                    <img class="rounded-circle" src="https://source.unsplash.com/AU4VPcFN4LE/60x60" alt="">
+                    <img class="rounded-circle" src="" alt="">
                     <div class="status-indicator"></div>
                   </div>
                   <div>
@@ -305,7 +302,7 @@
                 </a>
                 <a class="dropdown-item d-flex align-items-center" href="#">
                   <div class="dropdown-list-image mr-3">
-                    <img class="rounded-circle" src="https://source.unsplash.com/CS2uCrpNzJY/60x60" alt="">
+                    <img class="rounded-circle" src="" alt="">
                     <div class="status-indicator bg-warning"></div>
                   </div>
                   <div>
@@ -315,7 +312,7 @@
                 </a>
                 <a class="dropdown-item d-flex align-items-center" href="#">
                   <div class="dropdown-list-image mr-3">
-                    <img class="rounded-circle" src="https://source.unsplash.com/Mv9hjnEUHR4/60x60" alt="">
+                    <img class="rounded-circle" src="" alt="">
                     <div class="status-indicator bg-success"></div>
                   </div>
                   <div>

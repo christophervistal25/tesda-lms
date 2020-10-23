@@ -20,9 +20,6 @@
 	</div>
 	
 	<div class="card-body rounded-0">
-		<div class="alert alert-danger rounded-0 d-none" role="alert" id="form-message-error">
-			
-		</div>
 		<form method="POST" id="formExamination">
 			@csrf
 			<div class="row">
@@ -36,6 +33,7 @@
 					</div>
 				</div>
 				<div class="col-lg-9">
+					<div class="alert alert-danger rounded-0 d-none" role="alert" id="form-message-error"></div>
 					<div id="dynamic-question-container">
 						
 					</div>
@@ -173,6 +171,7 @@
 	$('#formExamination').submit(function (e) {
 		e.preventDefault();
 	});
+	
 	function elementError(data) {
 		if (typeof data.errors[`${data.group}.${data.index}.${data.type}`] != 'undefined') {
 			return `<li>(${data.text}) - Question ${data.question_no} ${data.errors[`${data.group}.${data.index}.${data.type}`]}</li>`
@@ -248,7 +247,6 @@
 
 						// form errors
 						let errors = response.responseJSON.errors;
-						console.log(errors);
 
 						// Check error for each multiple choice question
 						$('.multiple-question').each(function (index, element) {

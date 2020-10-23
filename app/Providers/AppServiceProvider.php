@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Auth;
+use App\Repositories\StudentRepository;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -23,6 +25,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+         view()->composer('layouts.student.app', function ($view)  {
+            $studentRepository = new StudentRepository;
+            $currentCourse     = $studentRepository->getCourse();
+            $view->with('course_sections', $studentRepository->sections($currentCourse));
+            $view->with('current_course', $currentCourse);
+         });
+        
     }
 }

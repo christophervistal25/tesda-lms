@@ -113,6 +113,37 @@ class FinalExamController extends Controller
     	return view('student.examination.answer', compact('questions', 'course', 'module', 'attempt_id', 'next', 'previous', 'overview', 'modules', 'canDownloadCertificate'));
     }
 
+    public function examSave(Request $request, Module $module)
+    {
+        $this->examRepository->saveExamination($request, $module);
+        $examination_data = $request->except('_token');
+        $studentId = Auth::user()->id;
+        $attempt   = $request->attempt_id;
+        $course    = $module->course;
+
+        $module = Module::with(['exam', 'exam.questions','exam.questions.choices', 'exam.questions.result' => function ($query) use($studentId, $attempt) {
+            $query->where('user_id', $studentId)->where('exam_attempt_id', $attempt);
+        }])->find($module->id);
+
+        $questions = collect($module->exam->questions)->sortBy('question_no');
+
+      
+        $modules  = $course->modules->where('is_overview', 0);
+        $overview = $course->modules->where('is_overview', 1)->first();
+        
+        $canDownloadCertificate = $this->certificateRepository->isUserCanDownload();
+        $isUserHasExamResult    = $this->examRepository->userExamResult();
+
+        $this->viewer->process([
+            'course' => $course,
+            'module_id' => $module->id,
+        ]);
+
+        $next     = ($isUserHasExamResult) ? $this->viewer->getNext() : null;
+        $previous = $this->viewer->getPrevious();
+        return view('student.examination.saved', compact('examination_data', 'module', 'course', 'questions', 'module', 'previous', 'next', 'canDownloadCertificate', 'modules', 'overview'));
+    }
+
     public function submit(Request $request, Module $module)
     {
         // Check each answer of the student
@@ -170,12 +201,11 @@ class FinalExamController extends Controller
 
         $marks = 0;
 
-        $questions->each(function ($question) use(&$mark) {
+        $questions->each(function ($question) use(&$marks) {
             if ($question->result->status === 'correct') {
-                $mark++;
+                $marks++;
             }
         });
-
         $modules  = $course->modules->where('is_overview', 0);
         $overview = $course->modules->where('is_overview', 1)->first();
         

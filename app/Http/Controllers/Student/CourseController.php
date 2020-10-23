@@ -10,6 +10,7 @@ use Auth;
 use App\Module;
 use App\Helpers\ExamRepository;
 use App\Helpers\CertificateRepository;
+use App\Repositories\CourseRepository;
 
 class CourseController extends Controller
 {
@@ -18,6 +19,7 @@ class CourseController extends Controller
     {
         $this->examRepository = $examRepo;
         $this->certificateRepository = $certificateRepo;
+        $this->courseRepository = new CourseRepository();
     }
 
     public function design(Course $course)
@@ -85,20 +87,24 @@ class CourseController extends Controller
      */
     public function show($id)
     {
+        // Checker if the course complete the it's modules.
+        $course = Course::with(['modules'])->find($id);
+        if (!$this->courseRepository->isModulesReady($course)) {
+            return view('layouts.student.getting-ready');
+        }
+
         $modules = null;
         $overview = null;
       
         $canDownloadCertificate = $this->certificateRepository->isUserCanDownload();
-
-        $course = Course::with(['modules'])->find($id);
+        
         $overview = $course->modules->where('is_overview', 1)
                             ->first();
 
         $student_id = Auth::user()->id;
 
+
         $noOfOverviewFiles = $overview->files->count();
-        
-     
         
         $overviewFiles     = $overview->files->toJson();
         

@@ -25,7 +25,7 @@
 							{!! $activity->body !!}
 						</div>
 						<div class="text-center text-dark">
-							Click the file above to download your certificate
+							Click the file above to download
 						</div>
 					@else
 						{!! $activity->body !!}
@@ -39,10 +39,14 @@
 		<div class="container-fluid py-2">
 			<div class="row">
 				<div class="col-md-4 text-left">
-					@if($previous instanceof App\Activity)
+					@if(!is_null($previous) && !$previous->completion && $previous instanceof App\Activity)
 						<span class="text-dark mr-3">PREVIOUS ACTIVITY</span>
 						<br>
 						<a href="{{ route('activity.view', $previous->id) }}" class="btn btn-link" title="{{$previous->title}}">◄ {{ $previous->activity_no }} {{ $previous->title }}</a>
+					@elseif(!is_null($previous) && $previous->completion && $previous instanceof App\Activity)
+						<span class="text-dark mr-3">PREVIOUS ACTIVITY</span>
+							<br>
+							<a href="{{ route('activity.view', $previous->id) }}" class="btn btn-link" title="{{$previous->title}}">◄ {{ $previous->title }}</a>
 					@elseif($previous instanceof App\File)
 						<span class="text-dark mr-3">PREVIOUS ACTIVITY</span>
 						<br>
@@ -84,10 +88,14 @@
 					</select>
 				</div>
 				<div class="col-md-4 text-right">
-					@if(!is_null($next) && !is_null($next->title) && $next instanceof App\Activity)
+					@if(!is_null($next) && !$next->completion && $next instanceof App\Activity)
 						<span class="text-dark mr-3">NEXT ACTIVITY</span>
 						<br>
 						<a href="{{ route('activity.view', $next->id) }}" class="btn btn-link" title="{{$next->title}}">{{ $next->activity_no }} {{ $next->title }} ►</a>
+					@elseif(!is_null($next) && $next->completion && $next instanceof App\Activity)
+						<span class="text-dark mr-3">NEXT ACTIVITY</span>
+						<br>
+						<a href="{{ route('activity.view', $next->id) }}" class="btn btn-link" title="{{$next->title}}">{{ $next->title }} ►</a>
 					@elseif($next instanceof App\Exam)
 						<span class="text-dark mr-3">NEXT ACTIVITY</span>
 						<br>

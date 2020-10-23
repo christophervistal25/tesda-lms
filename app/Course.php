@@ -10,7 +10,7 @@ class Course extends Model
 
     public function status()
     {
-        return $this->hasMany('App\CourseStatus');
+        return $this->hasOne('App\CourseStatus');
     }
 
     public function enroll()

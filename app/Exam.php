@@ -20,4 +20,5 @@ class Exam extends Model
         return $this->belongsTo('App\Module');
     }
 
+
 }

@@ -19,4 +19,9 @@ class Question extends Model
     {
     	return $this->hasOne('App\ExamResult');
     }
+
+    public function save_question()
+    {
+        return $this->hasOne('App\ExamSave');
+    }
 }

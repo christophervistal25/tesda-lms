@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Program;
 use Auth;
 use App\Course;
+use App\Repositories\StudentRepository;
 
 
 class HomeController extends Controller
@@ -15,9 +16,10 @@ class HomeController extends Controller
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(StudentRepository $studentRepo)
     {
         $this->middleware('auth');
+        $this->studentRepository = $studentRepo;
     }
 
     /**
@@ -27,28 +29,19 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $progress       = 0;
-        $noOfActivities = 0;
-        $student        = Auth::user();
-        $userCourse     = $student->courses->last()->course;
-        $studentCourse  = Course::with(['modules'])->find($userCourse->id);
 
-        foreach ($studentCourse->modules as $module) {
-            if ($module->is_overview == 1) {
-                $noOfActivities += $module->files->count();
-            } else {
-                $noOfActivities += $module->activities->count();
-            }
+        if (!$this->studentRepository->hasCourse()) {
+            // Redirect the student to enroll page.
+            return redirect(route('site.home'));
         }
 
+        $progress       = $this->studentRepository->getProgress();
+        $studentCourses = $this->studentRepository->getCourses();
+        $currentCourse  = $this->studentRepository->getCourse();
+        $student        = Auth::user();
 
-        $accomplish_activities = $student->accomplish_files->count() + $student->accomplish_activities->count();
-
-        $progress = $accomplish_activities * (100 / $noOfActivities);
-
-        $studentCourses = $student->courses;
-
-        return view('home', compact('progress', 'studentCourses'));
+        
+        return view('home', compact('progress', 'studentCourses', 'student', 'currentCourse'));
     }
 
     public function siteHome()
