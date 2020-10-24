@@ -35,18 +35,22 @@ class CourseRepository
         return true;
     }
 
-    public static function sections(Course $course)
+    public static function sections($course)
     {
+        if (!$course) {
+            return null;
+        }
+
         $overview = $course->modules->where('is_overview', 1);
         $sections = [];
-        if ($overview) {
+        if (!is_null($overview->first())) {
              foreach ($overview->first()->files->pluck('title')->toArray() as $section) {
                 $sections['Course_Overview'][] = $section;
             }
         }
 
         $modules = $course->modules->where('is_overview', 0);
-        if ($modules) {
+        if (!is_null($modules)) {
             foreach ($modules as $module) {
                 $key = str_replace(' ', '_', $module->title);
                 foreach ($module->activities->where('completion', null)->toArray() as $section) {

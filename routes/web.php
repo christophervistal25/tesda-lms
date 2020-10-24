@@ -117,6 +117,8 @@ Route::prefix('student')->group(function() {
 
             Route::get('/final/exam/answer/{module}/result/{attempt}', 'FinalExamController@result')->name('answer.final.exam.result');
             Route::post('/final/exam/answer/{module}/save', 'FinalExamController@examSave')->name('answer.final.exam.save');
+
+            Route::get('/grade/report/{course}', 'GradeController@show')->name('student.grade.report');
         });
         
     });

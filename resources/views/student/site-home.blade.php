@@ -26,7 +26,10 @@
 		<h3 class="text-dark">Course Categories</h3>
 		<br>
 		@foreach($programs as $program)
-			<h4 class="ml-2"><i class="fas fa-caret-right "></i> <a href="{{ route('program.show', $program) }}">{{ $program->name }}</a> <span style="font-size: 13px;">({{ $program->courses->count() }})</span></h4>
+			<h4 class="ml-2"><i class="fas fa-caret-right "></i> 
+				<a href="{{ route('program.show', $program) }}">{{ $program->name }}</a> 
+				<span style="font-size: 13px;">({{ $program->courses->count() }})</span>
+			</h4>
 		@endforeach
 
 		<div class="text-center">
@@ -42,14 +45,23 @@
 										<span class="badge badge-info rounded-0"><a href="{{ route('program.show', $program) }}" class="text-white">{{ $program->name }}</a></span>
 									</div>
 									<div class="clearfix"></div>
-									<h5 class="card-title text-left"><a href="{{ route('enroll.course', $course->id) }}">{{ $course->name }}</a></h5>
+									@if($current_course && $current_course->id == $course->id)
+										<h5 class="card-title text-left"><a href="/student/course/view/{{ $current_course->id }}">{{ $program->name }}</a></h5>
+										@else
+										<h5 class="card-title text-left"><a href="{{ route('enroll.course', $course->id) }}">{{ $course->name }}</a></h5>
+									@endif
 								</div>
 								<div class="card-footer">
 									<div class="float-left">
 										<i class="fas fa-sign-in-alt"></i>
 									</div>
 										<div class="float-right">
-											<a class="card-link btn btn-primary rounded-0" href="{{ route('enroll.course', $course->id) }}">Access</a>
+											@if($current_course && $current_course->id == $course->id)
+												<a class="card-link btn btn-primary rounded-0" href="/student/course/view/{{ $current_course->id }}">Access</a>
+												@else
+												<a class="card-link btn btn-primary rounded-0" href="{{ route('enroll.course', $course->id) }}">Access</a>
+											@endif
+											
 										</div>
 								</div>
 							</div>

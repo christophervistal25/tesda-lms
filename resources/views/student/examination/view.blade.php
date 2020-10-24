@@ -49,7 +49,7 @@
 		 						@if($attempt->result->count() != 0)
 		 							<td class="text-center align-middle">{{ $attempt->result->where('status', 'correct')->count() }}.00 </td>
 		 							@php
-		 							$grade = ( 100 / $attempt->result->count() ) *  $attempt->result->where('status', 'correct')->count();
+		 							$grade = ( config('student_progress.max_percentage') / $attempt->result->count() ) *  $attempt->result->where('status', 'correct')->count();
 		 							@endphp
 		 							<td class="text-center align-middle">{{ number_format($grade, 2, '.', '') }} out of 100.00 </td>
 									<td class="text-center align-middle"><a href="{{ route('answer.final.exam.result', [$module, $attempt->id]) }}">Review</a></td>

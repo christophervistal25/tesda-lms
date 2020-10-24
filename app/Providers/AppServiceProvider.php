@@ -31,6 +31,14 @@ class AppServiceProvider extends ServiceProvider
             $view->with('course_sections', $studentRepository->sections($currentCourse));
             $view->with('current_course', $currentCourse);
          });
+
+         view()->composer(['student.site-home', 'student.program-course.show'], function ($view)  {
+            $studentRepository = new StudentRepository;
+            $currentCourse     = $studentRepository->getCourse();
+            $view->with('current_course', $currentCourse);
+         });
+
+
         
     }
 }

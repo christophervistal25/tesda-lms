@@ -93,7 +93,7 @@
             </li>
 
             <li class="nav-item">
-              <a class="nav-link" href="index.html">
+              <a class="nav-link" href="{{ route('student.grade.report', $current_course->id) }}">
                 <i class="fas fa-book"></i>
                 <span>Grades</span></a>
             </li>
@@ -108,7 +108,7 @@
             </li>
 
             <li class="nav-item">
-              <a class="nav-link" href="index.html">
+              <a class="nav-link" href="{{ route('site.home') }}">
                 <i class="fas fa-fw fa-home"></i>
                 <span>Site Home</span></a>
             </li>
@@ -148,13 +148,17 @@
               <div id="collapseCourseSection" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar" style="">
                  <div class="bg-white p-2 rounded">
                    <ul>
-                    @foreach($course_sections as $module => $sections)
+                    @forelse($course_sections as $module => $sections)
                       <li><a class="collapse-item" href="/student/course/view/{{ $current_course->id }}"><small>{{ Str::limit(str_replace('_', ' ', $module), 10, '...')}}</small></a></li>
                       @foreach($sections as $section)
                         <li class="ml-2"><a class="collapse-item" href="/student/course/view/{{ $current_course->id }}"><small class="text-capitalize">{{  Str::limit($section, 10, '...') }}</small></a></li>
                       @endforeach
                       <div class="dropdown-divider"></div>
-                    @endforeach
+                      @empty
+                      <div class="text-danger">
+                        <small>Preparing all files and modules.</small>
+                      </div>
+                    @endforelse
                       
                    </ul>
                 </div>

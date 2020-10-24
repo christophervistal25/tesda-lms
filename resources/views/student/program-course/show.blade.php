@@ -28,20 +28,28 @@
 			@foreach($programCourse->courses as $course)
 			<div class="col-lg-3">
 				<div class="card rounded-0">
-					<img class="card-img-top rounded-0" src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601120617/samples/imagecon-group.jpg" alt="Card image cap">
+					<img class="card-img-top rounded-0" src="{{ $course->image }}" alt="Card image cap">
 					<div class="card-body">
 						<div class="float-left">
 							<span class="badge badge-info rounded-0"><a href="{{ route('program.show', $programCourse) }}" class="text-white">{{ $programCourse->name }}</a></span>
 						</div>
 						<div class="clearfix"></div>
-						<h5 class="card-title text-left"><a href="{{ route('enroll.course', $course->id) }}">{{ $course->name }}</a></h5>
+						@if($current_course && $current_course->id === $course->id)
+							<h5 class="card-title text-left"><a href="{{ route('student.course.view', $course->id) }}">{{ $course->name }}</a></h5>
+							@else
+							<h5 class="card-title text-left"><a href="{{ route('enroll.course', $course->id) }}">{{ $course->name }}</a></h5>
+						@endif
 					</div>
 					<div class="card-footer">
 						<div class="float-left">
 							<i class="fas fa-sign-in-alt"></i>
 						</div>
 						<div class="float-right">
-							<a class="card-link btn btn-primary rounded-0" href="{{ route('enroll.course', $course->id) }}">Access</a>
+							@if($current_course && $course->id === $current_course->id)
+								<a class="card-link btn btn-primary rounded-0" href="{{ route('student.course.view', $course->id) }}">Access</a>
+								@else
+								<a class="card-link btn btn-primary rounded-0" href="{{ route('enroll.course', $course->id) }}">Access</a>
+							@endif
 						</div>
 					</div>
 				</div>

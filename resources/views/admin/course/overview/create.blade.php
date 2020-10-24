@@ -121,7 +121,7 @@
 
    moduleBodyEditor.addCommand("insertCourseDesign", {
        exec: function(edt) {
-           edt.insertHtml(`<a href="/student/course/design/${courseId}">Course Design</a>`);
+           edt.insertHtml(`<a href="/student/course/design/${courseId}">Course Design</a> <img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1602065137/icons/activity-icon/checkable.webp" >`);
        }
     });
 
@@ -321,7 +321,7 @@
       previousData = selectedActivityContent.getData();
 
       filesData.forEach((file) => {
-        content += `<a href="${file.link}">${file.name}</a> <br>`;
+        content += `<a href="${file.link}">${file.name}</a> <img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1602065137/icons/activity-icon/checkable.webp"> <br>`;
       });
       selectedActivityContent.setData(`${previousData} ${content}`);
   });

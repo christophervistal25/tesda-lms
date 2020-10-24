@@ -325,7 +325,7 @@
 		let pElement = document.querySelector(`#overview-${overviewId}-progress`)
 		progressCurrentValue = parseFloat(pElement.style.width);
 		pElement.style.width = parseFloat(progressCurrentValue + calculate) + '%';
-
+			
 		// send
 		sendAccomplish(element.getAttribute('data-id'));
 	};
@@ -344,12 +344,11 @@
 		let pElement = document.querySelector(`#overview-${overviewId}-progress`)
 		progressCurrentValue = parseFloat(pElement.style.width);
 
-		if (parseInt(progressCurrentValue - calculate) < 0) {
+		if (parseInt(progressCurrentValue - calculate) < 0  || parseInt(progressCurrentValue - calculate) == -0 ) {
 			pElement.style.width = '0%';
 		} else {
 			pElement.style.width = parseFloat(progressCurrentValue - calculate) + '%';	
 		}
-
 		removeAccomplish(element.getAttribute('data-id'));
 		
 	};
