@@ -47,4 +47,9 @@ class Course extends Model
     {
         return $this->hasMany('App\Post');
     }
+
+    public function badge()
+    {
+        return $this->hasMany('App\Badge');
+    }
 }

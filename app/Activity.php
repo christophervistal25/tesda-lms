@@ -41,4 +41,9 @@ class Activity extends Model
     {
         return $this->morphToMany('App\User', 'userable');
     }
+
+    public function badges()
+    {
+        return $this->morphToMany('App\Badge', 'badgeable');
+    }
 }

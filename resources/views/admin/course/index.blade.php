@@ -44,17 +44,23 @@
 					</td>
 					<td class="text-center align-middle">{{ $course->created_at->diffForHumans() }}</td>
 					<td>
-						<div class="dropdown">
-								<button class="btn btn-secondary dropdown-toggle rounded-0 btn-sm text-white" type="button" id="actionDropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-									Actions
-								</button>
-								<div class="dropdown-menu" aria-labelledby="actionDropdownMenu">
-									<a href="{{ route('course.add.module', $course) }}" title="Add module" class="dropdown-item"><i class="text-primary fas fa-plus"></i> Add module</a>
-									<a href="{{ route('course.view.module', $course) }}" title="View module" class="dropdown-item"><i class="text-primary fas fa-eye"></i> View module</a>
-									<a href="{{ route('course.edit', $course) }}" title="Edit this course" class="dropdown-item"><i class="text-primary fas fa-edit"></i> Edit course</a>
-									<a data-src="{{ $course->id }}" title="Delete this course" class="dropdown-item btn-delete-course" style="cursor:pointer;"> <i class="text-primary fas fa-trash"></i> <span class="text-dark"> Delete course</span></a>
-								</div>
-							</div>
+						<!-- Default dropleft button -->
+						<div class="btn-group dropleft">
+						  <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						    Actions
+						  </button>
+						  <div class="dropdown-menu">
+						    <!-- Dropdown menu links -->
+						    <h6 class="dropdown-header">Course</h6>
+								<a href="{{ route('course.add.module', $course) }}" title="Add module" class="dropdown-item"> Add Module</a>
+								<a href="{{ route('course.view.module', $course) }}" title="View module" class="dropdown-item">View Module</a>
+								<a href="{{ route('course.edit', $course) }}" title="Edit this course" class="dropdown-item">Edit Course</a>
+							<div class="dropdown-divider"></div>
+							<h6 class="dropdown-header">Badge</h6>
+							<a href="{{ route('badge.course.create', $course) }}" title="Add badge" class="dropdown-item">Add Badge</a>
+							<a href="{{ route('course.edit', $course) }}" title="Edit badge" class="dropdown-item">Edit Badge</a>
+						  </div>
+						</div>
 					</td>
 				</tr>
 				@endforeach

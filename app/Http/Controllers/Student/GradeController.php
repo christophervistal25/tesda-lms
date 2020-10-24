@@ -20,7 +20,7 @@ class GradeController extends Controller
     public function show(Course $course)
     {
    		$currentCourse = $this->studentRepository->getCourse();
-
+   		$highestGrade = 0;
     	$examGrades = [];
     	
     	$noOfQuestions = 0;

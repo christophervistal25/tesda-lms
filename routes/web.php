@@ -76,7 +76,10 @@ Route::prefix('admin')->group(function() {
 
             Route::get('/module/{module}/final/exam/edit/{forceview?}', 'FinalExamController@edit')->name('module.final.exam.edit');
 
-            Route::put('/final/exam/{exam}/edit', 'FinalExamController@update')->name('module.final.exam.update');            
+            Route::put('/final/exam/{exam}/edit', 'FinalExamController@update')->name('module.final.exam.update');
+
+            Route::get('/badge/{course}', 'BadgeController@create')->name('badge.course.create');
+            Route::post('/badge/{course}', 'BadgeController@store')->name('badge.course.store');
 	    });
     });
 

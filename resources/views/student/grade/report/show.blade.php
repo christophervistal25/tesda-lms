@@ -38,7 +38,11 @@
 							<tbody>
 								<tr>
 									<td><a href="{{ route('student.grade.report', $currentCourse->id) }}">{{ $currentCourse->name }}</a></td>
-									<td>{{ number_format((config('student_progress.max_percentage') / $noOfQuestions ) * $highestGrade, 2, '.', '') }}</td>
+									@if($highestGrade != 0)
+										<td>{{ number_format((config('student_progress.max_percentage') / $noOfQuestions ) * $highestGrade, 2, '.', '') }}</td>
+										@else
+										<td></td>
+									@endif
 								</tr>
 							</tbody>
 						</table>
@@ -80,14 +84,31 @@
 										<td class="bg-faded"></td>
 									</tr>
 									<tr class="text-dark">
+										@if($module)
 										<td colspan="1" class=""><span class="ml-5 pl-5"><a href="{{ route('view.final.exam', $module->id) }}"> <img class=" mr-1" src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601889372/icons/final-exam_mdj9vl.png" alt="icon" width="18px">Final Exam</a></span></td>
+										@else
+										<td colspan="1" class=""><span class="ml-5 pl-5"><a> <img class=" mr-1" src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601889372/icons/final-exam_mdj9vl.png" alt="icon" width="18px">Final Exam</a></span></td>
+										@endif
 										<td class="bg-faded"></td>
-										<td class="bg-faded">{{ config('student_progress.max_percentage') }}%</td>
-										<td class="bg-faded">{{ number_format((config('student_progress.max_percentage') / $noOfQuestions ) * $highestGrade, 2, '.', '') }}</td>
+										@if($highestGrade != 0)
+											<td class="bg-faded">{{ config('student_progress.max_percentage') }}%</td>
+											<td class="bg-faded">{{ number_format((config('student_progress.max_percentage') / $noOfQuestions ) * $highestGrade, 2, '.', '') }}</td>
+											@else
+											<td>-</td>
+											<td>-</td>
+										@endif
 										<td class="bg-faded">0-{{ config('student_progress.max_percentage') }}</td>
-										<td class="bg-faded">{{ number_format((config('student_progress.max_percentage') / $noOfQuestions ) * $highestGrade, 2, '.', '') }}%</td>
+										@if($highestGrade != 0)
+											<td class="bg-faded">{{ number_format((config('student_progress.max_percentage') / $noOfQuestions ) * $highestGrade, 2, '.', '') }}</td>
+											@else
+											<td>-</td>
+										@endif
 										<td class="bg-faded"></td>
-										<td class="bg-faded">{{ number_format((config('student_progress.max_percentage') / $noOfQuestions ) * $highestGrade, 2, '.', '') }}%</td>
+										@if($highestGrade != 0)
+											<td class="bg-faded">{{ number_format((config('student_progress.max_percentage') / $noOfQuestions ) * $highestGrade, 2, '.', '') }}</td>
+											@else
+											<td>-</td>
+										@endif
 									</tr>
 
 									<tr class="text-dark font-weight-bold">
@@ -99,10 +120,20 @@
 											<br>
 											<span class="ml-5 pl-5 font-weight-light"><span class="ml-4 pl-2"></span>Simple weighted mean of grades.</span>
 										</td>
+
+										@if($highestGrade != 0)
 										<td class="bg-faded">{{ config('student_progress.max_percentage') }}%</td>
-										<td class="bg-faded">{{ number_format((config('student_progress.max_percentage') / $noOfQuestions ) * $highestGrade, 2, '.', '') }}</td>
+											<td class="bg-faded">{{ number_format((config('student_progress.max_percentage') / $noOfQuestions ) * $highestGrade, 2, '.', '') }}</td>
+											@else
+											<td>-</td>
+											<td>-</td>
+										@endif
 										<td class="bg-faded">0-{{ config('student_progress.max_percentage') }}</td>
-										<td class="bg-faded">{{ number_format((config('student_progress.max_percentage') / $noOfQuestions ) * $highestGrade, 2, '.', '') }}%</td>
+										@if($highestGrade != 0)
+											<td class="bg-faded">{{ number_format((config('student_progress.max_percentage') / $noOfQuestions ) * $highestGrade, 2, '.', '') }}%</td>
+											@else
+											<td>-</td>
+										@endif
 										<td class="bg-faded"></td>
 										<td class="bg-faded">-</td>
 									</tr>
@@ -118,9 +149,17 @@
 										</td>
 										<td class="bg-faded"></td>
 										<td class="bg-faded">-</td>
-										<td class="bg-faded">{{ number_format((config('student_progress.max_percentage') / $noOfQuestions ) * $highestGrade, 2, '.', '') }}</td>
+										@if($highestGrade != 0)
+											<td class="bg-faded">{{ number_format((config('student_progress.max_percentage') / $noOfQuestions ) * $highestGrade, 2, '.', '') }}</td>
+											@else
+											<td>-</td>
+										@endif
 										<td class="bg-faded">0-100</td>
-										<td class="bg-faded">{{ number_format((config('student_progress.max_percentage') / $noOfQuestions ) * $highestGrade, 2, '.', '') }}%</td>
+										@if($highestGrade != 0)
+											<td class="bg-faded">{{ number_format((config('student_progress.max_percentage') / $noOfQuestions ) * $highestGrade, 2, '.', '') }}%</td>
+											@else
+											<td>-</td>
+										@endif
 										<td class="bg-faded"></td>
 										<td class="bg-faded">-</td>
 									</tr>
