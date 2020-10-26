@@ -78,8 +78,13 @@ Route::prefix('admin')->group(function() {
 
             Route::put('/final/exam/{exam}/edit', 'FinalExamController@update')->name('module.final.exam.update');
 
-            Route::get('/badge/{course}', 'BadgeController@create')->name('badge.course.create');
-            Route::post('/badge/{course}', 'BadgeController@store')->name('badge.course.store');
+                            
+            Route::get('course/badge/{course}/show', 'CourseBadgeController@show')->name('badge.course.show');
+            Route::get('course/badge/{course}', 'CourseBadgeController@create')->name('badge.course.create');
+            Route::post('course/badge/{course}', 'CourseBadgeController@store')->name('badge.course.store');
+            Route::get('course/{course}/badge/{badge}/edit', 'CourseBadgeController@edit')->name('badge.course.edit');
+            Route::put('course/{coures}/badge/{badge}/edit', 'CourseBadgeController@update')->name('badge.course.update');
+
 	    });
     });
 
@@ -122,6 +127,8 @@ Route::prefix('student')->group(function() {
             Route::post('/final/exam/answer/{module}/save', 'FinalExamController@examSave')->name('answer.final.exam.save');
 
             Route::get('/grade/report/{course}', 'GradeController@show')->name('student.grade.report');
+
+            Route::get('/badge', 'BadgeController@index')->name('student.badge.index');
         });
         
     });

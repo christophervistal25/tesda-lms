@@ -1,44 +1,24 @@
 <?php
-
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Course;
-use App\Module;
 use App\Badge;
+use Illuminate\Database\Eloquent\Collection;
 use App\Activity;
-use App\File;
 
 class BadgeController extends Controller
 {
-    public function create(Request $request, Course $course)
+
+    public function index()
     {
-    	return view('admin.course.badge.create', compact('course'));
+        $badges = Badge::with('course')->get();
+        return view('admin.course.badge.index', compact('badges'));
     }
 
-    public function store(Request $request, Course $course)
+    public function edit($badge)
     {
-    	$criterias = json_decode($request->criteria);
-
-    	$badge = Badge::create([
-			'course_id'   => $course->id,
-			'name'        => $request->badge_name,
-			'description' => $request->badge_description,
-			'image'		  => 'test.jpg',
-    	]);
-
-    	foreach ($criterias as $criteria) {
-    		if ($criteria->type === 'activity') {
-    			 $activity = Activity::find($criteria->id);
-    			 $activity->badges()->save($badge);
-    		} else if ($criteria->type === 'file') {
-    			$file = File::find($criteria->id);
-    			$file->badges()->save($badge);
-    		}
-    	}
-
-    	return back()->with('success', 'Successfully add new badge for course ' . $course->name);
-
+    	$badge = Badge::with('course')->find($badge);
+        return view('admin.course.badge.edit', compact('badge', 'criterias'));
     }
 }

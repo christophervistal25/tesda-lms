@@ -16,7 +16,7 @@
 		<div class="clearfix"></div>
 		<table class="table table-bordered table-inverse table-hover" id="course-table">
 			<thead>
-				<tr>
+				<tr class="text-dark">
 					<th>Name</th>
 					<th>Description</th>
 					<th>Design</th>
@@ -29,7 +29,7 @@
 			</thead>
 			<tbody>
 				@foreach($courses as $course)
-				<tr>
+				<tr class="text-dark">
 					<td class="text-primary align-middle">{{ $course->acronym }}</td>
 					<td class="align-middle">{{ $course->description }}</td>
 					<td class="align-middle"><a href="{{ route('course.design', $course) }}">Course Design</a></td>
@@ -43,10 +43,9 @@
 							@endforelse
 					</td>
 					<td class="text-center align-middle">{{ $course->created_at->diffForHumans() }}</td>
-					<td>
-						<!-- Default dropleft button -->
+					<td class="text-center">
 						<div class="btn-group dropleft">
-						  <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						  <button type="button" class="btn btn-sm btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 						    Actions
 						  </button>
 						  <div class="dropdown-menu">
@@ -57,8 +56,8 @@
 								<a href="{{ route('course.edit', $course) }}" title="Edit this course" class="dropdown-item">Edit Course</a>
 							<div class="dropdown-divider"></div>
 							<h6 class="dropdown-header">Badge</h6>
+							<a href="{{ route('badge.course.show', [$course]) }}" title="View all badge" class="dropdown-item">Badges <span class="badge badge-pill badge-primary">{{ $course->badge->count() }}</span></a>
 							<a href="{{ route('badge.course.create', $course) }}" title="Add badge" class="dropdown-item">Add Badge</a>
-							<a href="{{ route('course.edit', $course) }}" title="Edit badge" class="dropdown-item">Edit Badge</a>
 						  </div>
 						</div>
 					</td>

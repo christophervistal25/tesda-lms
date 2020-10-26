@@ -27,5 +27,10 @@ class Badge extends Model
     {
         return $this->morphedByMany('App\File', 'badgeable')->withTimestamps();
     }
+
+    public function modules()
+    {
+        return $this->morphedByMany('App\Module', 'badgeable')->withTimestamps();
+    }
    
 }

@@ -1,12 +1,15 @@
 @extends('layouts.admin.app')
-@section('title', 'Create Badge')
+@section('title', 'Edit Badge ' . $course->name)
 @section('content')
+@prepend('meta-data')
+<meta name="criterias" content="{{ $criterias->toJson() }}">
+@endprepend
 @prepend('page-css')
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/startbootstrap-sb-admin-2@4.1.1/vendor/datatables/dataTables.bootstrap4.min.css">
 @endprepend
 @if(Session::has('success'))
-<div class="card bg-primary text-white shadow mb-2">
+<div class="card bg-success text-white shadow mb-2">
   <div class="card-body">
     {{ Session::get('success') }}
   </div>
@@ -19,21 +22,26 @@
   </div>
   
   <div class="card-body">
-    <form method="POST" action="{{ route('badge.course.store', $course->id) }}" enctype="multipart/form-data">
+    <form method="POST" action="{{ route('badge.course.update', [$course->id, $badge->id]) }}" enctype="multipart/form-data">
        @csrf
+       @method('PUT')
        <div class="form-group row">
         <div class="col-md-6">
         <label for="badge_name" class="text-dark">{{ __('Badge Name') }}</label>
-          <input id="badge_name" type="text" class="form-control @error('badge_name') is-invalid @enderror" name="badge_name" value="{{ old('badge_name') }}" required autocomplete="course" autofocus >
+          <input id="badge_name" type="text" class="form-control @error('badge_name') is-invalid @enderror" name="badge_name" value="{{ old('badge_name') ?? $badge->name }}" required autocomplete="course" autofocus >
           @error('badge_name')
           <span class="invalid-feedback" role="alert">
             <strong>{{ $message }}</strong>
           </span>
           @enderror
         </div>
-
-        <div class="col-md-6">
-          <label class="text-dark">Badge Image</label>
+        <div class="col-md-1 text-center">
+          <div class="mt-4 ml-5 pl-4">
+            <img src="{{ asset('badges/' . $badge->image) }}" width="50px" alt="">
+          </div>
+        </div>
+        <div class="col-md-5">
+          <label class="text-dark">Badge Image <span class="text-primary">(Optional)</span></label>
           <div class="custom-file">
               <input type="file" class="custom-file-input" name="badge_image">
               <label class="custom-file-label" for="validatedCustomFile">Choose file...</label>
@@ -47,15 +55,38 @@
 
         <div class="col-md-12 mt-3">
           <label for="badge_description" class="text-dark">Badge Description</label>
-          <textarea id="badge_description" name="badge_description" cols="30" rows="3" class="form-control">{{ old('badge_description') }}</textarea>
+          <textarea id="badge_description" name="badge_description" cols="30" rows="3" class="form-control">{{ old('badge_description') ?? $badge->description }}</textarea>
         </div>
 
         <div class="col-md-12 mt-3">
           <label for="selected_criteria" class="text-dark">Selected Criteria</label>
-          <div id="selected_criteria" class="border p-2" style="height : 15vh;">{{ old('selected_criteria') }}</div>
+          <div id="selected_criteria" class="border p-2" style="height : 15vh;">
+            
+            @if(old('selected_criteria'))
+              @else
+                  @foreach($badge->modules as $module)
+                    @if($module->is_overview == 1)
+                        <span class="ml-2 badge badge-primary" data-related-to="overview-{{ $module->id }}" id="overview-{{ $module->id }}">{{ $module->title }}</span>
+                      @else
+                        <span class="ml-2 badge badge-primary" data-related-to="module-{{ $module->id }}" id="module-{{ $module->id }}">{{ $module->title }}</span>
+                    @endif
+                  @endforeach
+
+                  @foreach($badge->activities as $activity)
+                        <span class="ml-2 badge badge-primary" data-child-of="module-{{ $activity->module_id }}" id="activity-{{ $activity->id }}">{{ $activity->title }}</span>
+                  @endforeach
+
+                  @foreach($badge->files as $file)
+                        <span class="ml-2 badge badge-primary" data-child-of="module-{{ $file->filelable->id }}" id="file-{{ $file->id }}">{{ $file->title }}</span>
+                  @endforeach
+
+              @endif
+                
+   
+          </div>
         </div>
 
-        <input type="hidden" name="criteria" id="criterias" class="form-control">
+        <input type="hidden" value="{{ $criterias->isEmpty() ? null : $criterias->toJson() }}" name="criteria" id="criterias" class="form-control">
 
       </div>
       <hr>
@@ -78,26 +109,46 @@
             </thead>
             <tbody>
               @foreach($course->modules->where('is_overview', 1) as $overview)
-              @foreach($overview->files as $file)
-              <tr>
-                <td class="text-primary"><a target="_blank" href="{{ str_replace('student', 'admin', $file->link) }}">{{ $file->title }}</a></td>
-                <td class="text-center">{{ $overview->title }}</td>
-                <td class="text-center">
-                  <button class="btn btn-sm btn-primary add-for-criteria" data-child-of="overview-{{ $overview->id }}" data-type="file" data-parent="overview-{{ $overview->id }}" data-title="{{ $file->title }}" data-id="{{ $file->id }}">Add for criteria</button>
-                </td>
-              </tr>
-              @endforeach
+                @foreach($overview->files as $file)
+                <tr>
+                  <td class="text-primary"><a target="_blank" href="{{ str_replace('student', 'admin', $file->link) }}">{{ $file->title }}</a></td>
+                  <td class="text-center">{{ $overview->title }}</td>
+                  <td class="text-center">
+
+                    @if(in_array($overview->id, $badge_modules))
+                    {{-- IF BELONG TO MODULE --}}
+                      <button class="btn btn-sm btn-danger add-for-criteria" disabled  data-child-of="overview-{{ $overview->id }}" data-type="file" data-parent="overview-{{ $overview->id }}" data-title="{{ $file->title }}" data-id="{{ $file->id }}">Belongs to {{ $overview->title }}</button>
+                      @elseif(in_array($file->id, $badge_files))
+                      {{-- IF SELECTED OF USER --}}
+                         <button class="btn btn-sm btn-danger remove-for-criteria" data-child-of="overview-{{ $overview->id }}" data-type="file" data-parent="overview-{{ $overview->id }}" data-title="{{ $file->title }}" data-id="{{ $file->id }}">Remove</button>
+                      @else
+                      {{-- NOT SELECTED --}}
+                        <button class="btn btn-sm btn-primary add-for-criteria" data-child-of="overview-{{ $overview->id }}" data-type="file" data-parent="overview-{{ $overview->id }}" data-title="{{ $file->title }}" data-id="{{ $file->id }}">Add for criteria</button>
+                    @endif
+
+                  </td>
+                </tr>
+                @endforeach
               @endforeach
               @foreach($course->modules->where('is_overview', 0) as $module)
-              @foreach($module->activities as $activity)
-              <tr>
-                <td class="text-primary"><a target="_blank" href="{{ route('activity.view', $activity->id) }}">{{ $activity->title }}</a></td>
-                <td class="text-center">{{ $module->title }}</td>
-                <td class="text-center">
-                  <button class="btn btn-sm btn-primary add-for-criteria" data-child-of="module-{{ $module->id }}" data-type="activity" data-parent="module-{{ $module->id }}" data-title="{{ $activity->title }}" data-id="{{ $activity->id }}">Add for criteria</button>
-                </td>
-              </tr>
-              @endforeach
+                @foreach($module->activities as $activity)
+                <tr>
+                  <td class="text-primary"><a target="_blank" href="{{ route('activity.view', $activity->id) }}">{{ $activity->title }}</a></td>
+                  <td class="text-center">{{ $module->title }}</td>
+                  <td class="text-center">
+                    @if(in_array($module->id, $badge_modules))
+                      {{-- IF BELONG TO MODULE --}}
+                        <button class="btn btn-sm btn-danger add-for-criteria" disabled  data-child-of="module-{{ $module->id }}" data-type="activity" data-parent="module-{{ $module->id }}" data-title="{{ $activity->title }}" data-id="{{ $activity->id }}">Belongs to {{ $module->title }}</button>
+                        @elseif(in_array($activity->id, $badge_activities))
+                        {{-- IF SELECTED OF USER --}}
+                           <button class="btn btn-sm btn-danger remove-for-criteria" data-child-of="module-{{ $module->id }}" data-type="activity" data-parent="module-{{ $module->id }}" data-title="{{ $activity->title }}" data-id="{{ $activity->id }}">Remove</button>
+                        @else
+                        {{-- NOT SELECTED --}}
+                          <button class="btn btn-sm btn-primary add-for-criteria" data-child-of="module-{{ $module->id }}" data-type="activity" data-parent="module-{{ $module->id }}" data-title="{{ $activity->title }}" data-id="{{ $activity->id }}">Add for criteria</button>
+                      @endif
+                  </td>
+                </tr>
+                @endforeach
               @endforeach
             </tbody>
           </table>
@@ -117,16 +168,27 @@
                 <td class="text-primary"><a target="_blank" href="{{ route('course.view.module', $overview->course) }}">{{ $overview->title }}</a></td>
                 <td class="text-center"><button class="btn btn-sm btn-info btn-view-overview-files" data-src="{{ $overview->files }}">{{ $overview->files->count() }}</button></td>
                 <td class="text-center">
-                  <button class="btn btn-sm btn-primary add-for-criteria" data-type="overview"  data-title="{{ $overview->title }}" data-id="{{ $overview->id }}">Require for criteria</button>
+                   @if(in_array($overview->id, $badge_modules))
+                      {{-- IF SELECTED --}}
+                      <button class="btn btn-sm btn-danger remove-for-criteria"  data-type="overview"  data-title="{{ $overview->title }}" data-id="{{ $overview->id }}">Remove</button>
+                      @else
+                      <button class="btn btn-sm btn-primary add-for-criteria" data-type="overview"  data-title="{{ $overview->title }}" data-id="{{ $overview->id }}">Require for criteria</button>
+                    @endif
                 </td>
               </tr>
               @endforeach
-              @foreach($course->modules->where('is_overview', null) as $module)
+              @foreach($course->modules->where('is_overview', 0) as $module)
               <tr>
                 <td class="text-primary"><a target="_blank" href="{{ route('course.view.module', $module->course) }}">{{ $module->title }}</a></td>
                 <td class="text-center"><button class="btn btn-sm btn-info btn-view-activities" data-title="{{ $module->title }}" data-src="{{ $module->activities }}">{{ $module->activities->count() }}</button></td>
                 <td class="text-center">
-                  <button class="btn btn-sm btn-primary add-for-criteria" data-type="module" data-title="{{ $module->title }}" data-id="{{ $module->id }}">Require for criteria</button>
+                  @if(in_array($module->id, $badge_modules))
+                      {{-- IF SELECTED --}}
+                      <button class="btn btn-sm btn-danger remove-for-criteria"  data-type="module"  data-title="{{ $module->title }}" data-id="{{ $module->id }}">Remove</button>
+                      @else
+                      <button class="btn btn-sm btn-primary add-for-criteria" data-type="module" data-title="{{ $module->title }}" data-id="{{ $module->id }}">Require for criteria</button>
+                  @endif
+
                 </td>
               </tr>
               @endforeach
@@ -138,8 +200,8 @@
       <div class="form-group mb-0">
         <div class="float-right">
           <div class="col-md-auto">
-            <button type="submit" class="btn btn-primary">
-            {{ __('Create badge for ' . $course->acronym) }}
+            <button type="submit" class="btn btn-success">
+            {{ __('Update badge for ' . $course->acronym) }}
             </button>
           </div>
         </div>
@@ -177,7 +239,8 @@
 </script>
 <script>
 $(document).ready(function () {
-  let courseId = {{ $course->id }};
+  let courseId   = {{ $course->id }};
+  let criterias = JSON.parse($('meta[name="criterias"]').attr('content'));
 
     $('#activities-table').DataTable({
       "language": {
@@ -190,7 +253,6 @@ $(document).ready(function () {
         }
     });
 
-    let criterias = [];
 
     $(document).on('click', 'button.btn-view-activities', function (e) {
         e.preventDefault();

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Module extends Model
 {
-    
+    public const TYPES   = ['overview', 'module'];
     protected $fillable = ['title', 'body', 'course_id', 'is_overview'];
 
     public function activities()
@@ -27,5 +27,10 @@ class Module extends Model
     public function exam()
     {
         return $this->hasOne('App\Exam');
+    }
+
+    public function badges()
+    {
+        return $this->morphToMany('App\Badge', 'badgeable');
     }
 }

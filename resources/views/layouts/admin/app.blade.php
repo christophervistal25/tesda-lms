@@ -67,6 +67,21 @@
         BATCH & COURSE
       </div>
 
+  {{--     <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities" aria-expanded="true" aria-controls="collapseUtilities">
+          <i class="fas fa-book-reader"></i>
+          <span>Course Section</span>
+        </a>
+        <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <a class="collapse-item" href="utilities-color.html">Batch</a>
+            <a class="collapse-item" href="utilities-border.html">Programs</a>
+            <a class="collapse-item" href="utilities-animation.html">Badges</a>
+            <a class="collapse-item" href="utilities-other.html">Other</a>
+          </div>
+        </div>
+      </li> --}}
+
       <li class="nav-item">
         <a class="nav-link" href="{{ route('batch.index') }}">
           <i class="fas fa-object-group"></i>

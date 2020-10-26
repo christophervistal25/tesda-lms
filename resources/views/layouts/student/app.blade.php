@@ -81,7 +81,7 @@
         @else
            <!-- Nav Item - Dashboard -->
             <li class="nav-item">
-              <a class="nav-link" href="index.html">
+              <a class="nav-link" href="{{ route('student.badge.index') }}">
                 <i class="fas fa-medal"></i>
                 <span>Badges</span></a>
             </li>

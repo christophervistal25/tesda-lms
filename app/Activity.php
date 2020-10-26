@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Activity extends Model
 {
+    public const TYPES = ['activity', 'file'];
 	protected $fillable = ['module_id', 'activity_no', 'title', 'body', 'instructions', 'icon', 'downloadable', 'completion'];
-
     
     public static function paginateGetPrevious($moduleAndIndex)
     {

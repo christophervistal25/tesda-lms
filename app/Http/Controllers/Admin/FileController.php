@@ -43,7 +43,7 @@ class FileController extends Controller
             \File::delete($destination);
             return response()->json(['link' => $uploaded['url'] , 'extension' => $ext]);
         } else {
-            $destination =  public_path() . '/certificates/' .$request->file('file')->getClientOriginalName();
+            $destination =  public_path() . '/certificates/' . $request->file('file')->getClientOriginalName();
             move_uploaded_file($request->file('file'), $destination);
             return response()->json(['link' => Str::after($destination, 'public'), 'extension' => $ext]);
         }
