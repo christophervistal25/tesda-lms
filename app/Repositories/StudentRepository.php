@@ -2,6 +2,7 @@
 namespace App\Repositories;
 use Auth;
 use App\Repositories\CourseRepository;
+use App\Course;
 
 class StudentRepository extends CourseRepository
 {
@@ -58,5 +59,13 @@ class StudentRepository extends CourseRepository
 	{
 		$student = Auth::user();
 		return $student->accomplish_files()->count() + $student->accomplish_activities->count();
+	}
+
+
+	public function hasBadge(BadgeRepository $badge)
+	{
+		$course       = $this->getCourse();
+		$student      = Auth::user();
+		return $badge->getBadgeAccomplish($student, $course);
 	}
 }

@@ -1,9 +1,7 @@
 <?php
 namespace App\Repositories;
-use App\Module;
-use App\Activity;
-use App\File;
 use DB;
+use App\{Badge, Module, Activity, File, Course, User as Student};
 
 class BadgeRepository
 {
@@ -89,6 +87,111 @@ class BadgeRepository
                 }
             }
         }
+    }
+
+
+    private function has(string $type, Badge $badge)
+    {
+        return isset($badge->$type);
+    }
+
+    private function requirementsInModules(Badge $badge, array $requirements)
+    {
+        $BADGE_KEY = 'BADGE_' . $badge->id;
+        
+        foreach($badge->modules as $module) {
+            if ($module->is_overview == 0) {
+                $requirements[$BADGE_KEY]['activities'] = $module->activities->pluck('id')->toArray();
+            } else {
+                $requirements[$BADGE_KEY]['files']  = $module->files->pluck('id')->toArray();
+            }
+        }
+
+        return $requirements;
+    }
+
+    private function requirementsIn(string $type, Badge $badge, array $requirements)
+    {
+        $BADGE_KEY = 'BADGE_' . $badge->id;
+        
+        foreach ($badge->$type as $value) {
+            $requirements[$BADGE_KEY][$type][] = $value->id;
+        }
+
+        return $requirements;
+    }
+
+    public function getBadgeRequirements(Course $course) :array
+    {
+        $requirements = [];
+
+    
+        foreach ($course->badge as $badge) {
+           
+            if ($this->has('modules', $badge)) {
+                $requirements = $this->requirementsInModules($badge, $requirements);
+            }
+
+            if ($this->has('files', $badge)) {
+                $requirements = $this->requirementsIn('files', $badge, $requirements);    
+            }
+
+            if ($this->has('activities', $badge)) {
+                $requirements = $this->requirementsIn('activities', $badge, $requirements);
+            }
+            
+        }
+
+        return $requirements;
+    }
+
+    private function isBadgeComplete($accomplish, $requirements) :bool
+    {
+        $noOfAccomplish = 0;
+        foreach ($accomplish as $id) {
+            if (in_array($id, $requirements)) {
+                $noOfAccomplish++;
+            }
+        }
+        return count($requirements) == $noOfAccomplish;
+    }
+
+    public function getBadgeAccomplish(Student $student, Course $course)
+    {
+        $accomplishBadges = [];
+        $requirements     = $this->getBadgeRequirements($course);
+        
+        $student_accomplish = [
+            'files'      => $student->accomplish_files->pluck('id')->toArray(),
+            'activities' => $student->accomplish_activities->pluck('id')->toArray()
+        ];
+
+        foreach ($requirements as $badge => $requirement) {
+            if (count($requirement) === 1) {
+
+                if (isset($requirement['files'])) {
+                    if ($this->isBadgeComplete($student_accomplish['files'], $requirement['files'])) {
+                        $accomplishBadges[] = $badge;
+                    }
+                }
+
+                if (isset($requirement['activities'])) {
+                    if ($this->isBadgeComplete($student_accomplish['activities'], $requirement['activities'])) {
+                        $accomplishBadges[] = $badge;
+                    }
+                }
+                
+            } else if (count($requirement) >= 2) {
+                $isComplete = $this->isBadgeComplete($student_accomplish['activities'], $requirement['activities']) 
+                                and $this->isBadgeComplete($student_accomplish['files'], $requirement['files']);
+                if ($isComplete) {
+                    $accomplishBadges[] = $badge;
+                }
+                
+            }
+        }
+
+        return $accomplishBadges;
     }
 
 
