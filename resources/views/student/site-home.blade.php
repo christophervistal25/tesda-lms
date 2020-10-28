@@ -8,11 +8,6 @@
 				<h3>Site Announcements</h3>
 			</div>
 		</div>
-		<br>
-		<div class="float-right">
-			<a class="text-primary" href="">Subscribe to this forum</a>
-		</div>
-		<div class="clearfix"></div>
 
 		<form class="form-inline">
 		  <div class="form-group mx-sm-1 mb-2">

@@ -1,4 +1,5 @@
 @extends('layouts.home.app')
+@section('title', 'Sign In')
 @prepend('page-css')
 <link href="https://fonts.googleapis.com/css?family=Poppins" rel="stylesheet">
 <style>
@@ -40,7 +41,7 @@ input,span { font-family : "Poppins", sans-serif; }
                                 <span>Email or Username</span>
                             </div>
                             <div class="col-md-12">
-                                <input id="email" type="email" placeholder="johndoe@yahoo.com" class="text-center p-3 border border-1 w-100 @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus>
+                                <input id="email" type="email" placeholder="johndoe@yahoo.com" class="p-3 border border-1 w-100 @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus>
                             </div>
                         </div>
                         <br>
@@ -49,7 +50,7 @@ input,span { font-family : "Poppins", sans-serif; }
                                 <span>Password</span>
                             </div>
                             <div class="col-md-12">
-                                <input id="password" type="password" class="text-center p-3 border border-1 w-100 @error('password') is-invalid @enderror" name="password" required autocomplete="current-password">
+                                <input id="password" type="password" class=" p-3 border border-1 w-100 @error('password') is-invalid @enderror" name="password" required autocomplete="current-password">
                                 @error('password')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>

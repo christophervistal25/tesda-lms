@@ -70,36 +70,6 @@
             <i class="fas fa-fw fa-calendar"></i>
             <span>Calendar</span></a>
         </li>
-
-        <li class="nav-item">
-          <a class="nav-link" href="index.html">
-            <i class="fas fa-fw fa-folder"></i>
-            <span>Private Files</span></a>
-        </li>
-        
-        @if(Auth::user()->courses->count() != 0)
-             <li class="nav-item ">
-              <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseCourse" aria-expanded="false" aria-controls="collapseCourse">
-                <i class="fas fa-fw fa-graduation-cap"></i>
-                <span>My courses</span>
-              </a>
-              <div id="collapseCourse" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar" style="">
-                <div class="bg-white py-2 collapse-inner rounded">
-                  @foreach(Auth::user()->courses as $enroll)
-                    <a class="collapse-item font-weight-bold" href="{{ route('student.course.view', $enroll->course->id) }}">{{ $enroll->course->acronym }}</a>
-                  @endforeach
-                </div>
-              </div>
-            </li>
-      @endif
-
-
-      
-
-    
-
-     
-
      
 
       <!-- Divider -->

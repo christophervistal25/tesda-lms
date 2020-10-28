@@ -1,4 +1,5 @@
 @extends('layouts.home.app')
+@section('title', 'About')
 @section('content')
 <!--? slider Area Start-->
 <section class="slider-area slider-area2">

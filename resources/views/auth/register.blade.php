@@ -1,4 +1,5 @@
 @extends('layouts.home.app')
+@section('title', 'Sign Up')
 @prepend('page-css')
 <link href="https://fonts.googleapis.com/css?family=Poppins" rel="stylesheet">
     <style>

@@ -73,11 +73,6 @@
             <span>Calendar</span></a>
         </li>
 
-        <li class="nav-item">
-          <a class="nav-link" href="index.html">
-            <i class="fas fa-fw fa-folder"></i>
-            <span>Private Files</span></a>
-        </li>
         @else
            <!-- Nav Item - Dashboard -->
             <li class="nav-item">
