@@ -87,6 +87,7 @@ class CourseController extends Controller
      */
     public function show($id)
     {
+        
         // Checker if the course complete the it's modules.
         $course = Course::with(['modules'])->find($id);
         if (!$this->courseRepository->isModulesReady($course)) {

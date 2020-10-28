@@ -1,90 +1,145 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <!-- <link rel="icon" href="/docs/4.0/assets/img/favicons/favicon.ico"> -->
-
-    <title>Pricing example for Bootstrap</title>
-    <link href="https://fonts.googleapis.com/css?family=Poppins" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css" integrity="sha512-xA6Hp6oezhjd6LiLZynuukm80f8BoZ3OpcEYaqKoCV3HKQDrYjDE1Gu8ocxgxoXmwmSzM4iqPvCsOkQNiu41GA==" crossorigin="anonymous" />
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <style>
-       * { font-family : "Poppins", sans-serif; }
-       .box-shadow {
-          -webkit-box-shadow: 5px 0 10px rgba(0,0,0,.1);
-          box-shadow: 0 0 20px rgba(0,0,0,.1);
-       }
-    </style>
-  </head>
-
-  <body>
-
-    <div class="d-flex flex-column flex-md-row align-items-center p-0 px-md-4 mb-3 bg-white box-shadow">
-      <img width="17%" src="//lms.mnpvi-tesda.com/pluginfile.php/1/theme_moove/logo/1598161402/Logo%20with%20site%20name.png" alt="HQ LMS">
-    </div>
-
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-lg-5 ">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum dolorum ab consequuntur harum reiciendis amet, rerum accusantium neque alias excepturi soluta omnis iusto iure suscipit nulla. Officiis eaque reprehenderit quibusdam.
-        </div>
-
-       <div class="col-lg-5 offset-1 ">
-              <div class="card">
-                <div class="card-body">
-                  <h3>Access to the platform</h3>
-                  <form action="{{ route('login') }}" method="POST" >
-                    @csrf
-                    @if($errors->any())
-                      @foreach($errors->all() as $error)
-                        <li class="text-danger">{{ $error }}</li>
-                      @endforeach
-                    @endif
-                    <div class="form-group">
-                      <label>Username</label>
-                      <div class="input-group">
-                        <div class="input-group-prepend">
-                          <div class="input-group-text rounded-0"><i class="fa fa-envelope add-on"></i></div>
+@extends('layouts.home.app')
+@section('content')
+<!--? slider Area Start-->
+<section class="slider-area ">
+    <div class="slider-active">
+        <!-- Single Slider -->
+        <div class="single-slider slider-height d-flex align-items-center">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xl-6 col-lg-7 col-md-12">
+                        <div class="hero__caption">
+                            <h1 data-animation="fadeInLeft" data-delay="0.2s">Explore & <br> Learn for free</h1>
+                            <p data-animation="fadeInLeft" data-delay="0.4s">Build skills with courses and certificates online</p>
+                            <a href="{{ route('register') }}" class="btn hero-btn" data-animation="fadeInLeft" data-delay="0.7s">Join for Free</a>
                         </div>
-                        <input type="text" class="form-control rounded-0" name="email" placeholder="Username">
-                      </div>
                     </div>
-
-                    <div class="form-group">
-                      <label>Password</label>
-                      <div class="input-group">
-                        <div class="input-group-prepend">
-                          <div class="input-group-text rounded-0"><i class="fa fa-lock add-on"></i></div>
-                        </div>
-                        <input type="password" class="form-control rounded-0" name="password"  placeholder="password">
-                      </div>
-                    </div>
-                    
-                    
-                    <div class="sign-up-btn mt-2">
-                      <button type="submit" class="btn btn-primary btn-lg rounded-0">Log in</button>
-                    </div>
-                  </form>
-                  
-                  
-                  <p class="my-2"><a href="http://lms.mnpvi-tesda.com/login/forgot_password.php">Forgotten your username or password?</a></p>
-                  
-                  <a class="btn btn-block btn-register btn-primary rounded-0" href="{{ route('register') }}">New account</a>
-                  
                 </div>
-              </div>
+            </div>
         </div>
     </div>
+</section>
+<!-- ? services-area -->
+<div class="services-area">
+    <div class="container">
+        <div class="row justify-content-sm-center">
+            <div class="col-lg-4 col-md-6 col-sm-8">
+                <div class="single-services mb-30">
+                    <div class="features-icon">
+                        <img src="assets/img/icon/icon1.svg" alt="">
+                    </div>
+                    <div class="features-caption">
+                        <h3>Good courses</h3>
+                        <p>That you can access for free.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 col-sm-8">
+                <div class="single-services mb-30">
+                    <div class="features-icon">
+                        <img src="assets/img/icon/icon2.svg" alt="">
+                    </div>
+                    <div class="features-caption">
+                        <h3>Expert instructors</h3>
+                        <p>That will enhanced your skills.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 col-sm-8">
+                <div class="single-services mb-30">
+                    <div class="features-icon">
+                        <img src="assets/img/icon/icon3.svg" alt="">
+                    </div>
+                    <div class="features-caption">
+                        <h3>Free access</h3>
+                        <p>Anytime or anywhere.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+</div>
+<!-- Courses area start -->
+<div class="courses-area section-padding40 fix" id="course-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-xl-7 col-lg-8">
+                <div class="section-tittle text-center mb-55">
+                    <h2>Our featured courses</h2>
+                </div>
+            </div>
+        </div>
+        <div class="courses-actives">
+            @foreach(range(1, 10) as $range)
+            @foreach($courses as $course)
+            <!-- Single -->
+            <div class="properties pb-20">
+                <div class="properties__card">
+                    <div class="properties__img overlay1">
+                        <a href="#"><img src="{{ $course->image }}" alt=""></a>
+                    </div>
+                    <div class="properties__caption">
+                        <p>{{ $course->program->name }}</p>
+                        <h3><a href="#">{{ $course->name }}</a></h3>
+                        <p>{{ Str::limit($course->description, 100, '...')}} </p>
+                        
+                        <a href="/about/course/{{ $course->id }}" class="border-btn border-btn2">Find out more</a>
+                    </div>
+                </div>
+            </div>
+            <!-- Single -->
+            @endforeach
+            @endforeach
+        </div>
+    </div>
+</div>
+<!-- Courses area End -->
+<!--? About Area-1 Start -->
+<section class="about-area1 fix pt-10" id="about-section">
+    <div class="support-wrapper align-items-center">
+        <div class="left-content1">
+            <div class="about-icon">
+                <img src="assets/img/icon/about.svg" alt="">
+            </div>
+            <!-- section tittle -->
+            <div class="section-tittle section-tittle2 mb-55">
+                <div class="front-text">
+                    <h2 class="">Learn new skills online</h2>
+                    <p>While decades ago, we were limited to the confinements of a library or a classroom, we face no restrictions now. We can learn from the same device that we carry throughout the day, at anytime of the day, and anywhere we are.</p>
+                </div>
+            </div>
+        </div>
+        <div class="right-content1">
+            <!-- img -->
+            <div class="right-img">
+                <img src="/assets/img/gallery/about2.png" alt="">
+                <div class="video-icon" >
+                    <a class="popup-video btn-icon" href="https://www.youtube.com/watch?v=qhd0Ce4Rsyk"><i class="fas fa-play"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- About Area End -->
+<!--? About Area-3 Start -->
+<section class="about-area3 fix">
+    <div class="support-wrapper align-items-center">
+        <div class="right-content3">
+            <!-- img -->
+            <div class="right-img">
+                <img src="assets/img/gallery/about3.png" alt="">
+            </div>
+        </div>
+        <div class="left-content3">
+            <!-- section tittle -->
+            <div class="section-tittle section-tittle2 mb-20">
+                <div class="front-text">
+                    <h2 class="">Explore new skills, deepen existing passions, and get lost in creativity. What you find just might surprise and inspire you.</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
 
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-  </body>
-</html>
+@endsection

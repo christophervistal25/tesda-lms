@@ -29,16 +29,18 @@ class HomeController extends Controller
      */
     public function index()
     {
-
+        $student = Auth::user();
+        $this->studentRepository->setStudent($student);
         if (!$this->studentRepository->hasCourse()) {
             // Redirect the student to enroll page.
             return redirect(route('site.home'));
         }
 
+        
         $progress       = $this->studentRepository->getProgress();
         $studentCourses = $this->studentRepository->getCourses();
         $currentCourse  = $this->studentRepository->getCourse();
-        $student        = Auth::user();
+      
 
         
         return view('home', compact('progress', 'studentCourses', 'student', 'currentCourse'));

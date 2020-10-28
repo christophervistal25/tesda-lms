@@ -3,12 +3,17 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\{User as Student, Course, Module, Activity, File};
 
 class AdminController extends Controller
 {
     public function index()
     {
-        return view('admin');
+		$students   = Student::count();
+		$course     = Course::count();
+		$modules    = Module::count();
+		$activities = Activity::count();
+        return view('admin', compact('students', 'course', 'modules', 'activities'));
     }
 
     public function logout()

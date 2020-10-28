@@ -3,14 +3,21 @@ namespace App\Repositories;
 use Auth;
 use App\Repositories\CourseRepository;
 use App\Course;
+use App\User as Student;
 
 class StudentRepository extends CourseRepository
 {
+	private $student;
+
+	public function setStudent(Student $student)
+	{
+		$this->student = $student;
+	}
 
 	public function hasCourse() : bool
 	{
-		$student = Auth::user();
-		return $student->courses->count() >= 1;
+		$student = $this->student ?? Auth::user();
+		 return $student->courses->count() >= 1;		
 	}
 
 	/**
@@ -18,8 +25,9 @@ class StudentRepository extends CourseRepository
 	 */
 	public function getCourse()
 	{
+		$student = $this->student ?? Auth::user();
 		if ($this->hasCourse()) {
-			return Auth::user()->courses->last()->course;
+			return $student->courses->last()->course;
 		}
 	}
 
@@ -29,7 +37,7 @@ class StudentRepository extends CourseRepository
 	public function getCourses()
 	{
 		if ($this->hasCourse()) {
-			return Auth::user()->courses;
+			return $this->student->courses;
 		}
 	}
 
@@ -40,10 +48,11 @@ class StudentRepository extends CourseRepository
 	public function getProgress() :int
 	{
 		if ($this->hasCourse()) {
-			$noOfACtivities = $this->getNoOfActivities($this->getCourse());
+			$course = $this->getCourse();
+			$noOfACtivities = $this->getNoOfActivities($course);
 
 			if ($noOfACtivities != 0) {
-				return $this->accomplish() * (config('student_progress.max_percentage') / $this->getNoOfActivities($this->getCourse()));
+				return $this->accomplish() * (config('student_progress.max_percentage') / $this->getNoOfActivities($course));
 			}
 
 			return 0;
@@ -57,15 +66,14 @@ class StudentRepository extends CourseRepository
 	 */
 	private function accomplish() :int
 	{
-		$student = Auth::user();
+		$student = $this->student;
 		return $student->accomplish_files()->count() + $student->accomplish_activities->count();
 	}
 
 
-	public function hasBadge(BadgeRepository $badge)
+	public function hasBadge(BadgeRepository $badge, Student $student)
 	{
-		$course       = $this->getCourse();
-		$student      = Auth::user();
+		$course  = $this->getCourse();
 		return $badge->getBadgeAccomplish($student, $course);
 	}
 }

@@ -1,8 +1,7 @@
 <?php
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', 'HomePageController@index');
+Route::get('/about/course/{course}', 'AboutCourseController@show');
 
 Auth::routes();
 
@@ -26,6 +25,9 @@ Route::prefix('admin')->group(function() {
     	Route::post('logout', 'AdminController@logout')->name('admin.logout');
 
 	    Route::namespace('Admin')->group(function () {
+            Route::get('/student/list', 'StudentController@list');
+            Route::resource('student', 'StudentController');
+            
             Route::put('course/{id}/hide', 'CourseController@hide');
             Route::get('course/design/{course}/{forceview?}', 'CourseController@design')->name('course.design');
             Route::resource('course', 'CourseController');
@@ -68,6 +70,7 @@ Route::prefix('admin')->group(function() {
             Route::get('/forums', 'ForumController@index')->name('forum.index');
             Route::resource('/forums', 'ForumController');
 
+            Route::get('/student/{id}/modules', 'StudentProgressController@show')->name('student.show.progress');
             Route::get('/module/{module}/final/exam', 'FinalExamController@create')->name('module.final.exam');
 
             Route::get('/final/exam/{module}', 'FinalExamController@view')->name('admin.view.final.exam');

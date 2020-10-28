@@ -6,6 +6,8 @@ use Illuminate\Support\Str;
 
 class CourseRepository
 {
+
+
     public function getNoOfActivities(Course $course)
     {
     	$noOfActivities = 0;

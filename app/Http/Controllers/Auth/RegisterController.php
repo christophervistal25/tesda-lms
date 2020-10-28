@@ -58,7 +58,7 @@ class RegisterController extends Controller
                 'first_name' => ['required', 'string', 'max:255'],
                 'surname'    => ['required', 'string', 'max:255'],
                 'username'   => ['required', 'string', 'max:255', 'unique:users'],
-                'email'      => ['required', 'string', 'email', 'max:255', 'unique:users', 'same:confirm_email'],
+                'email'      => ['required', 'string', 'email', 'max:255', 'unique:users'],
                 'password'   => [
                     'required',
                     'string',
@@ -70,7 +70,7 @@ class RegisterController extends Controller
                     'regex:/[@$!%*#?&]/', // must contain a special character
                 ],
                 'city_town'  => ['required', 'string'],
-                'country'    => ['required', 'string', 'in:' . implode(',', array_keys(config('country.list')))],
+                // 'country'    => ['required', 'string', 'in:' . implode(',', array_keys(config('country.list')))],
         ]);
     }
     
@@ -92,7 +92,6 @@ class RegisterController extends Controller
             'firstname' => $data['first_name'],
             'surname'   => $data['surname'],
             'city_town' => $data['city_town'],
-            'country'   => $data['country'],
         ]);
     }
 }

@@ -5,10 +5,12 @@ namespace App;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Helpers\Traits\UserLaratables;
+use App\Course;
 
 class User extends Authenticatable
 {
-    use Notifiable;
+    use Notifiable, UserLaratables;
 
     /**
      * The attributes that are mass assignable.
@@ -16,7 +18,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name','username', 'email', 'password', 'firstname', 'surname', 'city_town', 'country',
+        'name','username', 'email', 'password', 'firstname', 'surname', 'city_town',
     ];
 
     /**
@@ -68,4 +70,30 @@ class User extends Authenticatable
     {
         return $this->hasMany('App\ExamResult');
     }
+
+    public function noOfActivities(Course $course)
+    {
+        $noOfActivities = 0;
+        foreach ($course->modules as $module) {
+            if ($module->is_overview == 1) {
+                $noOfActivities += $module->files->count();
+            } else {
+                $noOfActivities += $module->activities->count();
+            }
+        }
+
+        return $noOfActivities;
+    }
+    public function progress()
+    {
+        $accomplish = $this->accomplish_files()->count() + $this->accomplish_activities->count();
+        if ($this->courses->last() != null) {
+            if ($accomplish != 0) {
+                return $accomplish * (config('student_progress.max_percentage') / $this->noOfActivities($this->courses->last()->course));
+            }
+        }
+        
+        return $accomplish;
+    }
+    
 }

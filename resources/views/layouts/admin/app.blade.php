@@ -54,7 +54,7 @@
 
       <!-- Nav Item - Dashboard -->
       <li class="nav-item">
-        <a class="nav-link" href="index.html">
+        <a class="nav-link" href="{{ route('admin.dashboard') }}">
           <i class="fas fa-fw fa-tachometer-alt"></i>
           <span>Dashboard</span></a>
       </li>
@@ -105,6 +105,12 @@
         <a class="nav-link" href=" {{ route('instructor.index') }}">
           <i class="fas fa-book-reader"></i>
           <span>Instructors</span></a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link" href=" {{ route('student.index') }}">
+          <i class="fas fa-graduation-cap"></i>
+          <span>Students</span></a>
       </li>
      
 
