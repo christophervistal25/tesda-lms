@@ -5,6 +5,8 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Auth;
 use App\Repositories\StudentRepository;
+use Illuminate\Contracts\Routing\UrlGenerator;
+use Illuminate\Support\Facades\Schema;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -15,7 +17,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        if (env('REDIRECT_HTTPS')) {
+            $this->app['request']->server->set('HTTPS', true);
+        }
     }
 
     /**
@@ -23,8 +27,12 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(UrlGenerator $url)
     {
+        if (env('REDIRECT_HTTPS')) {
+            $url->formatScheme('https');
+        }
+
          view()->composer('layouts.student.app', function ($view)  {
             $studentRepository = new StudentRepository;
             $currentCourse     = $studentRepository->getCourse();
