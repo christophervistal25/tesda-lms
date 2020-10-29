@@ -7,6 +7,7 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
+Route::get('/events', 'Admin\EventController@events');
 
 
 // Admin routes
@@ -88,6 +89,10 @@ Route::prefix('admin')->group(function() {
             Route::get('course/{course}/badge/{badge}/edit', 'CourseBadgeController@edit')->name('badge.course.edit');
             Route::put('course/{coures}/badge/{badge}/edit', 'CourseBadgeController@update')->name('badge.course.update');
 
+            
+            Route::put('event/reschedule/{id}', 'EventController@reschedule');
+            Route::resource('event', 'EventController');
+
 	    });
     });
 
@@ -132,6 +137,8 @@ Route::prefix('student')->group(function() {
             Route::get('/grade/report/{course}', 'GradeController@show')->name('student.grade.report');
 
             Route::get('/badge', 'BadgeController@index')->name('student.badge.index');
+
+            Route::get('/event/view/{event}', 'EventController@view');
         });
         
     });

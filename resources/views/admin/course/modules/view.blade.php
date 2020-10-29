@@ -154,7 +154,6 @@
 @push('page-scripts')
 <script>
 	let links = document.querySelectorAll('a');
-	console.log(links);
 	// get all activity checkbox icons
 	document.querySelectorAll('img').forEach((element) => {
 		// Align the checkbox in right

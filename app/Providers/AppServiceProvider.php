@@ -7,6 +7,8 @@ use Auth;
 use App\Repositories\StudentRepository;
 use Illuminate\Contracts\Routing\UrlGenerator;
 use Illuminate\Support\Facades\Schema;
+use App\Event;
+use Carbon\Carbon;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -33,9 +35,16 @@ class AppServiceProvider extends ServiceProvider
             $url->formatScheme('https');
         }
 
-         view()->composer('layouts.student.app', function ($view)  {
+        $events = Event::whereDate('start', Carbon::now()->format('Y/m/d'))->count() ?? 0;
+            
+         view()->composer('layouts.student.short-app', function ($view) use($events) {
+            $view->with('no_of_events', $events);
+         });
+
+         view()->composer('layouts.student.app', function ($view) use($events) {
             $studentRepository = new StudentRepository;
             $currentCourse     = $studentRepository->getCourse();
+            $view->with('no_of_events', $events);
             $view->with('course_sections', $studentRepository->sections($currentCourse));
             $view->with('current_course', $currentCourse);
          });
