@@ -35,11 +35,13 @@ class AppServiceProvider extends ServiceProvider
             $url->formatScheme('https');
         }
 
-        $events = Event::whereDate('start', Carbon::now()->format('Y/m/d'))->count() ?? 0;
-            
-         view()->composer('layouts.student.short-app', function ($view) use($events) {
-            $view->with('no_of_events', $events);
-         });
+        $events = 0;
+        if (Schema::hasTable('events')) {
+                $events = Event::whereDate('start', Carbon::now()->format('Y/m/d'))->count() ?? 0;
+                view()->composer('layouts.student.short-app', function ($view) use($events) {
+                    $view->with('no_of_events', $events);
+                });
+        }
 
          view()->composer('layouts.student.app', function ($view) use($events) {
             $studentRepository = new StudentRepository;
