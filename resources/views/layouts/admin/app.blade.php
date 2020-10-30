@@ -41,7 +41,7 @@
     <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
       <!-- Sidebar - Brand -->
-      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/">
+      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('admin.dashboard') }}">
         <div class="sidebar-brand-icon">
           <img class="img-fluid" src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1604075952/page-image/logo2_l0iqkt.webp" alt="">
         </div>
