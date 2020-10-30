@@ -18,15 +18,30 @@ class RedirectIfAuthenticated
      */
     public function handle($request, Closure $next, $guard = null)
     {
-            if ($guard == "admin" && Auth::guard($guard)->check()) {
-                return redirect()->route('admin.dashboard');
-            }
+          // To avoid visiting the login section of other user if already logged in
+         if (Auth::guard('admin')->check()) {
+              return redirect()->intended(route('admin.dashboard'));
+         } else if (Auth::guard('admin')->check()) {
+             return redirect()->intended(route('admin.dashboard'));
+         } 
 
+        switch ($guard) {
+
+          case 'admin':
             if (Auth::guard($guard)->check()) {
-                return redirect(RouteServiceProvider::HOME);
+              return redirect()->route('admin.dashboard');
             }
+            break;
 
-            return $next($request);
+          default:
+            if (Auth::guard($guard)->check()) {
+                return redirect()->route('site.home');
+            }
+            break;
+
+        }
+        
+        return $next($request);
     }
     
 }

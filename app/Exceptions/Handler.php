@@ -5,6 +5,7 @@ namespace App\Exceptions;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
+use Sessiono;
 
 class Handler extends ExceptionHandler
 {
@@ -59,11 +60,21 @@ class Handler extends ExceptionHandler
         if ($request->expectsJson()) {
             return response()->json(['error' => 'Unauthenticated.'], 401);
         }
+        // Get the first value of the array don't need to load the Arr helper for just one statement.
+        $guard = $exception->guards()[0];
 
-        if ($request->is('admin') || $request->is('admin/*')) {
-            return redirect()->guest(route('admin.login'));
+        switch ($guard) {
+          case 'admin':
+            $login = 'admin.login';
+            break;
+
+            
+          default:
+            $login = 'login';
+            break;
         }
-
-        return redirect()->guest(route('login'));
+        
+        Session::forget('url.intented');
+        return redirect()->route($login);
     }
 }
