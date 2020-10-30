@@ -128,7 +128,7 @@
 			dataSrc.courses.map((course) => {
 				$('#course-handle-items').append(`
 					<div class="alert alert-info" role="alert">
-						${course.name} - ${course.description}
+						${course.acronym} - ${course.name}
 					</div>
 				`);
 			});

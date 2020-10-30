@@ -71,7 +71,6 @@
             </div>
         </div>
         <div class="courses-actives">
-            @foreach(range(1, 10) as $range)
             @foreach($courses as $course)
             <!-- Single -->
             <div class="properties pb-20">
@@ -83,13 +82,11 @@
                         <p>{{ $course->program->name }}</p>
                         <h3><a href="#">{{ $course->name }}</a></h3>
                         <p>{{ Str::limit($course->description, 100, '...')}} </p>
-                        
                         <a href="/about/course/{{ $course->id }}" class="border-btn border-btn2">Find out more</a>
                     </div>
                 </div>
             </div>
             <!-- Single -->
-            @endforeach
             @endforeach
         </div>
     </div>
