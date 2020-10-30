@@ -185,7 +185,6 @@
 		      alert('there was an error while fetching events!');
 		    }
 		  },
-		 validRange: { start: new Date() },
     	 headerToolbar: {
 	        left: 'prev,next,today',
 	        center: 'title',
@@ -223,7 +222,17 @@
 		  eventDragStart : function (schedule, jsEvent, view) {
 		  },
 		  eventDrop : function (schedule) {
-		  	// This message would depend on the type
+		  	$('#confirmation-dynamic-content')
+		  			.text(`Are you sure to re-schedule this to (${moment(schedule.event.startStr).format('MMMM Do YYYY, h:mm A')} - ${moment(schedule.event.endStr).format(' MMMM Do YYYY, h:mm A')})`);
+		  	$('#confirmationEventModal').modal('toggle');
+		  	rescheduleData = {
+		  		id : schedule.event.id,
+		  		date : moment(schedule.event.startStr).format('MM/D/YYYY'),
+		  		start : moment(schedule.event.startStr).format('MM/D/YYYY h:mm:ss A'),
+		  		end : moment(schedule.event.endStr).format('MM/D/YYYY h:mm:ss A'),
+		  	};
+		  },
+		  eventResize : function (schedule) {
 		  	$('#confirmation-dynamic-content')
 		  			.text(`Are you sure to re-schedule this to (${moment(schedule.event.startStr).format('MMMM Do YYYY, h:mm A')} - ${moment(schedule.event.endStr).format(' MMMM Do YYYY, h:mm A')})`);
 		  	$('#confirmationEventModal').modal('toggle');
@@ -284,7 +293,7 @@
 			location 	: $('#location').val(),
 			start 		: $('#start').val(),
 			end 		: $('#end').val(),
-			date 		: selectedDate,
+			date 		: moment(selectedDate).format('MM/D/YYYY'),
   		};
 
   		$.ajax({
