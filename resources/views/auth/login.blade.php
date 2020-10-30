@@ -38,7 +38,7 @@ input,span { font-family : "Poppins", sans-serif; }
                         <hr>
                         <div class="form-group row">
                             <div class="col-md-auto m-0">
-                                <span>Email or Username</span>
+                                <span>Email</span>
                             </div>
                             <div class="col-md-12">
                                 <input id="email" type="email" placeholder="johndoe@yahoo.com" class="p-3 border border-1 w-100 @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus>

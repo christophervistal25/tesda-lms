@@ -67,7 +67,7 @@
 
         <li class="nav-item">
           <a class="nav-link" href="{{ route('calendar.index') }}">
-            <i class="fas fa-fw fa-calendar"></i>
+            <i class="fas fa-fw fa-calendar-alt"></i>
             <span>Calendar <span class="badge badge-pill badge-primary">{{ $no_of_events }}</span></span></a>
         </li>
      

@@ -69,7 +69,7 @@
 
         <li class="nav-item">
           <a class="nav-link" href="{{ route('calendar.index') }}">
-            <i class="fas fa-fw fa-calendar"></i>
+            <i class="fas fa-fw fa-calendar-alt"></i>
             <span>Calendar <span class="badge badge-pill badge-primary">{{ $no_of_events }}</span></span></a>
         </li>
 
@@ -81,11 +81,11 @@
                 <span>Badges</span></a>
             </li>
 
-             <li class="nav-item">
+             {{-- <li class="nav-item">
               <a class="nav-link" href="index.html">
                 <i class="fas fa-star"></i>
                 <span>Competencies</span></a>
-            </li>
+            </li> --}}
 
             <li class="nav-item">
               <a class="nav-link" href="{{ route('student.grade.report', $current_course->id) }}">
@@ -109,10 +109,10 @@
             </li>
 
 
-            <li class="nav-item">
-              <a class="nav-link" href="index.html">
-                <i class="fas fa-fw fa-calendar"></i>
-                <span>Calendar</span></a>
+             <li class="nav-item">
+              <a class="nav-link" href="{{ route('calendar.index') }}">
+                <i class="fas fa-fw fa-calendar-alt"></i>
+                <span>Calendar <span class="badge badge-pill badge-primary">{{ $no_of_events }}</span></span></a>
             </li>
 
             <li class="nav-item ">
@@ -129,11 +129,11 @@
               </div>
             </li>
 
-            <li class="nav-item">
+            {{-- <li class="nav-item">
               <a class="nav-link" href="index.html">
                 <i class="fas fa-fw fa-file"></i>
                 <span>Private files</span></a>
-            </li>
+            </li> --}}
 
              <li class="nav-item ">
               <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseCourseSection" aria-expanded="false" aria-controls="collapseCourseSection">

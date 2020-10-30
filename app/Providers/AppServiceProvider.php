@@ -37,7 +37,8 @@ class AppServiceProvider extends ServiceProvider
 
         $events = 0;
         if (Schema::hasTable('events')) {
-                $events = Event::whereDate('start', Carbon::now()->format('Y/m/d'))->count() ?? 0;
+                $events = Event::whereDate('start' , '>=' , Carbon::now()->format('Y/m/d'))->count() ?? 0;
+
                 view()->composer('layouts.student.short-app', function ($view) use($events) {
                     $view->with('no_of_events', $events);
                 });
