@@ -106,6 +106,10 @@ Route::prefix('student')->group(function() {
         Route::get('/site/home', 'HomeController@siteHome')->name('site.home');
 
         Route::namespace('Student')->group(function () {
+            Route::get('profile', 'ProfileController@show')->name('student.profile');
+            Route::get('profile/edit', 'ProfileController@edit')->name('student.profile.edit');
+            Route::post('profile', 'ProfileController@update')->name('student.profile.update');
+
             Route::get('/enroll/{program}', 'EnrollCourseController@show')->name('enroll.course');
             Route::post('/enroll/{program}', 'EnrollCourseController@enroll')->name('enroll.submit.course');
             Route::resource('program', 'ProgramController');

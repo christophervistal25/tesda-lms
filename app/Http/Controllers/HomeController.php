@@ -41,7 +41,6 @@ class HomeController extends Controller
         $studentCourses = $this->studentRepository->getCourses();
         $currentCourse  = $this->studentRepository->getCourse();
       
-
         
         return view('home', compact('progress', 'studentCourses', 'student', 'currentCourse'));
     }

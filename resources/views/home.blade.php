@@ -17,7 +17,11 @@
 	<div class="card-body">
 		<div class="row mb-4">
 			<div class="col-lg-auto">
-				<img src="{{ $student->profile }}" alt="" class="img-fluid rounded-circle">
+				 @if(Str::contains($student->profile, ['http', 'https']))
+                  <img class="img-profile rounded-circle" width="120px" src="{{ $student->profile }}">
+                  @else
+                  <img class="img-profile rounded-circle" width="120px" src="{{ asset('student_image/' . $student->profile) }}">
+                @endif
 			</div>
 			<div class="col-lg-auto">
 				<h2 class="text-capitalize">{{ $student->name }}</h2>
