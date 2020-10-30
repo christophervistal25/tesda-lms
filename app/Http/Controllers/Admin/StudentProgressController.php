@@ -61,6 +61,6 @@ class StudentProgressController extends Controller
         })->toJson();
 
 
-        return view('admin.students.progress.show', compact('student', 'course', 'overview', 'noOfOverviewFiles', 'overviewFiles', 'studentAccomplish', 'studentActivitiesAccomplish', 'noOfAccomplishActivityByModule', 'studentAccomplishExam', 'accomplishExamByModule', 'canTakeExam', 'canDownloadCertificate'));
+        return view('admin.students.progress.show', compact('student', 'course', 'overview', 'noOfOverviewFiles', 'overviewFiles', 'studentAccomplish', 'studentActivitiesAccomplish', 'noOfAccomplishActivityByModule', 'studentAccomplishExam', 'accomplishExamByModule'));
     }
 }
