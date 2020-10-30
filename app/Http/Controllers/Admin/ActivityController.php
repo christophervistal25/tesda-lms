@@ -21,15 +21,6 @@ class ActivityController extends Controller
    
     public function view($activity_id)
     {
-       /* $activity = Activity::with('modules', 'modules.course')->find($activity_id);
-        $course = $activity->modules->first()->course;
-
-        $nextActivity             = $this->getActivityNext($activity->activity_no);
-        $previousActivity         = $this->getActivityPrevious($activity->activity_no);
-        $lastPageOfCourseOverview = $course->overview->files->last();*/
-
-
-        
         $activity = Activity::with('modules', 'modules.course')->find($activity_id);
         $course = $activity->modules->first()->course;
         $overview = $course->modules->where('is_overview', 1)->first();
@@ -57,7 +48,7 @@ class ActivityController extends Controller
             $previous = $moduleWithExam->exam;
         }
 
-        return view('admin.activity.view', compact('activity', 'course', 'next', 'previous', 'files', 'modules', 'activity_id', 'moduleWithExam', 'canTakeExam', 'canDownloadCertificate'));
+        return view('admin.activity.view', compact('activity', 'course', 'next', 'previous', 'files', 'modules', 'activity_id', 'moduleWithExam'));
     }
 
 }

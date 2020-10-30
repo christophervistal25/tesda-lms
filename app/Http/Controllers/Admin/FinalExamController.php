@@ -41,7 +41,7 @@ class FinalExamController extends Controller
         $next     = $this->viewer->getNext() ?? null;
         $previous = $this->viewer->getPrevious();
 
-        return view('admin.examination.view', compact('module', 'course', 'overview', 'module', 'modules', 'student', 'next', 'previous'));
+        return view('admin.examination.view', compact('module', 'course', 'overview', 'module', 'modules',  'next', 'previous'));
     }
     /**
      * Display a listing of the resource.
