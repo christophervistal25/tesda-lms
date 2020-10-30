@@ -33,6 +33,6 @@ class AdminLoginController extends Controller
         }
 
         // if unsuccessful
-        return redirect()->back()->withErrors(['message' => 'Invalid email/password.'])->withInput($request->only('email','remember'));
+        return redirect()->back()->withErrors(['message' => 'Please check your Email/Password.'])->withInput($request->only('email','remember'));
     }
 }

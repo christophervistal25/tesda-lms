@@ -42,7 +42,7 @@ class ProfileController extends Controller
     public function update(Request $request)
     {
     	$student = Auth::user();
-    	
+
 		$this->validate($request, [
 			'username'  => 'required|unique:users,username,' . $student->id,
 			'email'     => 'required|unique:users,email,' . $student->id,
@@ -68,6 +68,7 @@ class ProfileController extends Controller
 		$student->email     = $request->email;
 		$student->firstname = $request->firstname;
 		$student->surname   = $request->surname;
+		$student->name      = $request->firstname . ' ' . $request->surname;
 		$student->city_town = $request->city_town;
 		$student->password  = is_null($request->password) ? $student->password : bcrypt($request->password);
 		$student->profile   = $image ?? $student->profile;

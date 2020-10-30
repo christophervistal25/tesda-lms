@@ -27,6 +27,7 @@ input,span { font-family : "Poppins", sans-serif; }
 <div class="container mt-5">
     <div class="card shadow">
         <div class="card-body p-0">
+            @include('layouts.admin.error')
             <div class="row">
                 <div class="col-md-6">
                     <div class="container"style="background :url(https://res.cloudinary.com/dfm6cr1l9/image/upload/v1603900935/icons/ReadingSideDoodle_srngpp.png); width:100%; height : 100%;"></div>
