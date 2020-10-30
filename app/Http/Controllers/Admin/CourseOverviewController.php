@@ -132,7 +132,6 @@ class CourseOverviewController extends Controller
 
     public function show($course, $fileId = null)
     {
-      
        $course = Course::with('modules')->find($course);
 
        $this->viewer->process([

@@ -12,7 +12,7 @@
 	
 	<div class="card-body">
 		<div class="alert alert-info" role="alert">
-			If you decided to change your <strong>password</strong> just fill in those fields, same with <strong>image/profile</strong>.
+			If you want to change student <strong>password</strong> just fill in those fields, same with <strong>image/profile</strong>.
 		</div>
 		<div class="row">
 			<div class="col-lg-12">

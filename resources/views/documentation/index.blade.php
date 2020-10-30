@@ -5,12 +5,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title>{{ env('APP_NAME') }} | Documentation</title>
-  <link rel="icon" href="{{ asset('assets/img/logo/loder.png')}}">
+  <link rel="icon" href="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1604075788/icons/loder_h2qnck.webp">
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
   <link href="https://fonts.googleapis.com/css?family=Poppins" rel="stylesheet">
   <style>
-     * { font-family : "Poppins", sans-serif; }
+  * { font-family : "Poppins", sans-serif; }
 	body { padding-top: 56px; }
 	.effect1 {
 		-webkit-box-shadow: 0 10px 6px -6px #a1a1a1;

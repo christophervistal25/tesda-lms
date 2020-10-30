@@ -42,9 +42,9 @@
     <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar" style="z-index: 2;">
 
       <!-- Sidebar - Brand -->
-      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('home') }}">
         <div class="sidebar-brand-icon">
-          <img src="https://res.cloudinary.com/dtxr6wn08/image/upload/w_115,c_scale/v1600993749/tesda-tandag-assets/tesda-tandang-logo_mclb7j.png" alt="">
+          <img class="img-fluid" src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1604075952/page-image/logo2_l0iqkt.webp" alt="">
         </div>
        {{--  <div class="sidebar-brand-text mx-3"><img width="" src="https://res.cloudinary.com/dtxr6wn08/image/upload/v1600993320/tesda-tandag-assets/tesda-tandang-logo_xnehkd.png" alt=""></div> --}}
       </a>

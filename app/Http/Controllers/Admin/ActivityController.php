@@ -21,6 +21,7 @@ class ActivityController extends Controller
    
     public function view($activity_id)
     {
+        
         $activity = Activity::with('modules', 'modules.course')->find($activity_id);
         $course = $activity->modules->first()->course;
         $overview = $course->modules->where('is_overview', 1)->first();

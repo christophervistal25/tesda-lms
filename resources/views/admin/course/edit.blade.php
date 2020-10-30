@@ -116,7 +116,8 @@
                                 </div>
                             </div>
 
-
+                           <img src="{{ $course->image }}" class="img-thumbnail" width="150px" alt="Course image">
+                            
                            <div class="form-group row pr-3 pl-3">
                             <label>Course Image <span class="text-primary">(Attach new image if you want to change the course thumbnail)</span></label>
                             <div class="custom-file">
@@ -124,9 +125,7 @@
                                 <label class="custom-file-label" for="validatedCustomFile">Choose file...</label>
                               </div>    
                           </div>
-                           <img src="{{ $course->image }}" class="img-thumbnail" alt="Course image">
 
-                            <hr>
                             <span class="text-primary">You can easily add a instructor for this course (Leave N/A if you don't want to assign a instructor)</span>
 
 

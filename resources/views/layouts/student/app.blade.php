@@ -10,13 +10,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <meta name="author" content="">
-  @stack('meta-data')
 
   <title>TESDA TANDAG LMS |  @yield('title') </title>
-
+  <link rel="icon" href="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1604075788/icons/loder_h2qnck.webp">  
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css" integrity="sha512-xA6Hp6oezhjd6LiLZynuukm80f8BoZ3OpcEYaqKoCV3HKQDrYjDE1Gu8ocxgxoXmwmSzM4iqPvCsOkQNiu41GA==" crossorigin="anonymous" />
 
-  {{-- <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet"> --}}
   <link href="https://fonts.googleapis.com/css?family=Poppins" rel="stylesheet">
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/startbootstrap-sb-admin-2/4.0.7/css/sb-admin-2.min.css" integrity="sha512-FXgL8f6gtCYx8PjODtilf5GCHlgTDdIVZKRcUT/smwfum7hr4M1ytewqTtNd9LK4/CzbW4czU6Tr3f3Xey6lRg==" crossorigin="anonymous" />
@@ -30,6 +28,7 @@
        background-size:cover
     }
   </style>
+  @stack('meta-data')
   @stack('page-css')
 </head>
 
@@ -42,9 +41,9 @@
     <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar" style="z-index: 2;">
 
       <!-- Sidebar - Brand -->
-      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('home') }}">
         <div class="sidebar-brand-icon">
-          <img src="https://res.cloudinary.com/dtxr6wn08/image/upload/w_115,c_scale/v1600993749/tesda-tandag-assets/tesda-tandang-logo_mclb7j.png" alt="">
+          <img class="img-fluid" src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1604075952/page-image/logo2_l0iqkt.webp" alt="">
         </div>
        {{--  <div class="sidebar-brand-text mx-3"><img width="" src="https://res.cloudinary.com/dtxr6wn08/image/upload/v1600993320/tesda-tandag-assets/tesda-tandang-logo_xnehkd.png" alt=""></div> --}}
       </a>
