@@ -5,8 +5,8 @@
 <section class="slider-area ">
     <div class="slider-active">
         <!-- Single Slider -->
-        <div class="single-slider slider-height d-flex align-items-center">
-            <div class="container">
+        <div class="single-slider slider-height d-flex align-items-center"> 
+            <div class="container" >
                 <div class="row">
                     <div class="col-xl-6 col-lg-7 col-md-12">
                         <div class="hero__caption">
@@ -113,7 +113,7 @@
         <div class="right-content1">
             <!-- img -->
             <div class="right-img">
-                <img src="/assets/img/gallery/about2.png" alt="">
+                <img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1604048588/page-image/about2_lkc5ou.webp" alt="">
                 <div class="video-icon" >
                     <a class="popup-video btn-icon" href="https://www.youtube.com/watch?v=qhd0Ce4Rsyk"><i class="fas fa-play"></i></a>
                 </div>
@@ -128,7 +128,7 @@
         <div class="right-content3">
             <!-- img -->
             <div class="right-img">
-                <img src="assets/img/gallery/about3.png" alt="">
+                <img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1604048587/page-image/about3_tjn5qy.webp" alt="">
             </div>
         </div>
         <div class="left-content3">

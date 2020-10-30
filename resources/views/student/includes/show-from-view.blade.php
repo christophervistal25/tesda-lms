@@ -1,7 +1,7 @@
 <div class="row">
 						<div class="col-lg-6" id="view-card-type">
 							<div class="card rounded-0 course-card-{{ $record->course->id }}" data-id="{{ $record->course->id }}">
-								<a href="/student/course/view/{{$record->course->id}}}">
+								<a href="/student/course/view/{{$record->course->id}}">
 									<div class="course-header" data-background="{{ str_replace(['c_fit,', 'w_150', 'h_150,'], '', $record->course->image) }}"></div>
 								</a>
 								<div class="card-body">
