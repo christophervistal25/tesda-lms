@@ -24,7 +24,13 @@
 					<th>Actions</th>
 				</tr>
 			</thead>
-		<tbody class="text-center"></tbody>
+		<tbody class="text-center">
+			<td colspan="4">
+				<div class="spinner-border text-primary" role="status">
+			  		<span class="sr-only">Loading...</span>
+				</div>
+			</td>
+		</tbody>
 	</table>
 </div>
 </div>

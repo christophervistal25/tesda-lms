@@ -24,7 +24,11 @@
 				</tr>
 			</thead>
 			<tbody>
-				
+				<td colspan="4" class="text-center">
+					<div class="spinner-border text-primary" role="status">
+				  		<span class="sr-only">Loading...</span>
+					</div>
+				</td>
 			</tbody>
 		</table>
 		

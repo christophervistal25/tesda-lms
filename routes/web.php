@@ -24,8 +24,12 @@ Route::prefix('admin')->group(function() {
     Route::group(['middleware' => 'auth:admin'], function () {
     	Route::get('/', 'AdminController@index')->name('admin.dashboard');
     	Route::post('logout', 'AdminController@logout')->name('admin.logout');
+        Route::get('/documentation', 'DocumentationController@index')->name('documentation.index');
 
 	    Route::namespace('Admin')->group(function () {
+            Route::get('/profile', 'ProfileController@edit')->name('admin.profile');
+            Route::put('/profile', 'ProfileController@update')->name('admin.profile.update');
+
             Route::get('/student/list', 'StudentController@list');
             Route::resource('student', 'StudentController');
             

@@ -84,6 +84,7 @@ class User extends Authenticatable
 
         return $noOfActivities;
     }
+    
     public function progress()
     {
         $accomplish = $this->accomplish_files()->count() + $this->accomplish_activities->count();

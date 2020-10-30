@@ -30,6 +30,7 @@ trait UserLaratables
 
 	public static function laratablesProfile($student)
     {
-        return "<img src='$student->profile' width='24px' />";
+    	$src = (\Str::contains($student->profile , ['http', 'https'])) ? $student->profile : asset('student_image/' . $student->profile);
+        return "<img src='$src' width='24px' />";
     }
 }
