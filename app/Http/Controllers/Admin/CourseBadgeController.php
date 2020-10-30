@@ -23,7 +23,7 @@ class CourseBadgeController extends Controller
 
     public function create(Request $request, Course $course)
     {
-    	return view('admin.course.badge.create', compact('course', 'files', 'activities'));
+    	return view('admin.course.badge.create', compact('course'));
     }
 
     public function store(CreateBadgeRequest $request, Course $course)
