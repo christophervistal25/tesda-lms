@@ -5,7 +5,7 @@ namespace App\Exceptions;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
-use Sessiono;
+use Session;
 
 class Handler extends ExceptionHandler
 {
