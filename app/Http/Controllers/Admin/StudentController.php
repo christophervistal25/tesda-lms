@@ -114,7 +114,7 @@ class StudentController extends Controller
         $student->profile   = $image ?? $student->profile;
         $student->save();
 
-        return back()->with('success', 'Successfully update your profile.');
+        return back()->with('success', 'Successfully update ' . $request->name . ' profile.');
     }
 
     /**
