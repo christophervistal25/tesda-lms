@@ -9,7 +9,8 @@ class HomePageController extends Controller
 {
     public function index()
     {
-    	$courses = Course::with(['program', 'program.batch', 'instructors'])
+    	return redirect('/login');
+    	$courses = Course::with(['program', 'program.batch'])
                         ->where('active', 1)
                         ->orderBy('created_at', 'DESC')
                         ->get();
