@@ -25,7 +25,7 @@ trait UserLaratables
 
 	public static function laratablesCustomCourse($student)
 	{
-		return $student->courses->last()->course->acronym ?? null;
+		return $student->courses->last()->course->acronym ?? '';
 	}
 
 	public static function laratablesProfile($student)

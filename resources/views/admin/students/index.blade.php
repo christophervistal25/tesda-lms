@@ -11,7 +11,7 @@
 	</div>
 
 	
-	<div class="card-body">
+	<div class="card-body text-dark">
 		<div class="float-right">
 			{{-- <a href="{{ route('student.create') }}" class="btn btn-primary mb-2">Add new instructor</a> --}}
 		</div>
@@ -27,7 +27,7 @@
 					<th>Profile</th>
 					<th>Course</th>
 					<th>Progress</th>
-					<th>Module</th>
+					<th>Actions</th>
 				</tr>
 			</thead>
 			<tbody class="text-center">
