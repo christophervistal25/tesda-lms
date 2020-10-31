@@ -15,7 +15,7 @@ class AdminSeeder extends Seeder
         Admin::create([
         	'name' => 'LMS Administrator',
         	'email' => 'admin@yahoo.com',
-        	'password' => bcrypt('1234'),
+        	'password' => bcrypt('password'),
         ]);
     }
 }
