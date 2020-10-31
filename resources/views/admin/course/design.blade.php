@@ -18,7 +18,7 @@
 				{!! $course->design !!}
 			</div>
 			<div class="float-right mb-1">
-				<a href="" class="btn btn-success"> <i class="fas fa-edit"></i> Modify</a>
+				<a href="{{ route('course.edit', $course) }}" class="btn btn-success"> <i class="fas fa-edit"></i> Modify</a>
 			</div>
 			<br>
 			<p class="text-dark">Last modified: {{ $course->updated_at->format('l, j  F Y, h:i A') }}</p>

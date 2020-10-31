@@ -202,11 +202,13 @@ class CourseController extends Controller
         
     }
 
-   
+
+    /**
+     * a method for an administrator that click the course design in the course table
+     */
     public function design(Course $course, bool $forceview = false)
     {
-        // return redirect()->route('course.overview.show.file', [$course->id, 1]);
-        
         return view('admin.course.design', compact('course'));
     }
+
 }
