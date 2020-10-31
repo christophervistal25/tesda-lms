@@ -13,15 +13,15 @@
     <link rel="stylesheet"  href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.2.1/assets/owl.carousel.min.css" integrity="sha512-GqP/pjlymwlPb6Vd7KmT5YbapvowpteRq9ffvufiXYZp0YpMTtR9tI6/v3U3hFi1N9MQmXum/yBfELxoY+S1Mw==" crossorigin="anonymous" />
     <link rel="stylesheet"  href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css" integrity="sha512-yHknP1/AwR+yx26cB1y0cjvQUMvEa2PFzt1c9LlS4pRQ5NOTZFWbhBig+X9G9eYW/8m0/4OXNx8pxJ6z57x0dw==" crossorigin="anonymous" />
     {{-- <link rel="stylesheet" href="/assets/css/flaticon.css"> --}}
-    <link rel="stylesheet"  href="/assets/css/progressbar_barfiller.css">
-    <link rel="stylesheet"  href="/assets/css/gijgo.css">
+    {{-- <link rel="stylesheet"  href="/assets/css/progressbar_barfiller.css"> --}}
+    {{-- <link rel="stylesheet"  href="/assets/css/gijgo.css"> --}}
     <link rel="stylesheet"  href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.6.2/animate.min.css" integrity="sha512-HamjnVxTT+zKHJE1w1T2EDHSVvUlFwKgj71I65H73uirwaaAc7gJqfh2jXvGdzTgXvggQzWx5rjRIX6Uf3YCBg==" crossorigin="anonymous" />
-    <link rel="stylesheet"  href="/assets/css/animated-headline.css">
+    {{-- <link rel="stylesheet"  href="/assets/css/animated-headline.css"> --}}
     <link rel="stylesheet"  href="/assets/css/magnific-popup.css">
     <link rel="stylesheet"  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.6.0/css/all.min.css" integrity="sha512-ykRBEJhyZ+B/BIJcBuOyUoIxh0OfdICfHPnPfBy7eIiyJv536ojTCsgX8aqrLQ9VJZHGz4tvYyzOM0lkgmQZGw==" crossorigin="anonymous" />
-    <link rel="stylesheet"  href="/assets/css/themify-icons.css">
-    <link rel="stylesheet"  href="/assets/css/slick.css">
-    <link rel="stylesheet"  href="/assets/css/nice-select.css">
+    {{-- <link rel="stylesheet"  href="/assets/css/themify-icons.css"> --}}
+    {{-- <link rel="stylesheet"  href="/assets/css/slick.css"> --}}
+    {{-- <link rel="stylesheet"  href="/assets/css/nice-select.css"> --}}
     <link rel="stylesheet"  href="/assets/css/style.css">
     @stack('page-css')
 </head>
@@ -120,23 +120,23 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.2.1/owl.carousel.min.js" integrity="sha512-lo4YgiwkxsVIJ5mex2b+VHUKlInSK2pFtkGFRzHsAL64/ZO5vaiCPmdGP3qZq1h9MzZzghrpDP336ScWugUMTg==" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js" integrity="sha512-XtmMtDEcNz2j7ekrtHvOVR4iwwaD6o/FUJe6+Zq+HgcCsk3kj4uSQQR8weQ2QVj1o0Pk6PwYLohm206ZzNfubg==" crossorigin="anonymous"></script>
 <!-- One Page, Animated-HeadLin -->
-<script src="/assets/js/wow.min.js"></script>
-<script src="/assets/js/animated.headline.js"></script>
-<script src="/assets/js/jquery.magnific-popup.js"></script>
+{{-- <script src="/assets/js/wow.min.js"></script> --}}
+{{-- <script src="/assets/js/animated.headline.js"></script> --}}
+{{-- <script src="/assets/js/jquery.magnific-popup.js"></script> --}}
 
 <!-- Date Picker -->
-<script src="/assets/js/gijgo.min.js"></script>
+{{-- <script src="/assets/js/gijgo.min.js"></script> --}}
 <!-- Nice-select, sticky -->
 
-<script src="/assets/js/jquery.sticky.js"></script>
+{{-- <script src="/assets/js/jquery.sticky.js"></script> --}}
 <!-- Progress -->
-<script src="/assets/js/jquery.barfiller.js"></script>
+{{-- <script src="/assets/js/jquery.barfiller.js"></script> --}}
 
 <!-- counter , waypoint,Hover Direction -->
-<script src="/assets/js/jquery.counterup.min.js"></script>
-<script src="/assets/js/waypoints.min.js"></script>
-<script src="/assets/js/jquery.countdown.min.js"></script>
-<script src="/assets/js/hover-direction-snake.min.js"></script>
+{{-- <script src="/assets/js/jquery.counterup.min.js"></script> --}}
+{{-- <script src="/assets/js/waypoints.min.js"></script> --}}
+{{-- <script src="/assets/js/jquery.countdown.min.js"></script> --}}
+{{-- <script src="/assets/js/hover-direction-snake.min.js"></script> --}}
 
 
 <script src="/assets/js/main.js"></script>
