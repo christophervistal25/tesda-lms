@@ -78,7 +78,12 @@
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="rounded-0 btn btn-secondary" data-dismiss="modal">Close</button>
-				<button type="button" class="rounded-0 btn btn-primary" id="btnSaveEvent">Save Event</button>
+				<button type="button" class="rounded-0 btn btn-primary" id="btnSaveEvent">
+					<div class="spinner-border spinner-border-sm text-white d-none" role="status" id="spinner-add">
+			  			<span class="sr-only">Loading...</span>
+					</div>
+					<span id="btn-add-event-text">Create Event</span>
+				</button>
 			</div>
 		</div><!-- /.modal-content -->
 	</div><!-- /.modal-dialog -->
@@ -132,7 +137,12 @@
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="rounded-0 btn btn-secondary" data-dismiss="modal">Close</button>
-				<button type="button" class="rounded-0 btn btn-success" id="btnUpdateEvent">Save Event</button>
+				<button type="button" class="rounded-0 btn btn-success" id="btnUpdateEvent">
+					<div class="spinner-border spinner-border-sm text-white d-none" role="status" id="spinner-update">
+			  			<span class="sr-only">Loading...</span>
+					</div>
+					<span id="button-update-event-text">Save Event</span>
+				</button>
 			</div>
 		</div><!-- /.modal-content -->
 	</div><!-- /.modal-dialog -->
@@ -151,7 +161,12 @@
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="rounded-0 btn btn-secondary" data-dismiss="modal">Close</button>
-				<button type="button" class="rounded-0 btn btn-success" id="btnConfirmResched">Re-schedule Event</button>
+				<button type="button" class="rounded-0 btn btn-success" id="btnConfirmResched">
+					<div class="spinner-border spinner-border-sm text-white d-none" role="status" id="spinner-re-schedule">
+			  			<span class="sr-only">Loading...</span>
+					</div>
+					<span id="button-re-schedule-event-text">Re-schedule Event</span>
+				</button>
 			</div>
 		</div><!-- /.modal-content -->
 	</div><!-- /.modal-dialog -->
@@ -250,7 +265,6 @@
     calendar.render();
 
     $('#btnUpdateEvent').click(function(e) {
-
   		let data = {
   			title 		: $('#edit-title').val(),
 			description : $('#edit-description').val(),
@@ -259,6 +273,12 @@
 			end 		: $('#edit-end').val(),
 			date 		: moment(editSelectedDate).format('MM/D/YYYY'),
   		};
+
+  		let spinner = $('#spinner-update');
+  		let buttonText = $('#button-update-event-text');
+
+  		spinner.removeClass('d-none');
+  		buttonText.text('');
   		
   		$.ajax({
   			url : `/admin/event/${eventId}`,
@@ -266,6 +286,8 @@
   			data : data,
   			success : function (response) {
   				if (response.success) {
+  					spinner.addClass('d-none');
+  					buttonText.text('Save Event');
   					$('#editEventForm').trigger('reset');
   					$('#editEventModal').modal('toggle');
   					swal("Good job!", "Successfully update event", "success");
@@ -274,6 +296,8 @@
   			},
   			error : function (response) {
   				if (response.status === 422) {
+  					spinner.addClass('d-none');
+  					buttonText.text('Save Event');
   					$('#edit-event-form-message')
   								.html('')
   								.removeClass('d-none');
@@ -295,6 +319,11 @@
 			end 		: $('#end').val(),
 			date 		: moment(selectedDate).format('MM/D/YYYY'),
   		};
+  		let spinner = $('#spinner-add');
+  		let buttonText = $('#btn-add-event-text');
+
+  		spinner.removeClass('d-none');
+  		buttonText.text('');
 
   		$.ajax({
   			url : "{{ route('event.store') }}",
@@ -302,6 +331,8 @@
   			data : data,
   			success : function (response) {
   				if (response.success) {
+  					spinner.addClass('d-none');
+  					buttonText.text('Create Event');
   					$('#createEventForm').trigger('reset');
   					$('#createEventModal').modal('toggle');
   					swal("Good job!", "Successfully create new event", "success");
@@ -310,6 +341,8 @@
   			},
   			error : function (response) {
   				if (response.status === 422) {
+  					spinner.addClass('d-none');
+  					buttonText.text('Create Event');
   					$('#create-event-form-message')
   								.html('')
   								.removeClass('d-none');
@@ -326,12 +359,20 @@
 	});
 
   	$('#btnConfirmResched').click(function (e) {
+  		let spinner = $('#spinner-re-schedule');
+  		let buttonText = $('#button-re-schedule-event-text');
+
+  		spinner.removeClass('d-none');
+  		buttonText.text('');
+
   		$.ajax({
   			url : `/admin/event/reschedule/${rescheduleData.id}`,
   			method : 'PUT',
   			data : rescheduleData,
   			success : function (response) {
   				if (response.success) {
+  					spinner.addClass('d-none');
+  					buttonText.text('Re-schedule Event');
   					$('#confirmationEventModal').modal('toggle');
   					swal("Good job!", "Successfully re-schedule a event", "success");
   					calendar.refetchEvents();

@@ -86,7 +86,7 @@
         <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
         <h6 class="m-0 font-weight-bold text-dark">Administrator Accounts</h6>
       </div>
-      <div class="card-body">
+      <div class="card-body text-dark">
         <div class="float-right">
           <a href="{{ route('create.new.admin') }}" class="btn btn-primary mb-2">Register new admin</a>
         </div>
@@ -104,7 +104,7 @@
           </thead>
           <tbody>
               @foreach($admins as $admin)
-                <tr class="{{ Auth::user()->id === (int) $admin->id ? 'bg-info text-white' : 'text-dark' }}">
+                <tr class="{{ $admins->count() != 1 && Auth::user()->id === (int) $admin->id ? 'bg-info text-white' : 'text-dark' }}">
                     <td class="align-middle">{{ $admin->name }}</td>
                     <td class="align-middle">{{ $admin->email }}</td>
                     <td class="align-middle text-center">
@@ -115,7 +115,7 @@
                       @endif
                     </td>
                     <td class="align-middle">{{ $admin->created_at->diffForHumans() }}</td>
-                    <td class="text-center"><a href="{{ route('admin.edit', $admin->id) }}" class="btn {{ Auth::user()->id === (int) $admin->id ? 'btn-primary' : 'btn-success' }} text-white">Edit</a></td>
+                    <td class="text-center"><a href="{{ route('admin.edit', $admin->id) }}" class="btn {{ $admins->count() != 1 && Auth::user()->id === (int) $admin->id ? 'btn-primary' : 'btn-success' }} text-white">Edit</a></td>
                 </tr>
               @endforeach
           </tbody>

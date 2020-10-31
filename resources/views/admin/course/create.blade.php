@@ -22,7 +22,7 @@
 	
 	<div class="card-body">
 
-		<form method="POST" action="{{ route('course.store') }}"  enctype="multipart/form-data">
+		<form class="text-dark" method="POST" action="{{ route('course.store') }}"  enctype="multipart/form-data">
                             @csrf
 
                             <div class="form-group row">
@@ -40,7 +40,7 @@
                             </div>
 
                             <div class="form-group row">
-                                <label class="col-md-auto  text-md-right">{{ __('Course acronym') }}</label>
+                                <label class="col-md-auto  text-md-right">{{ __('Course Acronym') }}</label>
 
                                 <div class="col-md-12">
                                     <input id="name" type="text" class="form-control @error('acronym') is-invalid @enderror" name="acronym" value="{{ old('acronym') }}" required autocomplete="acronym" autofocus>

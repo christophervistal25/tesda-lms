@@ -21,7 +21,7 @@
 	
 	<div class="card-body">
 
-		<form method="POST" action="{{ route('instructor.store') }}" enctype="multipart/form-data">
+		<form class="text-dark" method="POST" action="{{ route('instructor.store') }}" enctype="multipart/form-data">
                             @csrf
 
                             <div class="form-group row">

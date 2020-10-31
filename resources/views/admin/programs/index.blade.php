@@ -11,7 +11,7 @@
 		<h6 class="m-0 font-weight-bold text-primary">List of programs</h6>
 	</div>
 	
-	<div class="card-body">
+	<div class="card-body text-dark">
 		<div class="text-right mb-1">
 			<a data-toggle="modal" data-target="#addNewProgram" class="btn btn-primary" href="">Create new program</a>
 		</div>
@@ -40,12 +40,12 @@
 <div class="modal-dialog" role="document">
 	<div class="modal-content">
 		<div class="modal-header">
-			<h5 class="modal-title" id="addModal">Create new program form</h5>
+			<h5 class="modal-title text-dark" id="addModal">Create new program form</h5>
 			<button class="close" type="button" data-dismiss="modal" aria-label="Close">
 			<span aria-hidden="true">×</span>
 			</button>
 		</div>
-		<div class="modal-body">
+		<div class="modal-body text-dark">
 			<form id="newProgramForm">
 				<div class="alert alert-danger d-none" id="form-message" role="alert">
        			</div>
@@ -67,7 +67,12 @@
 			</div>
 			<div class="modal-footer">
 				<button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-				<button class="btn btn-primary" type="submit">Create</button>
+				<button class="btn btn-primary" type="submit">
+					<div class="spinner-border spinner-border-sm text-white d-none" role="status" id="spinner-add">
+			  			<span class="sr-only">Loading...</span>
+					</div>
+					<span id="btn-add-program-text">Create</span>
+				</button>
 			</form>
 		</div>
 	</div>
@@ -78,12 +83,12 @@
 <div class="modal-dialog" role="document">
 	<div class="modal-content">
 		<div class="modal-header">
-			<h5 class="modal-title" id="editModal">Edit Program</h5>
+			<h5 class="modal-title text-dark" id="editModal">Edit Program</h5>
 			<button class="close" type="button" data-dismiss="modal" aria-label="Close">
 			<span aria-hidden="true">×</span>
 			</button>
 		</div>
-		<div class="modal-body">
+		<div class="modal-body text-dark">
 			<form id="editProgramForm">
 				<div class="alert alert-danger d-none" id="form-edit-message" role="alert">
        			</div>
@@ -107,7 +112,12 @@
 			</div>
 			<div class="modal-footer">
 				<button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-				<button class="btn btn-success" type="submit">Update</button>
+				<button class="btn btn-success" type="submit">
+					<div class="spinner-border spinner-border-sm text-white d-none" role="status" id="spinner-update">
+			  			<span class="sr-only">Loading...</span>
+					</div>
+					<span id="btn-update-program-text">Update</span>
+				</button>
 			</form>
 		</div>
 	</div>
@@ -118,15 +128,20 @@
 <div class="modal-dialog" role="document">
 	<div class="modal-content">
 		<div class="modal-header">
-			<h5 class="modal-title" id="deleteProgram">You sure to delete this program?</h5>
+			<h5 class="modal-title text-dark" id="deleteProgram">You sure to delete this program?</h5>
 			<button class="close" type="button" data-dismiss="modal" aria-label="Close">
 			<span aria-hidden="true">×</span>
 			</button>
 		</div>
-		<div class="modal-body"><span class="text-danger">Please double check this record beforing you hit the delete button.</span></div>
+		<div class="modal-body"><span class="text-danger">Please double-check this chosen record before you hit the "DELETE" button.</span></div>
 		<div class="modal-footer">
 			<button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-			<button class="btn btn-danger" id="btnDeleteButton" type="button">Delete</button>
+			<button class="btn btn-danger" id="btnDeleteButton" type="button">
+				<div class="spinner-border spinner-border-sm text-white d-none" role="status" id="spinner-delete">
+			  			<span class="sr-only">Loading...</span>
+				</div>
+				<span id="btn-delete-program-text">Delete</span>
+			</button>
 		</div>
 	</div>
 </div>
@@ -158,13 +173,21 @@
 
 		$('#newProgramForm').submit(function (e) {
 			e.preventDefault();
-			let formData = $(this).serialize();
+			let formData   = $(this).serialize();
+			let spinner    = $('#spinner-add');
+			let buttonText = $('#button-add-program-text');
+
+			spinner.removeClass('d-none');
+			buttonText.text('');
+
 			$.ajax({
 				url : "{{ route('programs.store') }}",
 				method : 'POST',
 				data: formData,
 				success : (response) => {
 					if (response.success) {
+						spinner.addClass('d-none');
+						buttonText.text('Create');
 						$('#form-message').addClass('d-none');
 						programTable.ajax.reload();
 						$('#newProgramForm')[0].reset();
@@ -173,6 +196,8 @@
 					}
 				},
 				error : (response) => {
+					spinner.addClass('d-none');
+					buttonText.text('Create');
 					if (response.status === 422) {
 	            		$('#form-message').html('');
 	        			$('#form-message').removeClass('d-none');
@@ -202,12 +227,19 @@
 
 		$('#editProgramForm').submit(function (e) {
 			e.preventDefault();
+			let spinner = $('#spinner-update');
+			let buttonText = $('#btn-update-program-text');
+
+			spinner.removeClass('d-none');
+			buttonText.text('');
 			$.ajax({
 				url : `/admin/programs/${data.id}`,
 				method : 'PUT',
 				data : { id : data.id, name : $('#programName').val(), batch_no: $('#editBatchNo').val() },
 				success : (response) => {
 					if (response.success) {
+						spinner.addClass('d-none');
+						buttonText.text('Update');
 						$('#form-edit-message').addClass('d-none');
 						programTable.ajax.reload();
 						$('#editProgramForm')[0].reset();
@@ -217,6 +249,8 @@
 				},
 				error : (response) => {
 					if (response.status === 422) {
+						spinner.addClass('d-none');
+						buttonText.text('Update');
 	            		$('#form-edit-message').html('');
 	        			$('#form-edit-message').removeClass('d-none');
 	            		// Display error message.
@@ -231,11 +265,19 @@
 
 		$('#btnDeleteButton').click(function (e) {
 			e.preventDefault();
+			let spinner = $('#spinner-delete');
+			let buttonText = $('#btn-delete-program-text');
+
+			spinner.removeClass('d-none');
+			buttonText.text('');
+
 			$.ajax({
 				url : `/admin/programs/${data.id}/hide`,
 				method : 'PUT',
 				success : (response) => {
 					if (response.success) {
+						spinner.addClass('d-none');
+						buttonText.text('Delete');
 						programTable.ajax.reload();
 						swal("Good job!", "Succesfully delete program", "success");
 						$('#deleteProgram').modal('toggle');
