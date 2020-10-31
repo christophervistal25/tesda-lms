@@ -17,7 +17,7 @@ class DatabaseSeeder extends Seeder
         	// ProgramSeeder::class,
             // UserSeeder::class,
             // CourseSeeder::class,
-            // IconSeeder::class,
+            IconSeeder::class,
             // EventSeeder::class,
         ]);
     }
