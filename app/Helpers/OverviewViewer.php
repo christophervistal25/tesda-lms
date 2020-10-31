@@ -35,7 +35,7 @@ class OverviewViewer implements ModuleActivityFinder
     private function getFiles($course)
     {
         $overview = $course->modules->where('is_overview', 1)->first();
-        return $overview->files;
+        return $overview->files ?? null;
     }
 
     public function has($data) :bool

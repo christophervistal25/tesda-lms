@@ -30,7 +30,7 @@
 			<tbody>
 				@foreach($courses as $course)
 				<tr class="text-dark">
-					<td class="text-primary align-middle">{{ $course->acronym }}</td>
+					<td class="align-middle">{{ $course->acronym }}</td>
 					<td class="align-middle">{{ $course->description }}</td>
 					<td class="align-middle"><a href="{{ route('course.design', $course) }}">Course Design</a></td>
 					<td class="align-middle">{{ $course->program->name }}</td>

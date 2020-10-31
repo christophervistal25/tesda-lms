@@ -11,7 +11,7 @@
 <div class="card rounded-0 mb-4">
 	<div class="card-body pl-0 pr-0">
 		<div class="pl-4 pr-4">
-			<h2 class="text-dark">{{ $file->title }} - {{ $course->name }}</h2>
+			<h2 class="text-dark">{{ $file->title ?? '' }} - {{ $course->name }}</h2>
 			<br>
 			<p class="">
 				@if(Str::contains(strtolower($file->title), ['course', 'design']))
@@ -19,7 +19,6 @@
 					@else
 					<span class="text-dark">Click </span> <a href="{{ $file->link }}"> {{ $file->title }} </a> <span class="text-dark">link to view the file.</span>
 				@endif
-				
 			</p>
 				
 			<br>

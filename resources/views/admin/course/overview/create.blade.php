@@ -21,7 +21,7 @@
 @if(is_null($overview))
 <div class="card bg-danger text-white shadow mb-2">
   <div class="card-body">
-    You should add course overview first.
+    You should add a course overview first
   </div>
 </div>
 @endif

@@ -11,6 +11,7 @@ use App\Module;
 use App\File as OverviewFile;
 use App\Helpers\OverviewViewer;
 use App\Helpers\ExamRepository;
+use Illuminate\Support\Collection;
 
 
 class CourseOverviewController extends Controller
@@ -132,8 +133,8 @@ class CourseOverviewController extends Controller
 
     public function show($course, $fileId = null)
     {
-       $course = Course::with('modules')->find($course);
 
+       $course = Course::with('modules')->find($course);
        $this->viewer->process([
           'course'  => $course,
           'file_id' => $fileId,
@@ -145,9 +146,8 @@ class CourseOverviewController extends Controller
        $previous = $this->viewer->getPrevious();
 
 
-       $files = $course->modules->where('is_overview', 1)->first()->files;
+       $files = $course->modules->where('is_overview', 1)->first()->files ?? null;
        $modules = $course->modules->where('is_overview', 0);
-       
        
        $moduleWithExam = $this->examRepository->getExam($course);
        

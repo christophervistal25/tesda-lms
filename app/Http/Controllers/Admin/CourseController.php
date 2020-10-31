@@ -205,17 +205,8 @@ class CourseController extends Controller
    
     public function design(Course $course, bool $forceview = false)
     {
-        return redirect()->route('course.overview.show.file', [$course->id, 1]);
+        // return redirect()->route('course.overview.show.file', [$course->id, 1]);
         
-        /*$variables = ['course', 'forceview'];
-        $courseModuleFirstActivity = $course->modules->first()->activities->where('activity_no', '1.1')->first();
-        
-        if ($forceview) {
-            $firstFile = $course->overview->files->first();
-            $variables[] = 'firstFile';
-        }
-
-        
-        return view('admin.course.design', compact($variables, 'courseModuleFirstActivity'));*/
+        return view('admin.course.design', compact('course'));
     }
 }
