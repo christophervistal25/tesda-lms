@@ -17,12 +17,12 @@
     {{-- <link rel="stylesheet"  href="/assets/css/gijgo.css"> --}}
     <link rel="stylesheet"  href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.6.2/animate.min.css" integrity="sha512-HamjnVxTT+zKHJE1w1T2EDHSVvUlFwKgj71I65H73uirwaaAc7gJqfh2jXvGdzTgXvggQzWx5rjRIX6Uf3YCBg==" crossorigin="anonymous" />
     {{-- <link rel="stylesheet"  href="/assets/css/animated-headline.css"> --}}
-    <link rel="stylesheet"  href="/assets/css/magnific-popup.css">
+    {{-- <link rel="stylesheet"  href="/assets/css/magnific-popup.css"> --}}
     <link rel="stylesheet"  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.6.0/css/all.min.css" integrity="sha512-ykRBEJhyZ+B/BIJcBuOyUoIxh0OfdICfHPnPfBy7eIiyJv536ojTCsgX8aqrLQ9VJZHGz4tvYyzOM0lkgmQZGw==" crossorigin="anonymous" />
     {{-- <link rel="stylesheet"  href="/assets/css/themify-icons.css"> --}}
     {{-- <link rel="stylesheet"  href="/assets/css/slick.css"> --}}
     {{-- <link rel="stylesheet"  href="/assets/css/nice-select.css"> --}}
-    <link rel="stylesheet"  href="/assets/css/style.css">
+    <link rel="stylesheet" defer href="/assets/css/style.css">
     @stack('page-css')
 </head>
 
