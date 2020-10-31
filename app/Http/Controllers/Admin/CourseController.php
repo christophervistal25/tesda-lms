@@ -10,9 +10,6 @@ use App\Program;
 use App\Instructor;
 use App\Prerequisite;
 
-
-
-
 class CourseController extends Controller
 {
     /**
@@ -61,7 +58,7 @@ class CourseController extends Controller
             'description' => 'required',
             'design'      => 'required',
             'duration'    => 'required',
-            'program'     => 'in:'. implode(',', $programs),
+            'program'     => 'required|in:'. implode(',', $programs),
         ]);
 
         if ($request->hasFile('image')) {
@@ -143,7 +140,7 @@ class CourseController extends Controller
             'description' => 'required',
             'design'      => 'required',
             'duration'    => 'required',
-            'program'     => 'in:'. implode(',', $programs),
+            'program'     => 'required|in:'. implode(',', $programs),
         ]);
 
         if ($request->hasFile('image')) {

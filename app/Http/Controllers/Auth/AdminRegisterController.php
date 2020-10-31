@@ -16,6 +16,7 @@ class AdminRegisterController extends Controller
 
     public function showRegisterForm()
     {
+        return redirect(route('admin.login'));
         return view('auth.admin-register');
     }
 

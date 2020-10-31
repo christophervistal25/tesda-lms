@@ -51,7 +51,13 @@ class Handler extends ExceptionHandler
      * @throws \Throwable
      */
     public function render($request, Throwable $exception)
-    {
+    {   
+
+        if (!config('app.debug') && !$this->isHttpException($exception) && $exception instanceof \Symfony\Component\HttpKernel\Exception\HttpException) {
+           $exception = new \Symfony\Component\HttpKernel\Exception\HttpException(500);
+        }
+        
+
         return parent::render($request, $exception);
     }
      protected function unauthenticated($request, AuthenticationException $exception)

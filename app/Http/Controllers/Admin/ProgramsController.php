@@ -48,7 +48,7 @@ class ProgramsController extends Controller
             $batchs = Batch::get(['id'])->pluck('id')->toArray();
             $this->validate($request, [
                 'program_name' => 'required',
-                'batch'        => 'in:' . implode(',', $batchs)
+                'batch_no'        => 'required|in:' . implode(',', $batchs)
             ]);
 
             $batch   = Batch::find($request->batch_no);
@@ -100,7 +100,7 @@ class ProgramsController extends Controller
 
             $this->validate($request, [
                 'name'  => 'required',
-                'batch' => 'in:' . implode(',', $batchs)
+                'batch_no' => 'required|in:' . implode(',', $batchs)
             ]);
 
 
