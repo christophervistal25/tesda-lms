@@ -111,6 +111,7 @@
           <i class="fas fa-graduation-cap"></i>
           <span>Students</span></a>
       </li>
+
      
      <hr class="sidebar-divider">
 

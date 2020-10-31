@@ -11,7 +11,7 @@
 	
 	<div class="card-body">
 		<div class="float-right mb-1">
-			<a href="{{ route('course.create') }}" class="btn btn-primary btn-sm"> <i class="fas fa-plus"></i> New course</a>
+			<a href="{{ route('course.create') }}" class="btn btn-primary"> <i class="fas fa-plus"></i> New course</a>
 		</div>
 		<div class="clearfix"></div>
 		<table class="table table-bordered table-inverse table-hover" id="course-table">

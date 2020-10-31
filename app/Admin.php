@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 class Admin extends Authenticatable
 {
     use Notifiable;
+    public const STATUS = ['active', 'in-active'];
 
     /**
      * The attributes that are mass assignable.

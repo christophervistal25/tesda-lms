@@ -1,6 +1,7 @@
 @extends('layouts.admin.app')
 @prepend('page-css')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.css" integrity="sha512-/zs32ZEJh+/EO2N1b0PEdoA10JkdC3zJ8L5FTiQu82LR9S/rOQNfQN7U59U9BC12swNeRAz3HSzIL2vpp4fv3w==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/startbootstrap-sb-admin-2@4.1.1/vendor/datatables/dataTables.bootstrap4.min.css">
 @endprepend
 @section('title', 'Dashboard')
 @section('content')
@@ -80,6 +81,48 @@
 </div>
 <!-- Content Row -->
 <div class="row">
+    <div class="col-lg-12 mb-2">
+      <div class="card">
+        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold text-dark">Administrator Accounts</h6>
+      </div>
+      <div class="card-body">
+        <div class="float-right">
+          <a href="{{ route('create.new.admin') }}" class="btn btn-primary mb-2">Register new admin</a>
+        </div>
+        <div class="clearfix"></div>
+        {{-- administrator list --}}
+        <table class="table table-bordered" id="admin-table">
+          <thead>
+            <tr class="text-dark">
+              <th>Name</th>
+              <th>Email</th>
+              <td>Status</td>
+              <th>Registered At</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+              @foreach($admins as $admin)
+                <tr class="{{ Auth::user()->id === (int) $admin->id ? 'bg-info text-white' : 'text-dark' }}">
+                    <td class="align-middle">{{ $admin->name }}</td>
+                    <td class="align-middle">{{ $admin->email }}</td>
+                    <td class="align-middle text-center">
+                      @if($admin->status === 'active')
+                        <span class="badge badge-pill badge-primary">Active</span>
+                        @else
+                        <span class="badge badge-pill badge-danger">In-Active</span>
+                      @endif
+                    </td>
+                    <td class="align-middle">{{ $admin->created_at->diffForHumans() }}</td>
+                    <td class="text-center"><a href="{{ route('admin.edit', $admin->id) }}" class="btn {{ Auth::user()->id === (int) $admin->id ? 'btn-primary' : 'btn-success' }} text-white">Edit</a></td>
+                </tr>
+              @endforeach
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 	<!-- Area Chart -->
 	<div class="col-xl-12 col-lg-12">
 		<div class="card shadow mb-4">
@@ -98,8 +141,11 @@
 </div>
 @push('page-scripts')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.bundle.min.js" integrity="sha512-SuxO9djzjML6b9w9/I07IWnLnQhgyYVSpHZx0JV97kGBfTIsUYlWflyuW4ypnvhBrslz1yJ3R+S14fdCWmSmSA==" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/startbootstrap-sb-admin-2@4.1.1/vendor/datatables/jquery.dataTables.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/startbootstrap-sb-admin-2@4.1.1/vendor/datatables/dataTables.bootstrap4.min.js"></script>
 <script>
-	// Set new default font family and font color to mimic Bootstrap's default styling
+$('#admin-table').DataTable();
+// Set new default font family and font color to mimic Bootstrap's default styling
 Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
 Chart.defaults.global.defaultFontColor = '#858796';
 

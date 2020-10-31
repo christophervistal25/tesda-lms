@@ -26,9 +26,16 @@ Route::prefix('admin')->group(function() {
     	Route::post('logout', 'AdminController@logout')->name('admin.logout');
         Route::get('/documentation', 'DocumentationController@index')->name('documentation.index');
 
+        Route::get('/admin/register', 'AdminController@register')->name('create.new.admin');
+        Route::post('/admin/register', 'AdminController@submit')->name('submit.new.admin');
+        Route::get('/admin/edit/{id}', 'AdminController@edit')->name('admin.edit');
+        Route::put('/admin/update/{id}', 'AdminController@update')->name('admin.update');
+
 	    Route::namespace('Admin')->group(function () {
             Route::get('/profile', 'ProfileController@edit')->name('admin.profile');
             Route::put('/profile', 'ProfileController@update')->name('admin.profile.update');
+
+            
 
             Route::get('/student/list', 'StudentController@list');
             Route::resource('student', 'StudentController');

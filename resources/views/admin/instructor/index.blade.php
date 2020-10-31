@@ -18,7 +18,7 @@
 		<div class="clearfix"></div>
 		<table class="table table-bordered" id="instructor-table">
 			<thead>
-				<tr>
+				<tr class="text-dark">
 					<th>Fullname</th>
 					<th>Contact No.</th>
 					<th>Image</th>
@@ -27,7 +27,7 @@
 			</thead>
 			<tbody>
 				@foreach($instructors as $instructor)
-					<tr>
+					<tr class="text-dark">
 						<td class="text-capitalize"> {{ $instructor->lastname  . ', ' . $instructor->firstname . ' ' . $instructor->middlename  }}</td>
 						<td>{{ $instructor->contact_no }}</td>
 						<td class="text-center">

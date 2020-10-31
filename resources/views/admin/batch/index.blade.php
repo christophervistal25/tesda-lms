@@ -11,19 +11,19 @@
 	
 	<div class="card-body">
 		<div class="float-right mb-1">
-			<button data-toggle="modal" data-target="#addBatchModal" class="btn btn-primary btn-sm"> <i class="fas fa-plus"></i> New Batch</button>
+			<button data-toggle="modal" data-target="#addBatchModal" class="btn btn-primary"> <i class="fas fa-plus"></i> New Batch</button>
 		</div>
 		<div class="clearfix"></div>
 		<table class="table table-bordered table-inverse table-hover" id="batch-table" width="100%">
 			<thead>
-				<tr>
+				<tr class="text-dark">
 					<th>Name</th>
 					<th>Batch Number</th>
 					<th>Created At</th>
 					<th>Actions</th>
 				</tr>
 			</thead>
-			<tbody>
+			<tbody class="text-dark">
 				<td colspan="4" class="text-center">
 					<div class="spinner-border text-primary" role="status">
 				  		<span class="sr-only">Loading...</span>

@@ -17,14 +17,14 @@
 		</div>
 		<table class="table table-bordered" id="programs-table">
 			<thead>
-				<tr>
+				<tr class="text-dark">
 					<th>Name</th>
 					<th>Batch</th>
 					<th>Created At</th>
 					<th>Actions</th>
 				</tr>
 			</thead>
-		<tbody class="text-center">
+		<tbody class="text-center text-dark">
 			<td colspan="4">
 				<div class="spinner-border text-primary" role="status">
 			  		<span class="sr-only">Loading...</span>

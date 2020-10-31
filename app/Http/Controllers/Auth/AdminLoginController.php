@@ -26,13 +26,12 @@ class AdminLoginController extends Controller
             'password' => 'required|min:8'
         ]);
 
-        // Attempt to log the user in
-        if(Auth::guard('admin')->attempt(['email' => $request->email, 'password' => $request->password], $request->remember))
-        {
+        if(Auth::guard('admin')->attempt(['email' => $request->email, 'password' => $request->password, 'status' => 'active'], $request->remember)) {
             return redirect()->intended(route('admin.dashboard'));
+        } else {
+            return redirect()->back()->withErrors(['message' => 'Please check your Email / Password'])->withInput($request->only('email','remember'));    
         }
 
-        // if unsuccessful
-        return redirect()->back()->withErrors(['message' => 'Please check your Email/Password.'])->withInput($request->only('email','remember'));
+        
     }
 }
