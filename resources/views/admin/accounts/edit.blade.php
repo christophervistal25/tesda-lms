@@ -16,7 +16,7 @@
 			<div class="col-lg-12">
 				<div class="alert alert-warning" role="alert">
 					@if(Auth::user()->id === (int) $admin->id)
-						* If you decided to your<storng> password</strong> just fill in those fields.
+						* If you decided to change your<storng> password</strong> just fill in those fields.
 						@else
 						* If you decided to change <strong>{{ $admin->name }} password</strong> just fill in those fields.
 					@endif

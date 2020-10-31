@@ -18,7 +18,7 @@
   <article>
       <h1><img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1604075788/icons/loder_h2qnck.webp" alt=""> Course will open soon</h1>
       <div>
-        <p>Sorry for the inconvenience, but we’re preparing all the modules and files needed for this course. you can always <a href="mailto:#">contact us</a>
+        <p>Sorry for the inconvenience, but we’re preparing all the modules and files needed for this course. you can always <a target="_blank" href="https://www.facebook.com/alwin.salcedo.10">contact us</a>
           &mdash; Alwin TESDA Team</p>
       </div>
   </article>

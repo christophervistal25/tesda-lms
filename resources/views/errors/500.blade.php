@@ -19,7 +19,7 @@
   <article>
     		<h1><img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1604075788/icons/loder_h2qnck.webp" alt=""> Shoot!</h1>
         	<p>An error has occurred, and we're working to fix the problem! We'll be up and running shortly.</p>
-        	<p>If you need immediate help from our customer service team, please <a href="">contact us</a> or message us on <a href="">Facebook</a>.</p>
+        	<p>If you need immediate help from our customer service team, please <a target="_blank" href="https://www.facebook.com/alwin.salcedo.10">contact us</a>.</p>
 	</article>
 </body>
 </html>
