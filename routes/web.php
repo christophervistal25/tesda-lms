@@ -104,6 +104,8 @@ Route::prefix('admin')->group(function() {
             Route::put('event/reschedule/{id}', 'EventController@reschedule');
             Route::resource('event', 'EventController');
 
+            Route::resource('report', 'ReportController');
+
 	    });
     });
 

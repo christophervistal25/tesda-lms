@@ -1,4 +1,7 @@
 @extends('layouts.admin.app')
+@prepend('meta-data')
+  <meta name="chart-value" content="{{ json_encode($studentRegisteredByMonth) }}">
+@endprepend
 @prepend('page-css')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.css" integrity="sha512-/zs32ZEJh+/EO2N1b0PEdoA10JkdC3zJ8L5FTiQu82LR9S/rOQNfQN7U59U9BC12swNeRAz3HSzIL2vpp4fv3w==" crossorigin="anonymous" />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/startbootstrap-sb-admin-2@4.1.1/vendor/datatables/dataTables.bootstrap4.min.css">
@@ -128,7 +131,7 @@
 		<div class="card shadow mb-4">
 			<!-- Card Header - Dropdown -->
 			<div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-				<h6 class="m-0 font-weight-bold text-dark">Monthly Registered Students <span class="text-primary">(Example Dataset)</span></h6>
+				<h6 class="m-0 font-weight-bold text-dark">Monthly Registered Students </h6>
 			</div>
 			<!-- Card Body -->
 			<div class="card-body">
@@ -144,6 +147,8 @@
 <script src="https://cdn.jsdelivr.net/npm/startbootstrap-sb-admin-2@4.1.1/vendor/datatables/jquery.dataTables.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/startbootstrap-sb-admin-2@4.1.1/vendor/datatables/dataTables.bootstrap4.min.js"></script>
 <script>
+let chartValue = JSON.parse($('meta[name="chart-value"]').attr('content'));
+console.log();
 $('#admin-table').DataTable();
 // Set new default font family and font color to mimic Bootstrap's default styling
 Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
@@ -194,7 +199,7 @@ var myLineChart = new Chart(ctx, {
       pointHoverBorderColor: "rgba(78, 115, 223, 1)",
       pointHitRadius: 10,
       pointBorderWidth: 2,
-      data: [5, 10, 5, 20, 15, 8, 23, 17, 13, 30, 29, 14],
+      data: Object.values(chartValue),
     }],
   },
   options: {
@@ -217,7 +222,7 @@ var myLineChart = new Chart(ctx, {
           drawBorder: false
         },
         ticks: {
-          maxTicksLimit: 7
+          maxTicksLimit: 12
         }
       }],
       yAxes: [{
@@ -258,7 +263,7 @@ var myLineChart = new Chart(ctx, {
       callbacks: {
         label: function(tooltipItem, chart) {
           var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
-          return datasetLabel + '' + number_format(tooltipItem.yLabel);
+          return datasetLabel + 'Students : ' + number_format(tooltipItem.yLabel);
         }
       }
     }

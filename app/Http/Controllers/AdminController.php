@@ -5,17 +5,33 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\{User as Student, Course, Module, Activity, Admin};
 use Auth;
+use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 
 class AdminController extends Controller
 {
     public function index()
     {
+        $start = Carbon::now()->firstOfYear();
+        $end   = Carbon::now()->endOfYear();
+
+        $period = CarbonPeriod::create($start->format('Y-m-d H:i:s'), '1 month', $end->format('Y-m-d H:i:s'));
+        $months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        $studentRegisteredByMonth = [];
+        foreach ($period as $dt) {
+            $start = Carbon::parse($dt->format("Y-m-d"))->format('Y-m-d H:i:s');
+            $end   = Carbon::parse($start)->endOfMonth()->format('Y-m-d H:i:s');
+            $studentRegisteredByMonth[Carbon::parse($dt)->month] = Student::whereBetween('created_at', [$start, $end])
+                                                                            ->count();
+        }
+
         $students   = Student::count();
         $course     = Course::count();
         $modules    = Module::count();
         $activities = Activity::count();
         $admins     = Admin::get();
-        return view('admin', compact('students', 'course', 'modules', 'activities', 'admins'));
+        
+        return view('admin', compact('students', 'course', 'modules', 'activities', 'admins', 'studentRegisteredByMonth'));
     }
 
     public function register()

@@ -22,6 +22,6 @@ class UserSeeder extends Seeder
                 'city_town' => 'Tandag City',
                 'country'   => 'PH',
             ]);
-        // factory(User::class, 200)->create();
+        factory(User::class, 200)->create();
     }
 }

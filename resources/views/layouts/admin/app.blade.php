@@ -112,6 +112,19 @@
           <span>Students</span></a>
       </li>
 
+      <hr class="sidebar-divider">
+
+      <!-- Heading -->
+      <div class="sidebar-heading">
+        Report
+      </div>
+
+      <li class="nav-item">
+        <a class="nav-link" href="{{ route('report.index') }}">
+            <i class="fas fa-fw fa-calendar-alt"></i>
+          <span>Reports</span></a>
+      </li>
+
      
      <hr class="sidebar-divider">
 
