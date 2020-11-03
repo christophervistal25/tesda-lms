@@ -34,7 +34,7 @@ class AppServiceProvider extends ServiceProvider
         if (env('REDIRECT_HTTPS')) {
             $url->formatScheme('https');
         }
-
+        
         $events = 0;
         if (Schema::hasTable('events')) {
                 $events = Event::whereDate('start' , '>=' , Carbon::now()->format('Y/m/d'))->count() ?? 0;

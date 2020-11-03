@@ -1,6 +1,9 @@
 @extends('layouts.admin.app')
 @prepend('meta-data')
   <meta name="chart-value" content="{{ json_encode($studentRegisteredByMonth) }}">
+  <meta name="days" content="{{ json_encode($days) }}">
+  <meta name="weeks" content="{{ json_encode($weeks) }}">
+  <meta name="type" content="{{ $type }}">
 @endprepend
 @prepend('page-css')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.css" integrity="sha512-/zs32ZEJh+/EO2N1b0PEdoA10JkdC3zJ8L5FTiQu82LR9S/rOQNfQN7U59U9BC12swNeRAz3HSzIL2vpp4fv3w==" crossorigin="anonymous" />
@@ -128,18 +131,29 @@
   </div>
 	<!-- Area Chart -->
 	<div class="col-xl-12 col-lg-12">
-		<div class="card shadow mb-4">
-			<!-- Card Header - Dropdown -->
-			<div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-				<h6 class="m-0 font-weight-bold text-dark">Monthly Registered Students </h6>
-			</div>
-			<!-- Card Body -->
-			<div class="card-body">
-				<div class="chart-area">
-					<canvas id="myAreaChart"></canvas>
-				</div>
-			</div>
-		</div>
+
+    <div class="card shadow mb-4">
+                <!-- Card Header - Dropdown -->
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                  <h6 class="m-0 font-weight-bold text-dark">Monthly Registered Students </h6>
+                  <div class="dropdown no-arrow show">
+                    <a class="dropdown-toggle" href="#" role="button" id="optionMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                      <i class="fas fa-caret-down fa-sm fa-fw text-primary"></i>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="optionMenuLink" style="position: absolute; transform: translate3d(-157px, 19px, 0px); top: 0px; left: 0px; will-change: transform;" x-placement="bottom-end">
+                      <a class="dropdown-item text-dark font-weight-bold" href="{{ route('admin.dashboard', 'daily') }}">Daily Registered Students</a>
+                      <a class="dropdown-item text-dark font-weight-bold" href="{{ route('admin.dashboard', 'weekly') }}">Weekly Registered Students</a>
+                      <a class="dropdown-item text-dark font-weight-bold" href="{{ route('admin.dashboard', 'monthly') }}">Monthly Registered Students</a>
+                    </div>
+                  </div>
+                </div>
+                <!-- Card Body -->
+                <div class="card-body">
+                   <div class="chart-area">
+                    <canvas id="myAreaChart"></canvas>
+                  </div>
+                </div>
+              </div>
 	</div>
 </div>
 @push('page-scripts')
@@ -148,7 +162,19 @@
 <script src="https://cdn.jsdelivr.net/npm/startbootstrap-sb-admin-2@4.1.1/vendor/datatables/dataTables.bootstrap4.min.js"></script>
 <script>
 let chartValue = JSON.parse($('meta[name="chart-value"]').attr('content'));
-console.log();
+let type       = $('meta[name="type"]').attr('content');
+let labels = [];
+console.log(type);
+if (type === 'daily') {
+  labels = JSON.parse($('meta[name="days"]').attr('content'));
+  console.log(labels);
+  // console.log(JSON.parse(labels));
+} else if (type === 'weekly') {
+  labels = JSON.parse($('meta[name="weeks"]').attr('content'));
+  console.log(labels);
+} else {
+  labels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+}
 $('#admin-table').DataTable();
 // Set new default font family and font color to mimic Bootstrap's default styling
 Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
@@ -185,7 +211,7 @@ Chart.defaults.global.defaultFontFamily = 'Poppins';
 var myLineChart = new Chart(ctx, {
   type: 'line',
   data: {
-    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+    labels: labels,
     datasets: [{
       label: "",
       lineTension: 0.3,
