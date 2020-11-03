@@ -135,7 +135,7 @@
     <div class="card shadow mb-4">
                 <!-- Card Header - Dropdown -->
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                  <h6 class="m-0 font-weight-bold text-dark">Monthly Registered Students </h6>
+                  <h6 class="m-0 font-weight-bold text-dark">{{ ucfirst($type) }} Registered Students </h6>
                   <div class="dropdown no-arrow show">
                     <a class="dropdown-toggle" href="#" role="button" id="optionMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                       <i class="fas fa-caret-down fa-sm fa-fw text-primary"></i>
@@ -164,14 +164,10 @@
 let chartValue = JSON.parse($('meta[name="chart-value"]').attr('content'));
 let type       = $('meta[name="type"]').attr('content');
 let labels = [];
-console.log(type);
 if (type === 'daily') {
   labels = JSON.parse($('meta[name="days"]').attr('content'));
-  console.log(labels);
-  // console.log(JSON.parse(labels));
 } else if (type === 'weekly') {
   labels = JSON.parse($('meta[name="weeks"]').attr('content'));
-  console.log(labels);
 } else {
   labels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 }
