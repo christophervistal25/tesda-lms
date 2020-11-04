@@ -22,10 +22,10 @@
 					<label for="#endDate">Pick End Date</label>
 				</div>
 				<div class="col-lg-6">
-					<input type="date" id="startDate" class="form-control" value="{{ isset($generated) ? $from->format('Y-m-d') : '' }}" name="start_date">
+					<input type="date" id="startDate" class="form-control" value="{{ isset($generated) ? $from->format('Y-m-d') : old('start_date') }}" name="start_date">
 				</div>
 				<div class="col-lg-6">
-					<input type="date" id="endDate" class="form-control" value="{{ isset($generated) ? $to->format('Y-m-d') : '' }}"  name="end_date">
+					<input type="date" id="endDate" class="form-control" value="{{ isset($generated) ? $to->format('Y-m-d') : old('end_date') }}"  name="end_date">
 				</div>
 			</div>
 			<br>
@@ -36,7 +36,7 @@
 			<hr>
 		</form>
 		@isset($generated)
-			<a href="{{ route('print.report', [$from, $to]) }}" class="btn btn-primary btn-icon-split mb-2">
+			<a href="{{ route('print.report', [$from, $to]) }}" target="_blank" class="btn btn-primary btn-icon-split mb-2">
                     <span class="icon text-white-50">
                       <i class="fas fa-print"></i>
                     </span>
