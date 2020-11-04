@@ -107,6 +107,7 @@ Route::prefix('admin')->group(function() {
             Route::resource('event', 'EventController');
 
             Route::resource('report', 'ReportController');
+            Route::get('/report/{from}/{to}', 'ReportPrintController@show')->name('print.report');
 
 	    });
     });

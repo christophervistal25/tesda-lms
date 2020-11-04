@@ -39,6 +39,24 @@ class StudentRegisteredReportRepository
 		return $data[$type];
 	}
 
+	public function getRegisteredStudentsFrom(Carbon $from, Carbon $to)
+    {
+        return Student::whereBetween('created_at', [$from->format('Y-m-d')." 00:00:00", $to->format('Y-m-d')." 23:59:59"])
+                                ->get();
+    }
+
+    public function getRegisteredStudentWithCourse(Carbon $from, Carbon $to)
+    {
+        return Student::has('courses')->whereBetween('created_at', [$from->format('Y-m-d')." 00:00:00", $to->format('Y-m-d')." 23:59:59"])
+                                          ->get();
+    }
+
+    public function getRegisteredStudentWithFinishExam(Carbon $from, Carbon $to)
+    {
+        return Student::has('accomplish_exam')->whereBetween('created_at', [$from->format('Y-m-d')." 00:00:00", $to->format('Y-m-d')." 23:59:59"])
+                                             ->get();
+    }
+
 	public function get(string $type = 'monthly', StudentRegistered $report)
 	{
 		$attributes       = $this->attributeFor($type);

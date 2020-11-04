@@ -3,12 +3,18 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Repositories\StudentRegisteredReportRepository;
 use App\User;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 class ReportController extends Controller
 {
+
+    public function __construct(StudentRegisteredReportRepository $studentReportRepo)
+    {
+        $this->studentReportRepo = $studentReportRepo;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -29,25 +35,6 @@ class ReportController extends Controller
         //
     }
 
-    private function getRegisteredStudentsFrom(Carbon $from, Carbon $to)
-    {
-        return User::whereBetween('created_at', [$from->format('Y-m-d')." 00:00:00", $to->format('Y-m-d')." 23:59:59"])
-                                ->get();
-    }
-
-    private function getRegisteredStudentWithCourse(Carbon $from, Carbon $to)
-    {
-        return User::has('courses')->whereBetween('created_at', [$from->format('Y-m-d')." 00:00:00", $to->format('Y-m-d')." 23:59:59"])
-                                          ->get();
-    }
-
-    public function getRegisteredStudentWithFinishExam(Carbon $from, Carbon $to)
-    {
-        return User::has('accomplish_exam')->whereBetween('created_at', [$from->format('Y-m-d')." 00:00:00", $to->format('Y-m-d')." 23:59:59"])
-                                             ->get();
-    }
-
-
     /**
      * Store a newly created resource in storage.
      *
@@ -63,9 +50,9 @@ class ReportController extends Controller
 
         $from = Carbon::parse($request->start_date);
         $to   = Carbon::parse($request->end_date);
-        $registeredStudents               =  $this->getRegisteredStudentsFrom($from, $to);
-        $registeredWithCourse     =  $this->getRegisteredStudentWithCourse($from, $to);
-        $registeredWithFinalExam =  $this->getRegisteredStudentWithFinishExam($from, $to);
+        $registeredStudents      =  $this->studentReportRepo->getRegisteredStudentsFrom($from, $to);
+        $registeredWithCourse    =  $this->studentReportRepo->getRegisteredStudentWithCourse($from, $to);
+        $registeredWithFinalExam =  $this->studentReportRepo->getRegisteredStudentWithFinishExam($from, $to);
 
         $generated = true;
 

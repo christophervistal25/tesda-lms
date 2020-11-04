@@ -36,6 +36,13 @@
 			<hr>
 		</form>
 		@isset($generated)
+			<a href="{{ route('print.report', [$from, $to]) }}" class="btn btn-primary btn-icon-split mb-2">
+                    <span class="icon text-white-50">
+                      <i class="fas fa-print"></i>
+                    </span>
+                    <span class="text">Print Report</span>
+            </a>
+
 			<div class="row">
 			<div class="col-xl-3 col-md-6 mb-4">
 				<a href="{{ route('student.index') }}" class="text-decoration-none">
