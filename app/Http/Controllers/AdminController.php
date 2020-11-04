@@ -2,68 +2,34 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Repositories\StudentRegisteredDailyRepository;
+use App\Repositories\StudentRegisteredMonthlyRepository;
+use App\Repositories\StudentRegisteredReportRepository;
+use App\Repositories\StudentRegisteredWeeklyRepository;
 use App\{User as Student, Course, Module, Activity, Admin};
 use Auth;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
+use Illuminate\Http\Request;
 
 class AdminController extends Controller
 {
-    public function index($type = 'monthly')
+    public function __construct(StudentRegisteredReportRepository $reportRepo)
     {
-        $days = [];
+        $this->reportRepo = $reportRepo;
+    }
+
+    public function dashboard(string $type = 'monthly')
+    {
+        $days  = [];
         $weeks = [];
         if ($type === 'monthly') {
-            $start = Carbon::now()->firstOfYear();
-            $end   = Carbon::now()->endOfYear();
-            $period = CarbonPeriod::create($start->format('Y-m-d H:i:s'), '1 month', $end->format('Y-m-d H:i:s'));
-            $months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-            $studentRegisteredByMonth = [];
-            foreach ($period as $dt) {
-                $start = Carbon::parse($dt->format("Y-m-d"))->format('Y-m-d H:i:s');
-                $end   = Carbon::parse($start)->endOfMonth()->format('Y-m-d H:i:s');
-                $studentRegisteredByMonth[Carbon::parse($dt)->month] = Student::whereBetween('created_at', [$start, $end])
-                                                                                ->count();
-            }
+            $registered = $this->reportRepo->get($type, new StudentRegisteredMonthlyRepository);
         } else if ($type === 'daily') {
-            $start = Carbon::now()->firstOfMonth();
-            $end   = Carbon::now()->endOfMonth();
-            $period = CarbonPeriod::create($start->format('Y-m-d H:i:s'), '1 day', $end->format('Y-m-d H:i:s'));
-
-            $studentRegisteredByMonth = [];
-            foreach ($period as $key => $dt) {
-                $start = Carbon::parse($dt->format("Y-m-d"));
-                $end   = Carbon::parse($dt->format("Y-m-d"));
-                $days[] = "Day " . $start->format('d');
-                $studentRegisteredByMonth[$key + 1] = Student::whereBetween('created_at', [$start->format('Y-m-d H:i:s'), $end->format('Y-m-d 23:59:59')])
-                                                          ->count();
-            }
+            list($registered, $days) = $this->reportRepo->get($type, new StudentRegisteredDailyRepository);
         } else if ($type === 'weekly') {
-            $start  = Carbon::now()->firstOfMonth();
-            $end    = Carbon::now()->endOfMonth();
-            $period = CarbonPeriod::create($start->format('Y-m-d H:i:s'), '1 week', $end->format('Y-m-d H:i:s'));
-            $weeks = [];
-            $index = 0;
-            foreach ($period as $key => $dt) {
-                $index++;
-                $from = $dt;
-                $to   = $dt->copy()->addWeek(1);
-                if ($key == (count($period) - 1)) {
-                    if ($to->diffInDays($end) >= 7) {
-                        $weeks[] = 'Week' . $index;
-                        $studentRegisteredByMonth[$key] = Student::whereBetween('created_at', [$from->format('Y-m-d H:i:s'), $end->format('Y-m-d H:i:s')])
-                                                         ->count();
-                    }
-                } else {
-                    $weeks[] = 'Week ' .  $index;
-                    $studentRegisteredByMonth[$key] = Student::whereBetween('created_at', [$from->format('Y-m-d H:i:s'), $to->format('Y-m-d H:i:s')])
-                                                         ->count();
-                }
-            }
+            list($registered, $weeks) = $this->reportRepo->get($type, new StudentRegisteredWeeklyRepository);
         }
-        
-
         $students   = Student::count();
         $course     = Course::count();
         $modules    = Module::count();
@@ -71,7 +37,25 @@ class AdminController extends Controller
         $admins     = Admin::get();
         
         
-        return view('admin', compact('students', 'course', 'modules', 'activities', 'admins', 'studentRegisteredByMonth', 'weeks', 'days', 'type'));
+        return view('admin', compact('students', 'course', 'modules', 'activities', 'admins', 'registered', 'weeks', 'days', 'type'));
+    
+
+    }
+
+    public function index()
+    {
+        $days  = [];
+        $weeks = [];
+        $type  = 'monthly';
+        $registered = $this->reportRepo->get($type, new StudentRegisteredMonthlyRepository);
+        $students   = Student::count();
+        $course     = Course::count();
+        $modules    = Module::count();
+        $activities = Activity::count();
+        $admins     = Admin::get();
+        
+        
+        return view('admin', compact('students', 'course', 'modules', 'activities', 'admins', 'registered', 'weeks', 'days', 'type'));
     }
 
     public function register()

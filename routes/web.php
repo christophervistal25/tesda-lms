@@ -22,7 +22,9 @@ Route::prefix('admin')->group(function() {
     
 
     Route::group(['middleware' => 'auth:admin'], function () {
-    	Route::get('/{type?}', 'AdminController@index')->name('admin.dashboard');
+        Route::get('/', 'AdminController@index')->name('admin.dashboard');
+        Route::get('/dashboard/{type?}', 'AdminController@dashboard')->name('admin.dashboard.index');
+    	// Route::get('/{type?}', 'AdminController@index')->name('admin.dashboard');
     	Route::post('logout', 'AdminController@logout')->name('admin.logout');
         Route::get('/documentation', 'DocumentationController@index')->name('documentation.index');
 
@@ -111,7 +113,6 @@ Route::prefix('admin')->group(function() {
 
 });
 
-// Admin routes
 Route::prefix('student')->group(function() {
     
 
