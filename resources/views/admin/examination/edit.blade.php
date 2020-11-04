@@ -14,6 +14,7 @@
 	}
 </style>
 @endprepend
+{{ Breadcrumbs::render('create-update-exam', $exam) }}
 <div class="row">
 	<div class="col-lg-3">
 		<div class="card rounded-0 text-center ">

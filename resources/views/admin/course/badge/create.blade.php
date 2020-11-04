@@ -5,6 +5,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/startbootstrap-sb-admin-2@4.1.1/vendor/datatables/dataTables.bootstrap4.min.css">
 @endprepend
+{{ Breadcrumbs::render('course-add-badge', $course) }}
 @if(Session::has('success'))
 <div class="card bg-primary text-white shadow mb-2">
   <div class="card-body">

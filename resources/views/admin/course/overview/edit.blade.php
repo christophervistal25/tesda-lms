@@ -13,6 +13,7 @@
 
 </style>
 @endprepend
+{{ Breadcrumbs::render('course-edit-overview') }}
 @if(Session::has('success'))
 <div class="card bg-success text-white shadow mb-2">
   <div class="card-body">

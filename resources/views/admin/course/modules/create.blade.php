@@ -129,6 +129,7 @@
 
 </style>
 @endprepend
+{{ Breadcrumbs::render('course-add-module', $course) }}
 @if(Session::has('success'))
 <div class="card bg-primary text-white shadow mb-2">
   <div class="card-body">
@@ -293,8 +294,6 @@
 <script>
   $(document).ready(function() {
     $('[data-toggle="tooltip"]').tooltip();
-     
-
   })
 
   function generateActivity() {

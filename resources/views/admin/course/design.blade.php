@@ -3,11 +3,12 @@
 @section('content')
 @prepend('page-css')
 @endprepend
-<div class="card rounded-0 mb-4">
+{{ Breadcrumbs::render('course-design', $course) }}
+{{-- <div class="card rounded-0 mb-4">
 	<div class="card-body">
 		<h1 class="text-dark">{{ $course->name }}</h1>
 	</div>
-</div>
+</div> --}}
 <div class="card  mb-4 rounded-0">
 	
 	<div class="card-body p-0">

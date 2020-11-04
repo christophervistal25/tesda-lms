@@ -125,6 +125,10 @@
 
 </style>
 @endprepend
+
+
+{{ Breadcrumbs::render('course-edit-module', $module) }}
+
 @if(Session::has('success'))
 <div class="card bg-primary text-white shadow mb-2">
   <div class="card-body">

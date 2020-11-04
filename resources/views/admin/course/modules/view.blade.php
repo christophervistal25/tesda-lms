@@ -2,11 +2,13 @@
 @section('title', 'View Module')
 @section('content')
 
-<div class="card rounded-0 mb-4">
+{{ Breadcrumbs::render('course-view-module', $course) }}
+
+{{-- <div class="card rounded-0 mb-4">
 	<div class="card-body">
 		<h3 class="text-dark">{{ $course->name }}</h3>
 	</div>
-</div>
+</div> --}}
 
 <div class="card rounded-0 mb-4">
 	<div class="card-body pl-0 pr-0">

@@ -2,6 +2,8 @@
 @section('title', '')
 @section('content')
 
+
+
 <div class="card rounded-0 mb-4">
 	<div class="card-body">
 		<h1 class="text-dark">{{ $course->name }}</h1>

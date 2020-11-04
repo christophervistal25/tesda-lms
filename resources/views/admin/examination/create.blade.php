@@ -14,6 +14,8 @@
 	}
 </style>
 @endprepend
+{{ Breadcrumbs::render('create-final-exam', $module) }}
+
 <div class="card shadow mb-4 rounded-0">
 	<div class="card-header py-3 bg-info text-white rounded-0">
 		<p class="card-text">In multiple choice and true or false select the correct answer before hitting submit button</p>

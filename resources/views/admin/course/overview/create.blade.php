@@ -4,6 +4,9 @@
 @prepend('page-css')
 <link rel="stylesheet" href="/dropzone/dropzone.min.css">
 @endprepend
+
+{{ Breadcrumbs::render('course-add-overview') }}
+
 @if(Session::has('success'))
 <div class="card bg-primary text-white shadow mb-2">
   <div class="card-body">

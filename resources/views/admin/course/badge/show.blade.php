@@ -35,11 +35,13 @@ ul.timeline > li:before {
 }
 </style>
 @endprepend
+  {{ Breadcrumbs::render('course-badges', $course) }}
+
 <div class="card  mb-4 rounded-0">
   <div class="card-header py-3">
     <h6 class="m-0 text-primary">Badges of {{ $course->name }}</h6>
   </div>
-  
+
   <div class="card-body">
       <div class="row">
           @forelse($course->badge as $badge)
