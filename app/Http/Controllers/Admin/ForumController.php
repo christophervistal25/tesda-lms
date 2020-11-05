@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Comment;
 use App\Course;
+use App\Http\Controllers\Controller;
 use App\Post;
-use Auth;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ForumController extends Controller
 {
@@ -63,7 +64,8 @@ class ForumController extends Controller
      */
     public function show($id)
     {
-        //
+        $post = Post::find($id);
+        return view('admin.forum.show', compact('post'));
     }
 
     /**
@@ -74,7 +76,9 @@ class ForumController extends Controller
      */
     public function edit($id)
     {
-        //
+        $courses = Course::get();
+        $post = Post::find($id);
+        return view('admin.forum.edit', compact('post', 'courses'));
     }
 
     /**
@@ -86,7 +90,36 @@ class ForumController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $this->validate($request, [
+            'title'  => 'required',
+            'body'   => 'required',
+            'course' => 'required',
+        ]);
+
+        $post = Post::find($id);
+        $post->title     = $request->title;
+        $post->body      = $request->body;
+        $post->course_id = $request->course;
+        $post->save();
+        return back()->with('success', 'Successfully update '. $post->title);
+    }
+
+    public function addComment(Request $request, $postId)
+    {
+        $this->validate($request, [
+            'body'       => 'required',
+        ]);
+
+        $post = Post::find($postId);
+        
+        $comment = new Comment([
+            'body'       => $request->body,
+            'comment_by' => Auth::user()->name 
+        ]);
+        $post->comments()->save($comment);
+
+        return response()->json(['success' => true, 'body' => $request->body, 'comment_by' => Auth::user()->name]);
+
     }
 
     /**

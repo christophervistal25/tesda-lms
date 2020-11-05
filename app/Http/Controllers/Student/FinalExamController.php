@@ -2,17 +2,18 @@
 
 namespace App\Http\Controllers\Student;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Module;
-use Auth;
+use App\Activity;
+use App\Exam;
 use App\ExamAttempt;
 use App\ExamResult;
-use App\Exam;
-use App\Activity;
+use App\Helpers\CertificateRepository;
 use App\Helpers\ExamRepository;
 use App\Helpers\FinalExamViewer;
-use App\Helpers\CertificateRepository;
+use App\Http\Controllers\Controller;
+use App\Module;
+use App\StudentActivityLog;
+use Auth;
+use Illuminate\Http\Request;
 
 class FinalExamController extends Controller
 {
@@ -59,7 +60,9 @@ class FinalExamController extends Controller
         $course      = $module->course;
         $student     = Auth::user();
         $exam        = Module::with(['exam', 'exam.questions', 'exam.questions.choices'])->find($module->id);
-
+        
+        StudentActivityLog::view($student->id, 'view the final exam');
+        
         $highestGrade           = $this->calculateHighestGrade($student->exam_attempt);
         $canTakeExam            = $this->examRepository->isUserCanTakeExam($course);
         $isUserHasExamResult    = $this->examRepository->userExamResult();
@@ -81,8 +84,14 @@ class FinalExamController extends Controller
 
     public function userAddAttempt($module)
     {
+        
+
         $user = Auth::user();
         $user->exam_attempt()->save(new ExamAttempt());
+        StudentActivityLog::create([
+            'user_id' => $user->id,
+            'perform' => 'attempt the final exam'
+        ]);
         return redirect()->route('answer.final.exam', $module);
     }
 
@@ -184,6 +193,11 @@ class FinalExamController extends Controller
             $examAttempt->status = 'failed';
         }
         $examAttempt->save(); 
+
+        StudentActivityLog::create([
+            'user_id' => $student->id,
+            'perform' => 'finish the final exam with status ' . $examAttempt->status,
+        ]);
         
         return redirect()->route('answer.final.exam.result', [$module, $request->attempt_id]);
     }

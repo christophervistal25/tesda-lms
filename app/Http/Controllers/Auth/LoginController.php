@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
+use App\StudentActivityLog;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -67,4 +68,23 @@ class LoginController extends Controller
     {
         return $this->username;
     }
+
+    public function authenticated(Request $request, $user)
+    {
+        StudentActivityLog::create([
+            'user_id' => $user->id,
+            'perform' => 'login',
+        ]);
+    }
+
+    public function logout()
+    {
+        StudentActivityLog::create([
+            'user_id' => Auth::user()->id,
+            'perform' => 'logout',
+        ]);
+        Auth::logout();
+        return redirect('/login');
+    }
+
 }

@@ -81,7 +81,9 @@ Route::prefix('admin')->group(function() {
 
             Route::get('activity/view/{activity}', 'ActivityController@view')->name('activity.view');
 
-            Route::get('/forums', 'ForumController@index')->name('forum.index');
+            // Route::get('/forums', 'ForumController@index')->name('forum.index');
+
+            Route::post('/{forum}/forum/add/comment', 'ForumController@addComment');
             Route::resource('/forums', 'ForumController');
 
             Route::get('/student/{id}/modules', 'StudentProgressController@show')->name('student.show.progress');
@@ -108,7 +110,7 @@ Route::prefix('admin')->group(function() {
 
             Route::resource('report', 'ReportController');
             Route::get('/report/{from}/{to}', 'ReportPrintController@show')->name('print.report');
-
+            Route::get('/student/{id}/activity/log', 'StudentActivityLogController@show');
 	    });
     });
 
@@ -158,6 +160,8 @@ Route::prefix('student')->group(function() {
             Route::get('/badge', 'BadgeController@index')->name('student.badge.index');
 
             Route::get('/event/view/{event}', 'EventController@view');
+            Route::post('/forum/{forum}/add/comment', 'ForumController@addComment');
+            Route::resource('forum', 'ForumController');
         });
         
     });

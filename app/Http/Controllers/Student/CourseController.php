@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers\Student;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Course;
 use App\Activity;
-use Auth;
-use App\Module;
-use App\Helpers\ExamRepository;
+use App\Course;
 use App\Helpers\CertificateRepository;
+use App\Helpers\ExamRepository;
+use App\Http\Controllers\Controller;
+use App\Module;
 use App\Repositories\CourseRepository;
+use App\StudentActivityLog;
+use Auth;
+use Illuminate\Http\Request;
 
 class CourseController extends Controller
 {
@@ -94,6 +95,8 @@ class CourseController extends Controller
             return view('layouts.student.getting-ready');
         }
 
+        StudentActivityLog::view(Auth::user()->id, 'view module of service - ' . $course->acronym);
+        
         $modules = null;
         $overview = null;
       
@@ -101,6 +104,7 @@ class CourseController extends Controller
         
         $overview = $course->modules->where('is_overview', 1)
                             ->first();
+
 
         $student_id = Auth::user()->id;
 
@@ -131,8 +135,10 @@ class CourseController extends Controller
             return  $data->module_id;
         })->toJson();
 
+        $modules = $course->modules->where('is_overview', 0);
 
-        return view('student.course-enroll.module.show', compact('course', 'student_id', 'overview', 'noOfOverviewFiles', 'overviewFiles', 'studentAccomplish', 'studentActivitiesAccomplish', 'noOfAccomplishActivityByModule', 'studentAccomplishExam', 'accomplishExamByModule', 'canTakeExam', 'canDownloadCertificate'));
+
+        return view('student.course-enroll.module.show', compact('course', 'student_id', 'overview', 'noOfOverviewFiles', 'overviewFiles', 'studentAccomplish', 'studentActivitiesAccomplish', 'noOfAccomplishActivityByModule', 'studentAccomplishExam', 'accomplishExamByModule', 'canTakeExam', 'canDownloadCertificate', 'modules'));
     }
 
     /**

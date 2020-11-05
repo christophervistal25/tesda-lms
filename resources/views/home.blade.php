@@ -30,11 +30,6 @@
 				<span><i class="fas fa-comment"></i> Message</span>
 			</div>
 		</div>
-		<br>
-		<div class="float-right">
-			<button class="btn btn-light text-dark rounded-0" style="background :#ced4da;">Customise this page</button>
-		</div>
-		<div class="clearfix"></div>
 	</div>
 </div>
 <div class="card text-dark rounded-0 mt-4" style="border-top: 2px solid #1177d1;">

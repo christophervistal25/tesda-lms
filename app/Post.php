@@ -13,7 +13,6 @@ class Post extends Model
     	return $this->hasOne('App\Course', 'id', 'course_id');
     }
 
-
     public function postBy()
     {
     	return $this->belongsTo('App\Admin', 'posted_by', 'id');

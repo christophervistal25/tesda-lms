@@ -9,15 +9,45 @@
 				font-family: 'Poppins';
 				src: {{ storage_path('/fonts/Poppins-Regular.ttf') }}
 			}
-			body {
+			* {
 				font-family: "Poppins", sans-serif;
 			}
 			.page-break {
 			    page-break-after: always;
 			}
+
+			@page { margin: 100px 25px; }
+		    header { 
+		    position: fixed;
+	    	top: -60px;
+	    	left: 0px;
+	    	right: 0px;
+	    	/*background-color: lightblue;*/
+	    	height: 50px;
+		    }
+		    footer { 
+		    	position: fixed;
+		    	bottom: -60px;
+		    	left: 0px;
+		    	right: 0px;
+		    	/*background-color: lightblue;*/
+		    	height: 50px; 
+		    }
+		    p { page-break-after: always; }
+		    p:last-child { page-break-after: never; }
+			.pagenum:before {
+			    content: counter(page);
+			}
 		</style>
 	</head>
 	<body>
+		<header>
+			<center>HEADER OF THE PAGE</center>
+		</header>
+  		<footer>Page : <span class="pagenum"></span></footer>
+		{{-- <div class="footer">
+		    Page <span class="pagenum"></span>
+		</div> --}}
 		Registered Students <span style="margin-right : 70px;">&nbsp;</span>: {{ $data['registeredStudents']->count() }}
 		<br>
 		No. of enrolled Students <span style="margin-right : 44px;">&nbsp;</span>: {{ $data['registeredWithCourse']->count() }}
@@ -37,7 +67,7 @@
 			<tbody>
 				@foreach($data['registeredStudents'] as $student)
 				<tr>
-					<td><center>{{ $student->name }}</center></td>
+					<td>{{ $student->name }}</td>
 					<td>{{ $student->email }}</center></td>
 					<td><center>{{ $student->city_town }}</center></td>
 				</tr>

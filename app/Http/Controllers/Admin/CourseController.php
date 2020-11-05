@@ -74,7 +74,7 @@ class CourseController extends Controller
         $course->design = $request->design;
         $course->description = $request->description;
         $course->duration = $request->duration;
-        $course->image =  $image ?? '';
+        $course->image =  $image ?? 'https://res.cloudinary.com/dfm6cr1l9/image/upload/v1603438627/TESDA-Logo_zrv8wm.jpg';
         $course->program()->associate($program);
         $course->save();
 

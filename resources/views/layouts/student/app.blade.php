@@ -101,6 +101,12 @@
                 <span>Dashboard</span></a>
             </li>
 
+           <li class="nav-item">
+              <a class="nav-link" href="{{ route('forum.index') }}">
+              <i class="fas fa-fw fa-align-justify"></i>
+              <span>Anncemnts & Forums</span></a>
+            </li>
+
             <li class="nav-item">
               <a class="nav-link" href="{{ route('site.home') }}">
                 <i class="fas fa-fw fa-home"></i>

@@ -134,7 +134,7 @@ class ModulesController extends Controller
 
         if (isset($request->completion_activity_no)) {
               foreach ($request->completion_activity_no as $key => $no) {
-                $activity = Activity::updateOrCreate(['activity_no' => $no], [
+                $activity = Activity::updateOrCreate(['module_id' => $module->id,  'activity_no' => $no], [
                     'module_id'    => $module->id,
                     'activity_no'  => $no,
                     'title'        => $request->completion_activity_name[$key],
@@ -208,7 +208,7 @@ class ModulesController extends Controller
         if (isset($request->activity_no)) {
             
             foreach ($request->activity_no as $key => $no) {
-                $activity = Activity::updateOrCreate(['activity_no' => $no], [
+                $activity = Activity::updateOrCreate(['module_id' => $module->id, 'activity_no' => $no], [
                     'module_id'    => $module->id,
                     'activity_no'  => $no,
                     'title'        => $request->activity_name[$key],
@@ -236,7 +236,7 @@ class ModulesController extends Controller
 
         if (isset($request->downloadable_activity_no)) {
               foreach ($request->downloadable_activity_no as $key => $no) {
-                    $activity = Activity::updateOrCreate(['activity_no' => $no], [
+                    $activity = Activity::updateOrCreate(['module_id' => $module->id,'activity_no' => $no], [
                         'module_id'    => $module->id,
                         'activity_no'  => $no,
                         'title'        => $request->downloadable_activity_name[$key],
@@ -263,7 +263,7 @@ class ModulesController extends Controller
 
         if (isset($request->completion_activity_no)) {
               foreach ($request->completion_activity_no as $key => $no) {
-                $activity = Activity::updateOrCreate(['activity_no' => $no], [
+                $activity = Activity::updateOrCreate(['module_id' => $module->id, 'activity_no' => $no], [
                     'module_id'    => $module->id,
                     'activity_no'  => $no,
                     'title'        => $request->completion_activity_name[$key],

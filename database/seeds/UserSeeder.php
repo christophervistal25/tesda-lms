@@ -22,6 +22,16 @@ class UserSeeder extends Seeder
                 'city_town' => 'Tandag City',
                 'country'   => 'PH',
             ]);
-        factory(User::class, 30)->create();
+        User::create([
+            'username' => 'tooshort07' ,
+                'name'      => 'Christopher User' ,
+                'email'     => 'christophervistal26@gmail.com',
+                'password'  => bcrypt('christopher'),
+                'firstname' => 'Christopher',
+                'surname'   => 'Vistal',
+                'city_town' => 'Tandag City',
+                'country'   => 'PH',
+            ]);
+        // factory(User::class, 30)->create();
     }
 }

@@ -151,13 +151,15 @@
 		        <!-- Card Content - Collapse -->
 		        <div class="collapse " id="registeredWithCourse" style="">
 		          <div class="card-body">
-		            	<table class="table table-bordered table-hover text-dark" id="registered-with-course">
+		            	<table class="table table-bordered table-hover text-dark" id="registered-with-course" width="100%">
 							<thead>
 								<tr>
 									<th>Fullname</th>
 									<th>Email</th>
 									<th>City/Town</th>
 									<th>Enrolled</th>
+									<th class="text-center">Activity Logs</th>
+									<th class="text-center">Module Progress</th>
 								</tr>
 							</thead>
 							<tbody class="text-dark">
@@ -167,6 +169,8 @@
 									<td>{{ $student->email }}</td>
 									<td>{{ $student->city_town }}</td>
 									<td>{{ $student->courses->last()->course->acronym }}</td>
+									<td class="text-center"><a data-toggle="modal" href='#' data-name="{{ $student->name }}" data-id="{{ $student->id }}" class="btn btn-primary btn-sm open-log-modal">View</a></td>
+									<td class="text-center"><a href="{{ route('student.show.progress', $student->id) }}" class="btn btn-primary btn-sm">Module Progress</a></td>
 								</tr>
 								@endforeach
 							</tbody>
@@ -178,7 +182,7 @@
 	     	<div class="card rounded-0">
 		        <!-- Card Header - Accordion -->
 		        <a href="#registeredWithFinalExam" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="registeredWithFinalExam">
-		          <h6 class="m-0 font-weight-bold text-dark">Registered Student with Final Exam Passed <span class="badge badge-pill badge-primary">{{ $registeredWithCourse->count() }}</span></h6>
+		          <h6 class="m-0 font-weight-bold text-dark">Registered Student with Final Exam Passed <span class="badge badge-pill badge-primary">{{ $registeredWithFinalExam->count() }}</span></h6>
 		        </a>
 		        <!-- Card Content - Collapse -->
 		        <div class="collapse " id="registeredWithFinalExam" style="">
@@ -206,6 +210,26 @@
 		          </div>
 		        </div>
 	     	</div>
+
+	     	<div class="modal fade" id="logs-modal">
+	     		<div class="modal-dialog modal-lg" role="document">
+	     			<div class="modal-content rounded-0 border-0">
+	     				<div class="modal-header">
+	     					<h4 class="modal-title">Student Activity Logs</h4>
+	     				</div>
+	     				<div class="modal-body" id="modal-content">
+	     					<div class="text-center">
+	     						<div class="spinner-border text-primary" role="status" id="modal-log-spinner">
+							  		<span class="sr-only">Loading...</span>
+								</div>
+	     					</div>
+	     				</div>
+	     				<div class="modal-footer">
+	     					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+	     				</div>
+	     			</div><!-- /.modal-content -->
+	     		</div><!-- /.modal-dialog -->
+	     	</div><!-- /.modal -->
 		@endisset
 	</div>
 </div>
@@ -218,12 +242,52 @@
 	}
 	});
 </script>
-<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
 <script src="https://cdn.jsdelivr.net/npm/startbootstrap-sb-admin-2@4.1.1/vendor/datatables/jquery.dataTables.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/startbootstrap-sb-admin-2@4.1.1/vendor/datatables/dataTables.bootstrap4.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" crossorigin="anonymous"></script>
 <script>
+	let studentName = null;
+	let studentId = null;
+
 	$('#registered-students, #registered-with-exam, #registered-with-course').DataTable();
+	
+	$('.open-log-modal').click(function (e) {
+		studentName = $(this).attr('data-name').split(' ')[0];
+		studentId = $(this).attr('data-id');
+		e.preventDefault();
+		$('#logs-modal').modal('toggle');
+	});
+
+	$('#logs-modal').on('shown.bs.modal', function () {
+	  	// Ajax request by id of the student.
+	  	$.get({
+	  		url : `/admin/student/${studentId}/activity/log`,
+	  		success : function (response) {
+	  			$('#modal-content').html('');
+	  			let logs = response;
+	  			if (logs.length != 0) {
+	  				logs.forEach((log) => {
+		  				let action = log.perform.charAt(0).toUpperCase() + log.perform.slice(1);
+		  				$('#modal-content').append(`<li>${studentName} - <span class='text-primary'>${action}</span>  <span class="float-right mt-1 badge badge-sm badge-default font-weight-bold"><small>${moment(log.created_at).format('L h:mm A')}</small></span> </li><hr>`);
+		  			});	
+	  			} else {
+	  				$('#modal-content').append('<div class="text-center"><span class="text-danger">No Available Logs</span></div>');
+	  			}
+	  			
+	  		},
+	  	});
+	});
+
+	$('#logs-modal').on('hidden.bs.modal', function () {
+	  	$('#modal-content').html('').append(`
+	  		<div class="text-center">
+				<div class="spinner-border text-primary" role="status" id="modal-log-spinner">
+		  			<span class="sr-only">Loading...</span>
+				</div>
+			</div>
+	     `);
+	});
 </script>
 @endpush
 @endsection

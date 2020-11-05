@@ -59,6 +59,12 @@ Breadcrumbs::for('announcements-create', function ($trail) {
     $trail->push('Create new announcement');
 });
 
+// Announcements - edit
+Breadcrumbs::for('announcements-edit', function ($trail, $post) {
+    $trail->parent('announcements');
+    $trail->push("Edit {$post->title}");
+});
+
 // Reports
 Breadcrumbs::for('reports', function ($trail) {
 	$trail->parent('dashboard');

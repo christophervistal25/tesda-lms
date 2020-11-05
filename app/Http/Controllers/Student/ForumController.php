@@ -2,16 +2,20 @@
 
 namespace App\Http\Controllers\Student;
 
-use App\Activity;
-use App\File;
+use App\Comment;
 use App\Http\Controllers\Controller;
-use App\StudentAccomplish;
-use App\StudentActivityLog;
-use Auth;
+use App\Post;
+use App\Repositories\StudentRepository;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
-class AccomplishController extends Controller
+class ForumController extends Controller
 {
+    public function __construct(StudentRepository $studentRepository)
+    {
+        $this->studentRepository = $studentRepository;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -19,7 +23,9 @@ class AccomplishController extends Controller
      */
     public function index()
     {
-        //
+        $student = Auth::user();
+        $discussions = $this->studentRepository->getCourse()->discussions;
+        return view('student.forum.index', compact('discussions'));
     }
 
     /**
@@ -40,34 +46,7 @@ class AccomplishController extends Controller
      */
     public function store(Request $request)
     {
-        try {
-            $student = Auth::user();
-            $file = File::find($request->file_id);
-            $student->accomplish_files()->attach($file);
-            StudentActivityLog::create([
-                'user_id'      => $student->id,
-                'perform' => 'accomplish the  ' . $file->title,
-            ]);
-            return response()->json(['success' => true]);
-        } catch (\Exception $e) {
-        }
-    }
-
-
-    public function activity(Request $request)
-    {
-        try {
-            $student = Auth::user();
-            $file = Activity::find($request->activity_id);
-             StudentActivityLog::firstOrCreate([
-                'user_id'      => $student->id,
-                'perform' => 'accomplish the  ' . $file->title,
-            ]);
-            $student->accomplish_activities()->attach($file);    
-            return response()->json(['success' => true]);
-        } catch (\Exception $e) {
-        }   
-        
+        //
     }
 
     /**
@@ -78,7 +57,32 @@ class AccomplishController extends Controller
      */
     public function show($id)
     {
-        //
+        $studentCourse = $this->studentRepository->getCourse();
+        $post = Post::find($id);
+
+        if ($studentCourse->id !== $post->course_id) {
+            // The user can't access this kind of course.
+            return redirect()->back();
+        }
+        return view('student.forum.show', compact('post'));
+    }
+
+    public function addComment(Request $request, $postId)
+    {
+        $this->validate($request, [
+            'body'       => 'required',
+        ]);
+
+        $post = Post::find($postId);
+        
+        $comment = new Comment([
+            'body'       => $request->body,
+            'comment_by' => Auth::user()->name
+        ]);
+        $post->comments()->save($comment);
+
+        return response()->json(['success' => true, 'body' => $request->body, 'comment_by' => Auth::user()->name]);
+
     }
 
     /**
@@ -112,8 +116,6 @@ class AccomplishController extends Controller
      */
     public function destroy($id)
     {
-        $student = Auth::user();
-        $student->accomplish_files()->detach($id);
-        return response()->json(['success' => true]);
+        //
     }
 }

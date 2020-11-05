@@ -71,6 +71,7 @@ class User extends Authenticatable
         return $this->hasMany('App\ExamResult');
     }
 
+
     public function noOfActivities(Course $course)
     {
         $noOfActivities = 0;

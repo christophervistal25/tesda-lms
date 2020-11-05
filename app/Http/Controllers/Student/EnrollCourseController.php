@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Student;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Course;
+use App\Http\Controllers\Controller;
 use App\Models\Student\EnrollCourse;
+use App\StudentActivityLog;
 use Auth;
+use Illuminate\Http\Request;
 
 class EnrollCourseController extends Controller
 {
@@ -22,6 +23,12 @@ class EnrollCourseController extends Controller
     	$enroll->course_id = $id;
     	$user = Auth::user();
     	$user->courses()->save($enroll);
+
+        StudentActivityLog::create([
+            'user_id' => Auth::user()->id,
+            'perform' => 'Enroll to service - ' . Course::find($id)->acronym,
+        ]);
+
     	return redirect()->route('student.course.view', $id);
     }
 }

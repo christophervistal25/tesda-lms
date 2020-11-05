@@ -93,7 +93,7 @@
 				  </div>
 				  <div class="clearfix"></div>
 
-		  @foreach($course->modules->where('is_overview', 0) as $module)
+		  @foreach($modules as $module)
 		  <hr>
 		  	<div class="card rounded-0 border-0">
 			    <div class="card-header border-0" id="{{ $module->title }}" style="background :white;">
