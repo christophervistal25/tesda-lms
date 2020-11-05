@@ -22,14 +22,20 @@
 <section class="about-area1 fix pt-10">
     <div class="support-wrapper align-items-center">
         <div class="left-content1">
-            <div class="about-icon">
-                <img src="/assets/img/icon/about.svg" alt="">
-            </div>
             <!-- section tittle -->
             <div class="section-tittle section-tittle2 mb-55">
                 <div class="front-text">
                     <h2 class="">{{ $course->name }}</h2>
                     <p>{{ $course->description }}</p>
+                    <p>{!! $course->design !!}</p>
+
+                    <p>Duration : {{ $course->duration }}</p>
+                    <p class="text-capitalize">Instructor :
+                        @foreach($course->instructors as $instructor)
+                            {{ $instructor->lastname  . ' ' . $instructor->firstname }},
+                        @endforeach
+                     </p>
+                    <hr>
                 </div>
             </div>
             <div class="single-features">
@@ -45,7 +51,7 @@
                     <img src="/assets/img/icon/right-icon.svg" alt="">
                 </div>
                 <div class="features-caption">
-                    <p>Modules of this course {{ $course->modules->count() }}.</p>
+                    <p>With {{ $course->modules->count() }} Modules.</p>
                 </div>
             </div>
             <div class="single-features">

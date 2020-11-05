@@ -49,7 +49,7 @@
 		$('#btnAddComment').click(function () {
 			let postId = "{{ $post->id }}";
 			$.post({
-				url : `/student/forum/${postId}/add/comment/`,
+				url : `/student/${postId}/user/add/comment`,
 				data : { body : $('#user__comment').val() },
 				success : function (response) {
 					if (response.success) {

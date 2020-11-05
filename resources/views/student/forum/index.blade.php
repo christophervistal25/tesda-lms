@@ -14,7 +14,7 @@
 		</tr>
 	</thead>
 	<tbody>
-		@foreach($discussions as $discussion)
+		@forelse($discussions as $discussion)
 		<tr>
 			<td class="text-center"><a href="{{ route('forum.show', $discussion->id) }}">{{ $discussion->title }}</a></td>
 			<td class="text-center"><span class="badge badge-primary">0</span></td>
@@ -22,7 +22,9 @@
 			<td class="text-center">{{ $discussion->postBy->name }}</td>
 			<td>{{ $discussion->created_at->format('l, j  F Y, h:i A') }}</td>
 		</tr>
-		@endforeach
+		@empty
+			<td colspan="5" class="text-danger text-center">No available data</td>
+		@endforelse
 	</tbody>
 </table>
 @push('page-scripts')

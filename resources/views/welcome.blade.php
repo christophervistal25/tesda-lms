@@ -111,9 +111,9 @@
             <!-- img -->
             <div class="right-img">
                 <img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1604048588/page-image/about2_lkc5ou.webp" alt="">
-                <div class="video-icon" >
+                {{-- <div class="video-icon">
                     <a class="popup-video btn-icon" href="https://www.youtube.com/watch?v=qhd0Ce4Rsyk"><i class="fas fa-play"></i></a>
-                </div>
+                </div> --}}
             </div>
         </div>
     </div>

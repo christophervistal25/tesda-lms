@@ -29,7 +29,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				@foreach($posts as $post)
+				@forelse($posts as $post)
 					<tr>
 						<td><a href="{{ route('forums.show', $post->id) }}">{{ $post->title }}</a></td>
 						<td>{{ $post->course->name ?? '' }}</td>
@@ -41,7 +41,9 @@
 							<a href="{{ route('forums.edit', $post->id) }}" class="btn btn-sm btn-success"><i class="fas fa-pencil"></i> Edit</a>
 						</td>
 					</tr>
-				@endforeach
+					@empty
+					<td colspan="6" class="text-danger text-center">No available data</td>
+				@endforelse
 			</tbody>
 		</table>
 	</div>

@@ -160,7 +160,7 @@ Route::prefix('student')->group(function() {
             Route::get('/badge', 'BadgeController@index')->name('student.badge.index');
 
             Route::get('/event/view/{event}', 'EventController@view');
-            Route::post('/forum/{forum}/add/comment', 'ForumController@addComment');
+            Route::post('/{forum}/user/add/comment', 'ForumController@addComment');
             Route::resource('forum', 'ForumController');
         });
         
