@@ -55,12 +55,15 @@ class OverviewViewer implements ModuleActivityFinder
 
     public function possibleNext(array $data = []) 
     {
-      return $data['model']->modules
+      if ($data['model']->modules->where('is_overview', 0)->first()) {
+        return $data['model']->modules
                     ->where('is_overview', 0)
                     ->first()
                     ->activities
                     ->where('activity_no', '1.1')
                     ->first() ?? null;
+      }
+      return null;
     }
 
     public function possiblePrevious(array $data = [])
