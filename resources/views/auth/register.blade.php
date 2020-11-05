@@ -3,7 +3,7 @@
 @prepend('page-css')
 <link href="https://fonts.googleapis.com/css?family=Poppins" rel="stylesheet">
     <style>
-        input,span,li.errors { font-family : "Poppins", sans-serif; }
+        input,span,li.errors,label { font-family : "Poppins", sans-serif; }
     </style>
 @endprepend
 @section('content')
@@ -65,7 +65,13 @@
                                 <span>Password <span class="text-danger">*</span></span>
                             </div>
                             <div class="col-md-12">
-                                <input id="password" type="password" class="p-3 border border-1 w-100 " name="password"  autocomplete="current-password">
+                                <input id="password" type="password" class="p-3 border border-1  w-100 " name="password"  autocomplete="current-password">
+                                 <div class="col-md-auto m-0 text-right">
+                                    <label for="showPassword">
+                                        <input id="showPassword" type="checkbox">
+                                        Show password
+                                    </label>
+                                </div>
                                 <div class="col-md-auto m-0">
                                     <span class="text-danger"><small>8 characters, 1 digit, 1 lower case and non alpha numeric characters such as *,- or #</small></span>
                                 </div>
@@ -114,4 +120,15 @@
     </div>
 </div>
 <br>
+@push('page-scripts')
+    <script>
+        $('#showPassword').click(function (e) {
+            if ($('#showPassword').is(":checked")) {
+                $('#password').prop('type', 'text');
+            } else {
+                $('#password').prop('type', 'password');
+            }
+        });
+    </script>
+@endpush
 @endsection

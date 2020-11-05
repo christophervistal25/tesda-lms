@@ -116,6 +116,7 @@
 <!-- Jquery Slick , Owl-Carousel Plugins -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.2.1/owl.carousel.min.js" integrity="sha512-lo4YgiwkxsVIJ5mex2b+VHUKlInSK2pFtkGFRzHsAL64/ZO5vaiCPmdGP3qZq1h9MzZzghrpDP336ScWugUMTg==" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js" integrity="sha512-XtmMtDEcNz2j7ekrtHvOVR4iwwaD6o/FUJe6+Zq+HgcCsk3kj4uSQQR8weQ2QVj1o0Pk6PwYLohm206ZzNfubg==" crossorigin="anonymous"></script>
+<script src="/assets/js/main.js"></script>
 <!-- One Page, Animated-HeadLin -->
 {{-- <script src="/assets/js/wow.min.js"></script> --}}
 {{-- <script src="/assets/js/animated.headline.js"></script> --}}
@@ -136,7 +137,7 @@
 {{-- <script src="/assets/js/hover-direction-snake.min.js"></script> --}}
 
 
-<script src="/assets/js/main.js"></script>
 
+@stack('page-scripts')
 </body>
 </html>
