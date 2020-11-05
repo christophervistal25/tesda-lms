@@ -22,31 +22,31 @@ class FileController extends Controller
         $path = $request->file('file')->getClientOriginalName();
         $ext = pathinfo($path, PATHINFO_EXTENSION);
         
-        if ( !$this->isFilePDF($ext) ) {
-            $destination =  public_path() . '/' .$request->file('file')->getClientOriginalName();
+        // if ( !$this->isFilePDF($ext) ) {
+            $destination =  public_path() . '/files/' .$request->file('file')->getClientOriginalName();
             move_uploaded_file($request->file('file'), $destination);
 
-            $result = \Cloudinary::config(array( 
-                  'cloud_name' => config('cloudder.cloudName'), 
-                  'api_key'    => config('cloudder.apiKey'), 
-                  'api_secret' => config('cloudder.apiSecret'), 
-                  'secure'     => true
-            ));
+            // $result = \Cloudinary::config(array( 
+            //       'cloud_name' => config('cloudder.cloudName'), 
+            //       'api_key'    => config('cloudder.apiKey'), 
+            //       'api_secret' => config('cloudder.apiSecret'), 
+            //       'secure'     => true
+            // ));
 
-            $uploaded = \Cloudinary\Uploader::upload($destination, [
-                'use_filename'    => true,
-                'unique_filename' => false,
-                'resource_type'   => 'auto',
-                'pages'            => true
-            ]);
+            // $uploaded = \Cloudinary\Uploader::upload($destination, [
+            //     'use_filename'    => true,
+            //     'unique_filename' => false,
+            //     'resource_type'   => 'auto',
+            //     'pages'            => true
+            // ]);
 
-            \File::delete($destination);
-            return response()->json(['link' => $uploaded['url'] , 'extension' => $ext]);
-        } else {
-            $destination =  public_path() . '/certificates/' . $request->file('file')->getClientOriginalName();
-            move_uploaded_file($request->file('file'), $destination);
+            // \File::delete($destination);
+            // return response()->json(['link' => $uploaded['url'] , 'extension' => $ext]);
+        // } else {
+            // $destination =  public_path() . '/certificates/' . $request->file('file')->getClientOriginalName();
+            // move_uploaded_file($request->file('file'), $destination);
             return response()->json(['link' => Str::after($destination, 'public'), 'extension' => $ext]);
-        }
+        // }
 
 
         

@@ -64,9 +64,10 @@
 			  	@endif
 
 			  	@if($overview->files->where('type', 'file')->count() >= 2)
-			  		Files: {{ $overview->files->where('type', 'file')->count() }} 
+			  		
+			  		Files: {{ $overview->files->where('type', 'file')->pluck('link')->unique()->count() }}
 			  		@else
-			  		File: {{ $overview->files->where('type', 'file')->count() }} 
+			  		File: {{ $overview->files->where('type', 'file')->pluck('link')->unique()->count() }}
 			  	@endif
 			  </div>
 			  <div class="clearfix"></div>

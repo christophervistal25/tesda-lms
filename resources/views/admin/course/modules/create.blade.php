@@ -417,6 +417,10 @@
       $('#btnApplyFile').prop('disabled', true);
   });
 
+   $('#addFileInActivityModal').on('hidden.bs.modal', function () {
+      Dropzone.forElement('#dropzoneForm').removeAllFiles(true)
+  });
+
 </script>
 
 {{-- CUSTOM CS FOR DYNAMIC ADD ACTIVITY --}}

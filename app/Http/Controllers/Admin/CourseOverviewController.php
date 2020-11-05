@@ -54,10 +54,7 @@ class CourseOverviewController extends Controller
         $files = [];
 
         foreach ($match[$URL_INDEX] as $key => $file) {
-           $type = Str::contains($file, ['https', 'http']) ? 'file' : 'page';
-           if ($type == 'page') {
-             $type = Str::contains($file, ['.pdf']) ? 'file' : 'page';
-           }
+          $type = Str::contains($file, ['.doc', '.docx', '.txt', '.ppt', '.pptx', '.pdf']) ? 'file' : 'page';
            preg_match( '@src="([^"]+)"@' , $images[0][$key], $iconSrc);
            $icon = isset($iconSrc[$ICON_INDEX])  ? $iconSrc[$ICON_INDEX] : null;
 
@@ -104,8 +101,7 @@ class CourseOverviewController extends Controller
         $files = [];
         
         foreach ($match[$URL_INDEX] as $key => $file) {
-           $type = Str::contains($file, ['https', 'http']) ? 'file' : 'page';
-           if ($type == 'page') { $type = Str::contains($file, ['.pdf']) ? 'file' : 'page'; }
+           $type = Str::contains($file, ['.doc', '.docx', '.txt', '.ppt', '.pptx', '.pdf']) ? 'file' : 'page';
            preg_match( '@src="([^"]+)"@' , $images[0][$key], $iconSrc);
            $icon = isset($iconSrc[$ICON_INDEX])  ? $iconSrc[$ICON_INDEX] : null;
 
@@ -147,6 +143,7 @@ class CourseOverviewController extends Controller
 
 
        $files = $course->modules->where('is_overview', 1)->first()->files ?? null;
+ 
        $modules = $course->modules->where('is_overview', 0);
        
        $moduleWithExam = $this->examRepository->getExam($course);
