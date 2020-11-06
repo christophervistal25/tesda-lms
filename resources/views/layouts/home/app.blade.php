@@ -62,8 +62,13 @@
                                                 <li><a href="#course-section">Courses</a></li>
                                                 <li><a href="#about-section">About</a></li>
                                                 <!-- Button -->
-                                                <li class="button-header margin-left "><a href="{{ route('register') }}" class="btn">Join</a></li>
-                                                <li class="button-header"><a href="{{ route('login') }}" class="btn btn3">Log in</a></li>
+                                                
+                                                @auth
+                                                    <li class="button-header"><a href="{{ route('login') }}" class="btn btn3">{{ Auth::user()->name }}</a></li>
+                                                @else
+                                                    <li class="button-header margin-left "><a href="{{ route('register') }}" class="btn">Join</a></li>
+                                                    <li class="button-header"><a href="{{ route('login') }}" class="btn btn3">Log in</a></li>
+                                                @endauth
                                             </ul>
                                         </nav>
                                     </div>
