@@ -17,7 +17,7 @@ class StudentRepository extends CourseRepository
 	public function hasCourse() : bool
 	{
 		$student = $this->student ?? Auth::user();
-		 return $student->courses->count() >= 1;		
+		return $student->courses->count() >= 1;		
 	}
 
 	/**
@@ -70,10 +70,28 @@ class StudentRepository extends CourseRepository
 		return $student->accomplish_files()->count() + $student->accomplish_activities->count();
 	}
 
-
 	public function hasBadge(BadgeRepository $badge, Student $student)
 	{
 		$course  = $this->getCourse();
 		return $badge->getBadgeAccomplish($student, $course);
+	}
+
+	public function hasFinishEnrolledCourse()
+	{
+		// Double check if the user has enroll course.
+		if (!is_null($this->getCourses())) {
+			// Get the current status of the enrolled course.
+			$currentCourseStatus = $this->getCourses()->last()->status;
+			// Check if the current course is completed or not.
+			if ($this->getProgress() >= 100 && $currentCourseStatus != 'completed') {
+				return true;
+			}
+
+			return false;
+		}
+
+		
+		
+		return false;
 	}
 }

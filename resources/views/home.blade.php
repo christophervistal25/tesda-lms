@@ -135,6 +135,7 @@
 			</div>
 			@else
 				@foreach($studentCourses as $record)
+				@if($record->status == 'completed') @continue; @endif
 				@php
 					$hasStar = $record->course->status && $record->course->status->count() !== 0 && $record->course->status->star == 1 ? '' : 'd-none';
 				@endphp

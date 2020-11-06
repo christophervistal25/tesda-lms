@@ -105,8 +105,7 @@ class CourseOverviewController extends Controller
            preg_match( '@src="([^"]+)"@' , $images[0][$key], $iconSrc);
            $icon = isset($iconSrc[$ICON_INDEX])  ? $iconSrc[$ICON_INDEX] : null;
 
-           $files[] = ModuleFile::firstOrNew([
-                  'title'          => $match[$TITLE_INDEX][$key],
+           $files[] = ModuleFile::updateOrCreate([
                   'link'           => $file,
                   'filelable_id'   => $module->id,
                   'filelable_type' => get_class($module),

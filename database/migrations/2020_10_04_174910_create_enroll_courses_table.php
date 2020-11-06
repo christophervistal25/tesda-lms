@@ -16,6 +16,7 @@ class CreateEnrollCoursesTable extends Migration
         Schema::create('enroll_courses', function (Blueprint $table) {
             $table->unsignedInteger('user_id');
             $table->unsignedInteger('course_id');
+            $table->enum('status', ['in_progress', 'completed'])->default('in_progress');
             $table->primary(['user_id', 'course_id']);
             $table->timestamps();
         });

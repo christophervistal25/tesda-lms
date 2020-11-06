@@ -124,7 +124,7 @@
 
    moduleBodyEditor.addCommand("insertCourseDesign", {
        exec: function(edt) {
-           edt.insertHtml(`<a href="/student/course/design/${courseId}">Course Design</a> <img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1602065137/icons/activity-icon/checkable.webp" >`);
+           edt.insertHtml(`<img width="24px" src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601890160/icons/mortarboard_frosqa.png" /> <a href="/student/course/design/${courseId}">Course Design</a> <img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1602065137/icons/activity-icon/checkable.webp" >`);
        }
     });
 
@@ -136,13 +136,13 @@
 
    moduleBodyEditor.addCommand("insertPDFicon", {
        exec: function(edt) {
-           edt.insertHtml(`<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601889372/icons/pdf_icon_nfqvrw.png" />`);
+           edt.insertHtml(`<img width="24px" src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601889372/icons/pdf_icon_nfqvrw.png" />`);
        }
     });
 
    moduleBodyEditor.addCommand("insertActivityIcon", {
        exec: function(edt) {
-           edt.insertHtml(`<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601889372/icons/course_design_icon_jfq35v.png" />`);
+           edt.insertHtml(`<img width="24px" src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601889372/icons/course_design_icon_jfq35v.png" />`);
        }
     });
 
@@ -154,13 +154,13 @@
 
    moduleBodyEditor.addCommand("insertFinalExamIcon", {
        exec: function(edt) {
-           edt.insertHtml(`<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601889372/icons/final-exam_mdj9vl.png" />`);
+           edt.insertHtml(`<img width="24px" src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601889372/icons/final-exam_mdj9vl.png" />`);
        }
     });
 
    moduleBodyEditor.addCommand("insertCertificateIcon", {
        exec: function(edt) {
-           edt.insertHtml(`<img src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601889768/icons/cerificate_hvcpx5.png" />`);
+           edt.insertHtml(`<img width="24px"  src="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1601889768/icons/cerificate_hvcpx5.png" />`);
        }
     });
 

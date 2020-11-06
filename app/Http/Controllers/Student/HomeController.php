@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Student;
 
-use Illuminate\Http\Request;
-use App\Program;
-use Auth;
 use App\Course;
+use App\Http\Controllers\Controller;
+use App\Program;
 use App\Repositories\StudentRepository;
+use Auth;
+use Illuminate\Http\Request;
 
 
 class HomeController extends Controller
@@ -35,6 +36,8 @@ class HomeController extends Controller
             // Redirect the student to enroll page.
             return redirect(route('site.home'));
         }
+
+        $this->studentRepository->hasFinishEnrolledCourse();
 
         
         $progress       = $this->studentRepository->getProgress();

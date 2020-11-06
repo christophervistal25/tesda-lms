@@ -5,7 +5,7 @@ Route::get('/about/course/{course}', 'AboutCourseController@show');
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+
 
 Route::get('/events', 'Admin\EventController@events');
 
@@ -119,10 +119,12 @@ Route::prefix('admin')->group(function() {
 Route::prefix('student')->group(function() {
     
 
-    Route::group(['middleware' => 'auth'], function () {
-        Route::get('/site/home', 'HomeController@siteHome')->name('site.home');
+    Route::group(['middleware' => 'auth' ], function () {
 
-        Route::namespace('Student')->group(function () {
+        Route::group(['namespace' => 'Student', 'middleware' => 'course.status.check'], function () {
+            Route::get('/site/home', 'HomeController@siteHome')->name('site.home');
+            Route::get('/home', 'HomeController@index')->name('home');
+            
             Route::get('profile', 'ProfileController@show')->name('student.profile');
             Route::get('profile/edit', 'ProfileController@edit')->name('student.profile.edit');
             Route::post('profile', 'ProfileController@update')->name('student.profile.update');
