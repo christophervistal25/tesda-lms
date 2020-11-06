@@ -12,7 +12,7 @@
 		<form class="form-inline">
 		  <div class="form-group mx-sm-1 mb-2">
 		    <label>Search courses &nbsp;</label>
-		    <input type="password" class="form-control rounded-0 " >
+		    <input type="text" class="form-control rounded-0 " >
 		  </div>
 		  <button type="submit" class="btn btn-primary mb-2 rounded-0 border-0 text-dark" style="background :#ced4da;">Go</button>
 		  <i class="icon fa fa-question-circle text-info fa-fw mb-2 " title="Help with Search courses" aria-label="Help with Search courses"></i>
@@ -40,9 +40,9 @@
 										<span class="badge badge-info rounded-0"><a href="{{ route('program.show', $program) }}" class="text-white">{{ $program->name }}</a></span>
 									</div>
 									<div class="clearfix"></div>
-									@if($current_course && $current_course->id == $course->id)
-										<h5 class="card-title text-left"><a href="/student/course/view/{{ $current_course->id }}">{{ $program->name }}</a></h5>
-										@else
+									@if($current_course && $current_course->id == $course->id || in_array($course->id, $finishedCourse))
+										<h5 class="card-title text-left"><a href="/student/course/view/{{ $course->id }}">{{ $course->name }}</a></h5>
+									@else
 										<h5 class="card-title text-left"><a href="{{ route('enroll.course', $course->id) }}">{{ $course->name }}</a></h5>
 									@endif
 								</div>
@@ -51,8 +51,8 @@
 										<i class="fas fa-sign-in-alt"></i>
 									</div>
 										<div class="float-right">
-											@if($current_course && $current_course->id == $course->id)
-												<a class="card-link btn btn-primary rounded-0" href="/student/course/view/{{ $current_course->id }}">Access</a>
+											@if($current_course && $current_course->id == $course->id || in_array($course->id, $finishedCourse))
+												<a class="card-link btn btn-primary rounded-0" href="/student/course/view/{{ $course->id }}">Access</a>
 												@else
 												<a class="card-link btn btn-primary rounded-0" href="{{ route('enroll.course', $course->id) }}">Access</a>
 											@endif

@@ -50,7 +50,9 @@ class HomeController extends Controller
 
     public function siteHome()
     {
+       $this->studentRepository->setStudent(Auth::user());
+       $finishedCourse = $this->studentRepository->finishedCourse();
        $programs = Program::with('courses')->get();
-       return view('student.site-home', compact('programs'));
+       return view('student.site-home', compact('programs', 'finishedCourse'));
     }
 }

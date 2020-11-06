@@ -3,11 +3,17 @@
 namespace App\Http\Controllers\Student;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Program;
+use App\Repositories\StudentRepository;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProgramController extends Controller
 {
+    public function __construct(StudentRepository $studentRepo)
+    {
+        $this->studentRepository = $studentRepo;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -47,8 +53,11 @@ class ProgramController extends Controller
      */
     public function show(int $id)
     {
-        $programCourse = Program::with('courses')->find($id);
-        return view('student.program-course.show', compact('programCourse'));
+        $programCourse  = Program::with('courses')->find($id);
+        $this->studentRepository->setStudent(Auth::user());
+        $finishedCourse = $this->studentRepository->finishedCourse();
+        
+        return view('student.program-course.show', compact('programCourse', 'finishedCourse'));
     }
 
     /**

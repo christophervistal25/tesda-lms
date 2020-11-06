@@ -34,8 +34,9 @@
 							<span class="badge badge-info rounded-0"><a href="{{ route('program.show', $programCourse) }}" class="text-white">{{ $programCourse->name }}</a></span>
 						</div>
 						<div class="clearfix"></div>
-						@if($current_course && $current_course->id === $course->id)
-							<h5 class="card-title text-left"><a href="{{ route('student.course.view', $course->id) }}">{{ $course->name }}</a></h5>
+						@if($current_course && $current_course->id === $course->id || in_array($course->id, $finishedCourse))
+							<h5 class="card-title text-left"><a href="/student/course/view/{{ $course->id }}">{{ $course->name }}</a></h5>
+							{{-- <h5 class="card-title text-left"><a href="{{ route('student.course.view', $course->id) }}">{{ $course->name }}</a></h5> --}}
 							@else
 							<h5 class="card-title text-left"><a href="{{ route('enroll.course', $course->id) }}">{{ $course->name }}</a></h5>
 						@endif
@@ -45,8 +46,9 @@
 							<i class="fas fa-sign-in-alt"></i>
 						</div>
 						<div class="float-right">
-							@if($current_course && $course->id === $current_course->id)
-								<a class="card-link btn btn-primary rounded-0" href="{{ route('student.course.view', $course->id) }}">Access</a>
+							@if($current_course && $course->id === $current_course->id || in_array($course->id, $finishedCourse))
+
+								<a class="card-link btn btn-primary rounded-0" href="/student/course/view/{{ $course->id }}">Access</a>
 								@else
 								<a class="card-link btn btn-primary rounded-0" href="{{ route('enroll.course', $course->id) }}">Access</a>
 							@endif

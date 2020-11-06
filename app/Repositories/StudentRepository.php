@@ -37,7 +37,7 @@ class StudentRepository extends CourseRepository
 	public function getCourses()
 	{
 		if ($this->hasCourse()) {
-			return $this->student->courses;
+			return $this->student->courses ?? null;
 		}
 	}
 
@@ -89,9 +89,11 @@ class StudentRepository extends CourseRepository
 
 			return false;
 		}
-
-		
-		
 		return false;
+	}
+
+	public function finishedCourse()
+	{
+		return $this->getCourses()->where('status', 'completed')->pluck('course_id')->toArray();
 	}
 }
