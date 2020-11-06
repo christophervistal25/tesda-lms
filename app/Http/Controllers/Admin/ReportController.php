@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Repositories\StudentRegisteredReportRepository;
+use App\ShareableLink;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class ReportController extends Controller
 {
@@ -15,6 +17,32 @@ class ReportController extends Controller
     {
         $this->studentReportRepo = $studentReportRepo;
     }
+
+    public function generateLink(Request $request)
+    {
+        $id_link = (string) Str::uuid();
+
+        $this->validate($request, [
+            'from'       => 'required|date|before:to',
+            'to'         => 'required|date|after:from',
+            'expiration' => 'required|date'
+        ]);
+
+        $share = ShareableLink::updateOrCreate([
+                'from'    => $request->from,
+                'to'      => $request->to,
+            ], [
+                'id_link' => $id_link,
+                'from'    => $request->from,
+                'to'      => $request->to,
+                'expiration' => $request->expiration,
+        ]);
+
+        return response()->json(['success' => true, 'id_link' => $share->id_link]);
+
+
+    }
+
     /**
      * Display a listing of the resource.
      *

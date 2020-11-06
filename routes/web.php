@@ -8,6 +8,7 @@ Auth::routes();
 
 
 Route::get('/events', 'Admin\EventController@events');
+Route::get('/report/shareable/{id}', 'ShareableReportController@show')->name('shareable.report');
 
 
 // Admin routes
@@ -108,6 +109,7 @@ Route::prefix('admin')->group(function() {
             Route::put('event/reschedule/{id}', 'EventController@reschedule');
             Route::resource('event', 'EventController');
 
+            Route::post('/generate/shareable/link' , 'ReportController@generateLink');
             Route::resource('report', 'ReportController');
             Route::get('/report/{from}/{to}', 'ReportPrintController@show')->name('print.report');
             Route::get('/student/{id}/activity/log', 'StudentActivityLogController@show');

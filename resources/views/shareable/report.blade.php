@@ -1,58 +1,26 @@
-@extends('layouts.admin.app')
-@section('title', 'Students')
-@section('content')
-@prepend('page-css')
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/startbootstrap-sb-admin-2@4.1.1/vendor/datatables/dataTables.bootstrap4.min.css">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+	 <link rel="icon" href="https://res.cloudinary.com/dfm6cr1l9/image/upload/v1604075788/icons/loder_h2qnck.webp">  
+	  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css" integrity="sha512-xA6Hp6oezhjd6LiLZynuukm80f8BoZ3OpcEYaqKoCV3HKQDrYjDE1Gu8ocxgxoXmwmSzM4iqPvCsOkQNiu41GA==" crossorigin="anonymous" />
+
+	  <link href="https://fonts.googleapis.com/css?family=Poppins" rel="stylesheet">
+
+	  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/startbootstrap-sb-admin-2/4.0.7/css/sb-admin-2.min.css" integrity="sha512-FXgL8f6gtCYx8PjODtilf5GCHlgTDdIVZKRcUT/smwfum7hr4M1ytewqTtNd9LK4/CzbW4czU6Tr3f3Xey6lRg==" crossorigin="anonymous" />
+	   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/startbootstrap-sb-admin-2@4.1.1/vendor/datatables/dataTables.bootstrap4.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
-@endprepend
-{{ Breadcrumbs::render('reports') }}
-@include('layouts.admin.error')
-<div class="card shadow mb-4 rounded-0">
-	<div class="card-header py-3">
-		<h6 class="m-0 font-weight-bold text-primary">Generate Report</h6>
-	</div>
-	<div class="card-body text-dark">
-		<form action="{{ route('report.store') }}" method="POST">
-			@csrf
-			<div class="row">
-				<div class="col-lg-6">
-					<label for="#startDate">Pick Start Date</label>
-				</div>
-				<div class="col-lg-6">
-					<label for="#endDate">Pick End Date</label>
-				</div>
-				<div class="col-lg-6">
-					<input type="date" id="startDate" class="form-control" value="{{ isset($generated) ? $from->format('Y-m-d') : old('start_date') }}" name="start_date">
-				</div>
-				<div class="col-lg-6">
-					<input type="date" id="endDate" class="form-control" value="{{ isset($generated) ? $to->format('Y-m-d') : old('end_date') }}"  name="end_date">
-				</div>
-			</div>
-			<br>
-			<div class="float-right">
-				<input type="submit" value="Generate Report" class="btn btn-primary">
-			</div>
-			<div class="clearfix"></div>
-			<hr>
-		</form>
-		@isset($generated)
-			<a href="{{ route('print.report', [$from, $to]) }}" target="_blank" class="btn btn-primary btn-icon-split mb-2">
-                    <span class="icon text-white-50">
-                      <i class="fas fa-print"></i>
-                    </span>
-                    <span class="text">Print Report</span>
-            </a>
-            <button class="btn btn-info btn-icon-split mb-2" data-toggle="modal" data-target="#generate-shareable-modal">
-            		<span class="icon text-white-50">
-                      <i class="fas fa-share"></i>
-                    </span>
-                    <span class="text">Share</span>
-            </button>
-            
+	  <style>
+	  	body { font-family : "Poppins", sans-serif; }
+	  </style>
+</head>
+<body class="p-5">
 
 			<div class="row">
 			<div class="col-xl-3 col-md-6 mb-4">
-				<a href="{{ route('student.index') }}" class="text-decoration-none">
+				
 					<div class="card border-left-primary  h-100 py-2">
 						<div class="card-body">
 							<div class="row no-gutters align-items-center">
@@ -66,10 +34,8 @@
 							</div>
 						</div>
 					</div>
-				</a>
 			</div>
 			<div class="col-xl-3 col-md-6 mb-4">
-				<a href="{{ route('course.index') }}" class="text-decoration-none">
 					<div class="card border-left-success  h-100 py-2">
 						<div class="card-body">
 							<div class="row no-gutters align-items-center">
@@ -83,7 +49,6 @@
 							</div>
 						</div>
 					</div>
-				</a>
 			</div>
 			<div class="col-xl-3 col-md-6 mb-4">
 				<div class="card border-left-info  h-100 py-2">
@@ -128,11 +93,10 @@
 		        <!-- Card Content - Collapse -->
 		        <div class="collapse " id="collapseRegisteredStudents" style="">
 		          <div class="card-body">
-		            <table class="table table-bordered table-hover text-dark" id="registered-students">
+		            <table class="table table-bordered table-hover text-dark" id="registered-students" width="100%">
 						<thead>
 							<tr>
 								<th>Fullname</th>
-								<th>Email</th>
 								<th>City/Town</th>
 							</tr>
 						</thead>
@@ -140,7 +104,6 @@
 							@foreach($registeredStudents as $student)
 							<tr>
 								<td>{{ $student->name }}</td>
-								<td>{{ $student->email }}</td>
 								<td>{{ $student->city_town }}</td>
 							</tr>
 							@endforeach
@@ -150,7 +113,7 @@
 		        </div>
 	     	</div>
 
-	     	<div class="card rounded-0">
+	     	<div class="card rounded-0 mt-2">
 		        <!-- Card Header - Accordion -->
 		        <a href="#registeredWithCourse" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="registeredWithCourse">
 		          <h6 class="m-0 font-weight-bold text-dark">Registered Student With Enrolled Service <span class="badge badge-pill badge-primary">{{ $registeredWithCourse->count() }}</span></h6>
@@ -162,7 +125,6 @@
 							<thead>
 								<tr>
 									<th>Fullname</th>
-									<th>Email</th>
 									<th>City/Town</th>
 									<th>Enrolled</th>
 									<th class="text-center">Activity Logs</th>
@@ -173,7 +135,6 @@
 								@foreach($registeredWithCourse as $student)
 								<tr>
 									<td>{{ $student->name }}</td>
-									<td>{{ $student->email }}</td>
 									<td>{{ $student->city_town }}</td>
 									<td>{{ $student->courses->last()->course->acronym }}</td>
 									<td class="text-center"><a data-toggle="modal" href='#' data-name="{{ $student->name }}" data-id="{{ $student->id }}" class="btn btn-primary btn-sm open-log-modal">View</a></td>
@@ -186,7 +147,7 @@
 		        </div>
 	     	</div>
 
-	     	<div class="card rounded-0">
+	     	<div class="card rounded-0 mt-2">
 		        <!-- Card Header - Accordion -->
 		        <a href="#registeredWithFinalExam" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="registeredWithFinalExam">
 		          <h6 class="m-0 font-weight-bold text-dark">Registered Student with Final Exam Passed <span class="badge badge-pill badge-primary">{{ $registeredWithFinalExam->count() }}</span></h6>
@@ -198,7 +159,6 @@
 							<thead>
 								<tr>
 									<th>Fullname</th>
-									<th>Email</th>
 									<th>City/Town</th>
 									<th>Enrolled</th>
 								</tr>
@@ -207,7 +167,6 @@
 								@foreach($registeredWithFinalExam as $student)
 								<tr>
 									<td>{{ $student->name }}</td>
-									<td>{{ $student->email }}</td>
 									<td>{{ $student->city_town }}</td>
 									<td>{{ $student->courses->last()->course->acronym }}</td>
 								</tr>
@@ -234,51 +193,29 @@
 	     				<div class="modal-footer">
 	     					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
 	     				</div>
-	     			</div><!-- /.modal-content -->
-	     		</div><!-- /.modal-dialog -->
-	     	</div><!-- /.modal -->
+	     			</div>
+	     		</div>
+	     	</div>
+	
 
-	     	<div class="modal fade" id="generate-shareable-modal">
-	     		<div class="modal-dialog" role="document">
-	     			<div class="modal-content rounded-0 border-0">
-	     				<div class="modal-header"><h5>Generate Shareable Link</h5></div>
-	     				<div class="modal-body">
-	     					<div class="alert d-none" id="modal__body__generated__status" role="alert"></div>
+  <!-- Bootstrap core JavaScript-->
+ <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
 
-	     					<div class="form-group">
-	     						<label>Generated Link</label>
-	     						<input type="text" readonly class="form-control custom-select-sm" id="modal__body__input__shareable__link"  value="">
-	     					</div>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+ 
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
 
-	     					<div class="form-group">
-	     						<label for="">Link Expiration</label>
-	     						<input type="date" class="form-control custom-select-sm" id="modal__body__input__date__expiration">
-	     					</div>
-	     				</div>
-	     				<div class="modal-footer">
-	     					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-	     					<button class="btn btn-success" id="modal__body__btn__copy__link">
-				            		<span class="icon text-white-50" >
-				                      <i class="fas fa-copy"></i>
-				                    </span>
-				                    <span class="text">Copy Link</span>
-				            </button>
-	     					<button type="button" class="btn btn-primary" id="btnGenerateLink">Generate</button>
-	     				</div>
-	     			</div><!-- /.modal-content -->
-	     		</div><!-- /.modal-dialog -->
-	     	</div><!-- /.modal -->
-		@endisset
-	</div>
-</div>
+  <!-- Core plugin JavaScript-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js" integrity="sha512-0QbL0ph8Tc8g5bLhfVzSqxe9GERORsKhIn1IrpxDAgUsbBGz/V7iSav2zzW325XGd1OMLdL4UiqRJj702IeqnQ==" crossorigin="anonymous"></script>
 
-@push('page-scripts')
-<script>
+  <!-- Custom scripts for all pages-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/startbootstrap-sb-admin-2/4.0.7/js/sb-admin-2.min.js" integrity="sha512-tEHlevWV9EmBCnrR098uzR3j8T3x4wtGnNY6SdsZN39uxICadRZaxrRH90iHPqjsqZK5z76gw0uuAvlCoasOUQ==" crossorigin="anonymous"></script>
+
+  <script>
 	$.ajaxSetup({
-		headers: {	'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')	}
+		headers: { 	'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') 	}
 	});
-</script>
-
+</script>	
 <script src="https://cdn.jsdelivr.net/npm/startbootstrap-sb-admin-2@4.1.1/vendor/datatables/jquery.dataTables.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/startbootstrap-sb-admin-2@4.1.1/vendor/datatables/dataTables.bootstrap4.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" crossorigin="anonymous"></script>
@@ -324,58 +261,6 @@
 			</div>
 	     `);
 	});
-
-
-	$('#generate-shareable-modal').on('hidden.bs.modal', function (e) {
-	  	$('#modal__body__generated__status').addClass('d-none');
-	  	$('#modal__body__input__shareable__link').val('');
-	});
-
-	$('#btnGenerateLink').click(function () {
-		let formStatus = $('#modal__body__generated__status').addClass('d-none');
-		let expiration  = $('#modal__body__input__date__expiration');
-		
-		formStatus.addClass('d-none');
-		$.post({
-			url : '/admin/generate/shareable/link',
-			data : {expiration : expiration.val(), from : "{{ $from }}", to : "{{ $to }}" },
-			success : function (response) {
-				if (response.success) {
-					formStatus.removeClass('alert-danger')
-								.addClass('alert-success')
-								.removeClass('d-none')
-								.html('')
-								.html('Successfully generate a shareable link for this report please copy the generated link.');
-
-					let baseUrl = "{{ URL::to('/') }}";
-					let id      = response.id_link;
-					let link        = `${baseUrl}/report/shareable/${id}`;
-					$('#modal__body__input__shareable__link').val(link);
-				}
-			},
-			error : function (response) {
-				formStatus.removeClass('alert-success')
-						  .addClass('alert-danger')
-						  .removeClass('d-none')
-						  .html('');
-						  
-				let errors = response.responseJSON.errors;
-				console.log(Object.values(errors));
-				Object.values(errors).forEach((error) => {
-					formStatus.append(`<li>${error}</li>`)
-				});
-			}
-		});
-	});
-
-	$('#modal__body__btn__copy__link').click(function () {
-		  let copyLink = $('#modal__body__input__shareable__link');
-		  if (copyLink.val().length != 0) {
-		  	  copyLink.select();
-			  copyLink[0].setSelectionRange(0, 99999)
-			  document.execCommand("copy");
-		  }
-	});
 </script>
-@endpush
-@endsection
+</body>
+</html>
