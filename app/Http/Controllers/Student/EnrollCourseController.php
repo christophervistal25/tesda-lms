@@ -17,39 +17,41 @@ class EnrollCourseController extends Controller
         $this->studentRepository = $studentRepo;
     }
 
-    /**
-     * @id course id
-     */
-    private function alreadyEnrolled(int $id)
+    public function show(int $id)
     {
+    	$course = Course::find($id);
         $this->studentRepository->setStudent(Auth::user());
-        // Check if student already enrolled this course.
+        // Check if user already enrolled this course.
         if (!is_null($this->studentRepository->getCourses())) {
             
             $studentEnrollCourse = $this->studentRepository->getCourses()
                                         ->where('status', 'in_progress')
                                         ->pluck('course_id')
                                         ->toArray();
-
-            // If the student already enrolled the course redirect to it's module.
+                                        
             if (in_array($id, $studentEnrollCourse)) {
                 return redirect()->route('student.course.view', $id);
             }
-            
         }
-    }
-
-    public function show(int $id)
-    {
-    	$course = Course::find($id);
-        $this->alreadyEnrolled($id);
     	return view('student.course-enroll.show', compact('course'));
     }
 
     public function enroll(int $id)
     {
         $user = Auth::user();
-        $this->alreadyEnrolled($id);
+        $this->studentRepository->setStudent(Auth::user());
+        // Check if user already enrolled this course.
+        if (!is_null($this->studentRepository->getCourses())) {
+            
+            $studentEnrollCourse = $this->studentRepository->getCourses()
+                                        ->where('status', 'in_progress')
+                                        ->pluck('course_id')
+                                        ->toArray();
+                                        
+            if (in_array($id, $studentEnrollCourse)) {
+                return redirect()->route('student.course.view', $id);
+            }
+        }
     	$enroll = new EnrollCourse();
     	$enroll->course_id = $id;
     	$user->courses()->save($enroll);
