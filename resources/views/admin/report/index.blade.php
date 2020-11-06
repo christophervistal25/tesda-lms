@@ -338,7 +338,7 @@
 		formStatus.addClass('d-none');
 		$.post({
 			url : '/admin/generate/shareable/link',
-			data : {expiration : expiration.val(), from : "{{ $from }}", to : "{{ $to }}" },
+			data : {expiration : expiration.val(), from : "{{ $from ?? '' }}", to : "{{ $to ?? '' }}" },
 			success : function (response) {
 				if (response.success) {
 					formStatus.removeClass('alert-danger')
