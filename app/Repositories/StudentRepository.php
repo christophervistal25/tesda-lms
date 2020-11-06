@@ -94,6 +94,12 @@ class StudentRepository extends CourseRepository
 
 	public function finishedCourse()
 	{
-		return $this->getCourses()->where('status', 'completed')->pluck('course_id')->toArray();
+		if (!is_null($this->getCourses())) {
+			return $this->getCourses()->where('status', 'completed')->pluck('course_id')->toArray();	
+		} else {
+			// To avoid error in view IN_ARRAY function.
+			return [];
+		}
+		
 	}
 }
